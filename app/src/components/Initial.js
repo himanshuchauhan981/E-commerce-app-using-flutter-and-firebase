@@ -8,6 +8,10 @@ class InitialScreen extends Component {
 		Actions.login()
 	}
 	
+	signupScreen(){
+		Actions.signup()
+	}
+	
 	render() {
 		return (
 			<View style={styles.container}>
@@ -17,7 +21,7 @@ class InitialScreen extends Component {
 					<TouchableOpacity onPress={this.loginScreen}>
 						<Text style={styles.button}>Login</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => Actions.signup}>
+					<TouchableOpacity onPress={this.signupScreen}>
 						<Text style={styles.button}>Signup</Text>
 					</TouchableOpacity>
 				</View>

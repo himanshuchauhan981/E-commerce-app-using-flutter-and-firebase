@@ -27,7 +27,7 @@ class SignIn extends Component {
                      <Text style={styles.signInBtn}>Sign In</Text>
                   </TouchableOpacity>
                   <Text style={styles.signInText}>Or</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={this.signUp}>
                      <Text style={styles.signInBtn}>Sign Up</Text>
                   </TouchableOpacity>
                </View>
