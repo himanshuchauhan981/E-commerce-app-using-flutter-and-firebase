@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { Actions } from 'react-native-router-flux'
 
 class InitialScreen extends Component {
+
+	loginScreen(){
+		Actions.login()
+	}
+	
 	render() {
 		return (
 			<View style={styles.container}>
 				<Image style={styles.logo} source={require('../assets/logo.png')} />
 				<Text style={styles.logoText}>Welcome to Shop mart</Text>
 				<View style={styles.btnCont}>
-					<TouchableOpacity>
+					<TouchableOpacity onPress={this.loginScreen}>
 						<Text style={styles.button}>Login</Text>
 					</TouchableOpacity>
-					<TouchableOpacity>
+					<TouchableOpacity onPress={() => Actions.signup}>
 						<Text style={styles.button}>Signup</Text>
 					</TouchableOpacity>
 				</View>
