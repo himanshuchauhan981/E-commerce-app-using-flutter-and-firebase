@@ -1,11 +1,43 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux'
+import { ValidationService } from '../components/ValidationService'
+
 
 class SignUp extends Component {
+   constructor(props) {
+      super(props)
 
-   login(){
+      this.state = {
+         firstName: { error: null, value: '', type: 'generic' },
+         lastName: { error: null, value: '', type: 'generic' },
+         email: { error: null, value: '', type: 'email' },
+         mobileNumber: { error: null, value: '', type: 'phone' },
+         password: { error: null, value: '', type: 'password' }
+      }
+
+      this.onChangeText = ValidationService.onInputChange.bind(this)
+      this.getFormValidation = ValidationService.getFormValidation.bind(this)
+      this.submit = this.submit.bind(this)
+   }
+
+   login() {
       Actions.login()
+   }
+
+   renderError(id) {
+      const stateValue = this.state[id]
+      if (stateValue.error) {
+         return <Text style={styles.error}>{stateValue.error}</Text>;
+      }
+   }
+
+   submit(){
+      let error = this.getFormValidation()
+      if(!error){
+
+      }
+      
    }
 
    render() {
@@ -13,29 +45,50 @@ class SignUp extends Component {
          <View style={styles.signupCont}>
             <Text style={styles.signUpText}>Sign Up</Text>
             <View style={styles.inputCont}>
-               <TextInput
-                  style={styles.signupInput}
-                  placeholder="First Name"
-               />
-               <TextInput
-                  style={styles.signupInput}
-                  placeholder="Last Name"
-               />
-               <TextInput
-                  style={styles.signupInput}
-                  placeholder="Email"
-               />
-               <TextInput
-                  style={styles.signupInput}
-                  placeholder="Mobile Number"
-               />
-               <TextInput
-                  style={styles.signupInput}
-                  placeholder="Password"
-                  secureTextEntry={true}
-               />
+               <View>
+                  <TextInput
+                     style={styles.signupInput}
+                     placeholder="First Name"
+                     onChangeText={(text) => this.onChangeText('firstName', text)}
+                  />
+                  {this.renderError('firstName')}
+               </View>
+               <View>
+                  <TextInput
+                     style={styles.signupInput}
+                     placeholder="Last Name"
+                     onChangeText={(text) => this.onChangeText('lastName', text)}
+                  />
+                  {this.renderError('lastName')}
+               </View>
+               <View>
+                  <TextInput
+                     style={styles.signupInput}
+                     placeholder="Email"
+                     onChangeText={(text) => this.onChangeText('email', text)}
+                  />
+                  {this.renderError('email')}
+               </View>
+               <View>
+                  <TextInput
+                     style={styles.signupInput}
+                     placeholder="Mobile Number"
+                     keyboardType="number-pad"
+                     onChangeText={(text) => this.onChangeText('mobileNumber', text)}
+                  />
+                  {this.renderError('mobileNumber')}
+               </View>
+               <View>
+                  <TextInput
+                     style={styles.signupInput}
+                     placeholder="Password"
+                     secureTextEntry={true}
+                     onChangeText={(text) => this.onChangeText('password', text)}
+                  />
+                  {this.renderError('password')}
+               </View>
                <View style={styles.btnCont}>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={this.submit}>
                      <Text style={styles.signUpBtn}>Sign Up</Text>
                   </TouchableOpacity>
                   <Text style={styles.text}>Or</Text>
@@ -84,7 +137,12 @@ const styles = StyleSheet.create({
    text: {
       textAlign: 'center',
       fontSize: 25,
-      marginVertical: 15
+   },
+   error: {
+      position: 'absolute',
+      bottom: 15,
+      color: 'red',
+      paddingLeft: 20
    }
 })
 
