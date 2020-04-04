@@ -2,10 +2,39 @@ import React, { Component } from 'react';
 import { View, Text,StyleSheet,TextInput,TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux'
 
+import { ValidationService } from '../components/ValidationService'
+
 class SignIn extends Component {
+
+   constructor(props){
+      super(props)
+
+      this.state = {
+         email: { error: null, value: '', type: 'generic' },
+         password: { error: null, value: '', type: 'generic' }
+      }
+
+      this.onChangeText = ValidationService.onInputChange.bind(this)
+      this.getFormValidation = ValidationService.getFormValidation.bind(this)
+      this.submit = this.submit.bind(this)
+   }
 
    signUp(){
       Actions.signup()
+   }
+
+   submit(){
+      let error = this.getFormValidation()
+      if(!error){
+
+      }
+   }
+
+   renderError(id) {
+      const stateValue = this.state[id]
+      if (stateValue.error) {
+         return <Text style={styles.error}>{stateValue.error}</Text>;
+      }
    }
 
    render(){
@@ -13,15 +42,23 @@ class SignIn extends Component {
          <View style={styles.loginCont}>
             <Text style={styles.loginText}>Sign In</Text>
             <View style={styles.inputCont}>
-               <TextInput
-                  style={styles.loginInput}
-                  placeholder="Email or Phone number"
-               />
-               <TextInput
-                  style={styles.loginInput}
-                  placeholder="Password"
-                  secureTextEntry={true}
-               />
+               <View>
+                  <TextInput
+                     style={styles.loginInput}
+                     placeholder="Email or Phone number"
+                     onChangeText={(text) => this.onChangeText('email', text)}
+                  />
+                  {this.renderError('email')}
+               </View>
+               <View>
+                  <TextInput
+                     style={styles.loginInput}
+                     placeholder="Password"
+                     secureTextEntry={true}
+                     onChangeText={(text) => this.onChangeText('password', text)}
+                  />
+                  {this.renderError('password')}
+               </View>
                <View style={styles.btnCont}>
                   <TouchableOpacity>
                      <Text style={styles.signInBtn}>Sign In</Text>
@@ -73,6 +110,12 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontSize: 25,
       marginVertical: 20
+   },
+   error: {
+      position: 'absolute',
+      bottom: 15,
+      color: 'red',
+      paddingLeft: 20
    }
 })
 
