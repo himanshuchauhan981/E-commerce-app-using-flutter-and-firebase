@@ -16,7 +16,7 @@ const cookieParser = require('cookie-parser')
 const passport = require('passport')
 
 dotenv.config()
-const { HOST, PORT } = require('./config')
+const { HOST, PORT,MONGO_HOSTNAME } = require('./config')
 require('../db').connection
 
 app.use(cookieParser())
