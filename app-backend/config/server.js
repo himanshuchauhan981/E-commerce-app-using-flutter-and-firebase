@@ -18,6 +18,7 @@ const passport = require('passport')
 dotenv.config()
 const { HOST, PORT,MONGO_HOSTNAME } = require('./config')
 require('../db').connection
+const { routes } = require('../routes')
 
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -28,6 +29,8 @@ app.use(session({
    saveUninitialized: true,
    cookie: { secure: true }
 }))
+
+app.use('/', routes())
 
 app.use(passport.initialize())
 app.use(passport.session())
