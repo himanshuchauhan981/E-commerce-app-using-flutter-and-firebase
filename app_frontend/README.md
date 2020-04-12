@@ -1,6 +1,6 @@
-# frontend_app
+# app_frontend
 
-A new Flutter project.
+A new Flutter application.
 
 ## Getting Started
 
