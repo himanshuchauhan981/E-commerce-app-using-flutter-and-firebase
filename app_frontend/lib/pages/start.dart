@@ -34,7 +34,7 @@ class Start extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
                   child: ButtonTheme(
-                    minWidth: 150.0,
+                    minWidth: 220.0,
                     child: FlatButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(36)
@@ -56,7 +56,7 @@ class Start extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
                   child: ButtonTheme(
-                    minWidth: 150.0,
+                    minWidth: 220.0,
                     child: FlatButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(36),
