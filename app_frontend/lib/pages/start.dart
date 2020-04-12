@@ -49,7 +49,9 @@ class Start extends StatelessWidget {
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/login');
+                      },
                     ),
                   ),
                 ),
@@ -72,7 +74,9 @@ class Start extends StatelessWidget {
                           fontWeight: FontWeight.bold
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/signup');
+                      },
                     ),
                   ),
                 )
