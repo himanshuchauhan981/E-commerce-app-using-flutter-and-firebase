@@ -50,7 +50,7 @@ class Start extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/login');
+                        Navigator.pushNamed(context, '/login');
                       },
                     ),
                   ),
@@ -75,7 +75,7 @@ class Start extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, '/signup');
+                        Navigator.pushNamed(context, '/signup');
                       },
                     ),
                   ),
