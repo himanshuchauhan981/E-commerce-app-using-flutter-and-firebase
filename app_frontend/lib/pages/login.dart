@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:app_frontend/services/validateService.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -8,26 +9,36 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
+  String _username, _password;
+  bool _autoValidate = false;
+  double borderWidth = 2.0;
+
+  ValidateService validateService = ValidateService();
 
   login(){
     if(this._formKey.currentState.validate()){
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
+      _formKey.currentState.save();
+    }
+    else{
+      setState(() {
+        _autoValidate = true;
+      });
     }
   }
 
   setBorder(double width, Color color){
     return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      borderSide: BorderSide(
-        width: width,
-        color: color
-      )
+        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+        borderSide: BorderSide(
+            width: width,
+            color: color
+        )
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    double borderWidth = 2.0;
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -46,6 +57,7 @@ class _LoginState extends State<Login> {
           padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 15.0),
           child: Form(
             key: _formKey,
+            autovalidate: _autoValidate,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,18 +76,18 @@ class _LoginState extends State<Login> {
                     children: <Widget>[
                       TextFormField(
                         decoration: InputDecoration(
-                          hintText: 'E-mail or Mobile number',
-                          contentPadding: EdgeInsets.all(20.0),
-                          errorBorder: this.setBorder(borderWidth, Colors.red),
-                          focusedBorder: this.setBorder(borderWidth, Colors.black),
-                          enabledBorder: this.setBorder(borderWidth, Colors.black),
+                            hintText: 'E-mail or Mobile number',
+                            contentPadding: EdgeInsets.all(20.0),
+                            border: InputBorder.none,
+                            errorBorder: this.setBorder(borderWidth, Colors.red),
+                            focusedErrorBorder: this.setBorder(borderWidth, Colors.red),
+                            focusedBorder: this.setBorder(borderWidth, Colors.black),
+                            enabledBorder: this.setBorder(borderWidth, Colors.black)
                         ),
-                        validator: (value){
-                          if(value.isEmpty){
-                            return 'Required';
-                          }
-                          return null;
-                        },
+                        validator: (value)=> validateService.isEmptyField(value),
+                        onSaved: (String val){
+                          this._username = val;
+                        }
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -84,14 +96,13 @@ class _LoginState extends State<Login> {
                             hintText: 'Password',
                             contentPadding: EdgeInsets.all(20),
                             errorBorder: this.setBorder(borderWidth, Colors.red),
+                            focusedErrorBorder: this.setBorder(borderWidth, Colors.red),
                             focusedBorder: this.setBorder(borderWidth, Colors.black),
-                            enabledBorder: this.setBorder(borderWidth, Colors.black),
+                            enabledBorder: this.setBorder(borderWidth, Colors.black)
                         ),
-                        validator: (value){
-                          if(value.isEmpty){
-                            return 'Required';
-                          }
-                          return null;
+                        validator: (value) => validateService.isEmptyField(value),
+                        onSaved: (String val){
+                          _password = val;
                         },
                       ),
                       SizedBox(height: 30.0),
