@@ -8,7 +8,7 @@ var corsOptions = {
    optionsSuccessStatus: 200
 }
 
-app.use(cors(corsOptions))
+// app.use(cors(corsOptions))
 
 const bodyParser = require('body-parser')
 const session = require('express-session')
