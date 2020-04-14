@@ -1,28 +1,7 @@
 class ValidateService{
-  String isEmptyField(String value){
-    if(value.isEmpty){
+  String isEmptyField(String value) {
+    if (value.isEmpty) {
       return 'Required';
-    }
-    return null;
-  }
-
-  String validateUsername(String value){
-    String pattern = r'^[a-z0-9_-]{3,15}$';
-    int len = value.length;
-    RegExp regExp = new RegExp(pattern);
-    String isEmpty = isEmptyField(value);
-
-    if(isEmpty != null){
-      return isEmpty;
-    }
-    else if(len < 3){
-      return "Minimum character length should be 3";
-    }
-    else if(len > 15){
-      return "Maxmimum character length should be 15";
-    }
-    else if(!regExp.hasMatch(value)){
-      return "Username can contain alphabhets, digit and character ( -, _ )";
     }
     return null;
   }
@@ -63,7 +42,7 @@ class ValidateService{
       return isEmpty;
     }
     else if(!regExp.hasMatch(value)){
-      return "Minimum eight characters, at least one letter and one number:";
+      return "Minimum eight characters, at least one letter and one number";
     }
     return null;
   }

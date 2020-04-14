@@ -1,5 +1,9 @@
+import 'dart:collection';
+import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
+
 import 'package:app_frontend/services/validateService.dart';
+import 'package:http/http.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -11,8 +15,10 @@ class _SignupState extends State<Signup> {
   bool _autoValidate = false;
   double borderWidth = 1.0;
   final _formKey = GlobalKey<FormState>();
+  HashMap userValues = new HashMap<String,String>();
 
   ValidateService validateService = ValidateService();
+  UserService userService = UserService();
 
   setBorder(double width, Color color){
     return OutlineInputBorder(
@@ -24,9 +30,11 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  signup(){
+  signup() async {
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
+      Response response = await userService.signup(userValues);
+      print(response.body);
     }
     else{
       setState(() {
@@ -74,14 +82,32 @@ class _SignupState extends State<Signup> {
                     children: <Widget>[
                       TextFormField(
                         decoration: InputDecoration(
-                            hintText: 'Username',
+                            hintText: 'First name',
                             contentPadding: EdgeInsets.all(20.0),
                             errorBorder: this.setBorder(1.0, Colors.red),
                             focusedErrorBorder: this.setBorder(1.0, Colors.red),
                             focusedBorder: this.setBorder(1.0, Colors.black),
                             enabledBorder: this.setBorder(1.0, Colors.black)
                         ),
-                        validator: (value) => validateService.validateUsername(value),
+                        validator: (value) => validateService.isEmptyField(value),
+                        onSaved: (String val){
+                          userValues['firstName'] = val;
+                        },
+                      ),
+                      SizedBox(height: 30.0),
+                      TextFormField(
+                        decoration: InputDecoration(
+                            hintText: 'Last name',
+                            contentPadding: EdgeInsets.all(20.0),
+                            errorBorder: this.setBorder(1.0, Colors.red),
+                            focusedErrorBorder: this.setBorder(1.0, Colors.red),
+                            focusedBorder: this.setBorder(1.0, Colors.black),
+                            enabledBorder: this.setBorder(1.0, Colors.black)
+                        ),
+                        validator: (value) => validateService.isEmptyField(value),
+                        onSaved: (String val){
+                          userValues['lastName'] = val;
+                        },
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -94,7 +120,10 @@ class _SignupState extends State<Signup> {
                             enabledBorder: this.setBorder(1.0, Colors.black)
                         ),
                         keyboardType: TextInputType.phone,
-                        validator: (value) => validateService.validatePhoneNumber(value)
+                        validator: (value) => validateService.validatePhoneNumber(value),
+                        onSaved: (String val){
+                          userValues['phoneNumber'] = val;
+                        },
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -107,10 +136,14 @@ class _SignupState extends State<Signup> {
                             enabledBorder: this.setBorder(1.0, Colors.black)
                         ),
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) => validateService.validateEmail(value)
+                        validator: (value) => validateService.validateEmail(value),
+                        onSaved: (String val){
+                          userValues['email'] = val;
+                        },
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
+                        obscureText: true,
                         decoration: InputDecoration(
                             hintText: 'Password',
                             contentPadding: EdgeInsets.all(20.0),
@@ -120,6 +153,9 @@ class _SignupState extends State<Signup> {
                             enabledBorder: this.setBorder(1.0, Colors.black)
                         ),
                         validator: (value) => validateService.validatePassword(value),
+                        onSaved: (String val){
+                          userValues['password'] = val;
+                        },
                       ),
                       SizedBox(height: 50.0),
                       ButtonTheme(
