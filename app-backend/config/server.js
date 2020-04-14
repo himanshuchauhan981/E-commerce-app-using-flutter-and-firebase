@@ -30,10 +30,13 @@ app.use(session({
    cookie: { secure: true }
 }))
 
-app.use('/', routes())
+
 
 app.use(passport.initialize())
 app.use(passport.session())
+
+require('../auth/auth')(passport)
+app.use('/', routes())
 
 app.listen(PORT, HOST, (err) => {
    if (err) console.log(err)

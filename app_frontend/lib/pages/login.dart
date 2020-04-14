@@ -1,5 +1,11 @@
+import 'dart:collection';
+import 'package:http/http.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
+import 'package:app_frontend/components/alertBox.dart';
+
 
 class Login extends StatefulWidget {
   @override
@@ -9,15 +15,30 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
-  String _username, _password;
+  HashMap userValues = new HashMap<String, String>();
   bool _autoValidate = false;
   double borderWidth = 2.0;
 
   ValidateService validateService = ValidateService();
+  UserService userService = UserService();
 
-  login(){
+  login() async{
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
+      Response response = await userService.login(userValues);
+      int statusCode = response.statusCode;
+      if(statusCode == 200){
+        print(response.body);
+      }
+      else{
+        AlertBox alertBox = AlertBox(response.body);
+        return showDialog(
+            context: context,
+          builder: (BuildContext context){
+              return alertBox.build(context);
+          }
+        );
+      }
     }
     else{
       setState(() {
@@ -86,7 +107,7 @@ class _LoginState extends State<Login> {
                         ),
                         validator: (value)=> validateService.isEmptyField(value),
                         onSaved: (String val){
-                          this._username = val;
+                          userValues['username'] = val;
                         }
                       ),
                       SizedBox(height: 30.0),
@@ -102,7 +123,7 @@ class _LoginState extends State<Login> {
                         ),
                         validator: (value) => validateService.isEmptyField(value),
                         onSaved: (String val){
-                          _password = val;
+                          userValues['password'] = val;
                         },
                       ),
                       SizedBox(height: 30.0),
