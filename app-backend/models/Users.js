@@ -28,7 +28,7 @@ const users = new Schema({
       required: [true, 'Password is required'],
       minlength: [6, 'Minimum length of password should be 6']
    },
-   phoneNumber:{
+   mobileNumber:{
       type: String,
       required:[true,'Mobile number is required'],
       validate: {
