@@ -4,6 +4,7 @@ import 'package:app_frontend/pages/signup.dart';
 import 'package:app_frontend/pages/login.dart';
 import 'package:app_frontend/pages/start.dart';
 import 'package:app_frontend/pages/home.dart';
+import 'package:app_frontend/components/shop.dart';
 
 void main() => runApp(MaterialApp(
   initialRoute: '/',
@@ -11,6 +12,7 @@ void main() => runApp(MaterialApp(
     '/': (context) => Start(),
     '/login': (context) => Login(),
     '/signup': (context) => Signup(),
-    '/home': (context) => Home()
+    '/home': (context) => Home(),
+    '/shop': (context) => Shop()
   },
 ));
