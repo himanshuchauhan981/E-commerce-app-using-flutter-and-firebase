@@ -15,10 +15,18 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header('Shop Mart',_scaffoldKey),
+      appBar: header('Shop Mart', _scaffoldKey),
       drawer: sidebar(),
-      body: SafeArea(
-        child: HorizontalList()
+      body: Container(
+        height: 100.0,
+        padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              child: CategoryCarousal(),
+            )
+          ],
+        ),
       )
     );
   }

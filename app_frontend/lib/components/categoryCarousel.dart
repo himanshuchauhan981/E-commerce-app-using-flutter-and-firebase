@@ -7,12 +7,12 @@ class Category{
   Category({this.name, this.url});
 }
 
-class HorizontalList extends StatefulWidget {
+class CategoryCarousal extends StatefulWidget {
   @override
   _HorizontalListState createState() => _HorizontalListState();
 }
 
-class _HorizontalListState extends State<HorizontalList> {
+class _HorizontalListState extends State<CategoryCarousal> {
   final category = <Category>[
     Category(
         name: 'ACCESSORIES',
@@ -38,48 +38,44 @@ class _HorizontalListState extends State<HorizontalList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100.0,
-      padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-      child: ListView.builder(
-        physics: AlwaysScrollableScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemCount: category.length,
-        itemBuilder: (context, index){
-          var item = category[index];
-          return Container(
-            width: 200.0,
-            child: Card(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  image: DecorationImage(
-                    image: AssetImage(item.url),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Color.fromRGBO(90,90,90,0.8),
-                      BlendMode.modulate
-                    )
+    return ListView.builder(
+      physics: AlwaysScrollableScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemCount: category.length,
+      itemBuilder: (context, index){
+        var item = category[index];
+        return Container(
+          width: 200.0,
+          child: Card(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                image: DecorationImage(
+                  image: AssetImage(item.url),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Color.fromRGBO(90,90,90,0.8),
+                    BlendMode.modulate
                   )
-                ),
-                child: Center(
-                  child: Text(
-                    item.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.0,
-                      color: Colors.white,
-                      letterSpacing: 1.0
-                    ),
+                )
+              ),
+              child: Center(
+                child: Text(
+                  item.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20.0,
+                    color: Colors.white,
+                    letterSpacing: 1.0
                   ),
                 ),
-              )
-            ),
-          );
-        }
-      ),
+              ),
+            )
+          ),
+        );
+      }
     );
   }
 }
