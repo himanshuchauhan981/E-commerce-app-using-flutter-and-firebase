@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 
-class Sidebar extends StatefulWidget {
-  @override
-  _SidebarState createState() => _SidebarState();
-}
-
-class _SidebarState extends State<Sidebar> {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
+Widget sidebar(){
+  return SafeArea(
+    child: Drawer(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,6 +102,6 @@ class _SidebarState extends State<Sidebar> {
           )
         ],
       ),
-    );
-  }
+    ),
+  );
 }

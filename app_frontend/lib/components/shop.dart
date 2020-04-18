@@ -10,7 +10,7 @@ class Shop extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       appBar: header('Shop', _scaffoldKey),
-      drawer: new Sidebar(),
+      drawer: sidebar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),

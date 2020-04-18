@@ -1,3 +1,4 @@
+import 'package:app_frontend/components/categoryCarousel.dart';
 import 'package:app_frontend/components/header.dart';
 import 'package:flutter/material.dart';
 import 'package:app_frontend/components/sidebar.dart';
@@ -15,7 +16,10 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: header('Shop Mart',_scaffoldKey),
-      drawer: new Sidebar()
+      drawer: sidebar(),
+      body: SafeArea(
+        child: HorizontalList()
+      )
     );
   }
 }
