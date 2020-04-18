@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:app_frontend/services/productService.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 
 class Category{
   final String name;
@@ -13,7 +17,13 @@ class CategoryCarousal extends StatefulWidget {
 }
 
 class _HorizontalListState extends State<CategoryCarousal> {
+  ProductService _productService = ProductService();
+
   final category = <Category>[
+    Category(
+        name: 'CLOTHING',
+        url: 'assets/shop/clothing.jpg'
+    ),
     Category(
         name: 'ACCESSORIES',
         url: 'assets/shop/accessories.png'
@@ -21,10 +31,6 @@ class _HorizontalListState extends State<CategoryCarousal> {
     Category(
         name: 'BAGS',
         url: 'assets/shop/bags.jpg'
-    ),
-    Category(
-        name: 'CLOTHING',
-        url: 'assets/shop/clothing.jpg'
     ),
     Category(
       name: 'SHOES',
@@ -35,6 +41,15 @@ class _HorizontalListState extends State<CategoryCarousal> {
       url: 'assets/shop/watches.jpg'
     )
   ];
+
+  listCategoryItems(String name) async{
+    Response response = await _productService.productItems(name);
+    final items = json.decode(response.body);
+    Map<String,dynamic> args = new Map();
+    args['heading'] = name.toLowerCase();
+    args['itemList'] = items;
+    Navigator.pushNamed(context, '/item', arguments: args);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +64,7 @@ class _HorizontalListState extends State<CategoryCarousal> {
           width: 200.0,
           child: GestureDetector(
             onTap: (){
-              Navigator.pushNamed(context, '/item', arguments: item.name.toLowerCase());
+              this.listCategoryItems(item.name);
             },
             child: Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
