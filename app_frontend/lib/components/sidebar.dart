@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget sidebar(){
+Widget sidebar(context){
   return SafeArea(
     child: Drawer(
       child: Column(
@@ -20,6 +20,9 @@ Widget sidebar(){
                       letterSpacing: 1.0
                   ),
                 ),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/home');
+                },
               ),
               ListTile(
                 leading: Icon(Icons.shopping_cart),
@@ -31,6 +34,9 @@ Widget sidebar(){
                       letterSpacing: 1.0
                   ),
                 ),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/shop');
+                },
               ),
               ListTile(
                 leading: Icon(Icons.local_mall),

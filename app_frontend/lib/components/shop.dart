@@ -6,11 +6,12 @@ class Shop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+    bool showCartIcon = true;
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header('Shop', _scaffoldKey),
-      drawer: sidebar(),
+      appBar: header('Shop', _scaffoldKey, showCartIcon),
+      drawer: sidebar(context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),

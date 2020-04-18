@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey){
+Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon){
 
   return AppBar(
     centerTitle: true,
     title: Text(
-      headerText,
+      "${headerText[0].toUpperCase()}${headerText.substring(1)}",
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.bold,
@@ -31,13 +31,16 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey){
       },
     ),
     actions: <Widget>[
-      IconButton(
-        icon: Icon(
-          Icons.shopping_basket,
-          size: 35.0,
-          color: Colors.black,
+      Visibility(
+        visible: showIcon,
+        child: IconButton(
+          icon: Icon(
+            Icons.shopping_basket,
+            size: 35.0,
+            color: Colors.black,
+          ),
+          onPressed: () {},
         ),
-        onPressed: () {},
       )
     ],
   );
