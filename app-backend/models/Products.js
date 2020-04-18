@@ -12,10 +12,6 @@ const products = new Scehma({
   subCategory: {
     type: String
   },
-  vendorId: {
-    type: String,
-    default: null
-  },
   cost: {
     type: Number
   },
@@ -26,8 +22,7 @@ const products = new Scehma({
     type: Number
   },
   image: {
-    type: String,
-    default: null
+    type: String
   }
 })
 
