@@ -80,6 +80,60 @@ class Shop extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15.0)),
                     image: DecorationImage(
+                        image: AssetImage('assets/shop/mobilephones.jpg'),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
+                    )
+                ),
+                child: Center(
+                  child: Text(
+                    'MOBILE PHONES',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 35.0,
+                        color: Colors.white,
+                        letterSpacing: 1.0
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                constraints: new BoxConstraints.expand(
+                    height: 130.0
+                ),
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    image: DecorationImage(
+                        image: AssetImage('assets/shop/electronics.jpg'),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
+                    )
+                ),
+                child: Center(
+                  child: Text(
+                    'ELECTRONICS',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 35.0,
+                        color: Colors.white,
+                        letterSpacing: 1.0
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                constraints: new BoxConstraints.expand(
+                    height: 130.0
+                ),
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    image: DecorationImage(
                         image: AssetImage('assets/shop/shoes.jpg'),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
@@ -88,60 +142,6 @@ class Shop extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'SHOES',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 35.0,
-                        color: Colors.white,
-                        letterSpacing: 1.0
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                constraints: new BoxConstraints.expand(
-                    height: 130.0
-                ),
-                alignment: Alignment.bottomLeft,
-                padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    image: DecorationImage(
-                        image: AssetImage('assets/shop/watches.jpg'),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
-                    )
-                ),
-                child: Center(
-                  child: Text(
-                    'WATCHES',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 35.0,
-                        color: Colors.white,
-                        letterSpacing: 1.0
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                constraints: new BoxConstraints.expand(
-                    height: 130.0
-                ),
-                alignment: Alignment.bottomLeft,
-                padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    image: DecorationImage(
-                        image: AssetImage('assets/shop/bags.jpg'),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
-                    )
-                ),
-                child: Center(
-                  child: Text(
-                    'BAGS',
                     style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 35.0,

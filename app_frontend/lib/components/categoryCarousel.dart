@@ -29,16 +29,16 @@ class _HorizontalListState extends State<CategoryCarousal> {
         url: 'assets/shop/accessories.png'
     ),
     Category(
-        name: 'BAGS',
-        url: 'assets/shop/bags.jpg'
+        name: 'MOBILE PHONES',
+        url: 'assets/shop/mobilephones.jpg'
     ),
     Category(
       name: 'SHOES',
       url: 'assets/shop/shoes.jpg'
     ),
     Category(
-      name: 'WATCHES',
-      url: 'assets/shop/watches.jpg'
+      name: 'ELECTRONICS',
+      url: 'assets/shop/electronics.jpg'
     )
   ];
 
