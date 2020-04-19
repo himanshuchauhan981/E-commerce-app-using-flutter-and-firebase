@@ -1,3 +1,4 @@
+import 'package:app_frontend/pages/subCategory.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -13,6 +14,7 @@ void main() => runApp(MaterialApp(
     '/login': (context) => Login(),
     '/signup': (context) => Signup(),
     '/home': (context) => Home(),
-    '/shop': (context) => Shop()
+    '/shop': (context) => Shop(),
+    '/subCategory': (context) => SubCategory()
   },
 ));

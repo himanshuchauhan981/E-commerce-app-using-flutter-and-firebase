@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 
+capitalizeHeading(String text){
+  if(text == null){
+    return text = "";
+  }
+  else{
+    text = "${text[0].toUpperCase()}${text.substring(1)}";
+    return text;
+  }
+}
+
+
 Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon){
 
   return AppBar(
     centerTitle: true,
     title: Text(
-      "${headerText[0].toUpperCase()}${headerText.substring(1)}",
+      capitalizeHeading(headerText),
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.bold,

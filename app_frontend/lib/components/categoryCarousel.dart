@@ -43,12 +43,12 @@ class _HorizontalListState extends State<CategoryCarousal> {
   ];
 
   listCategoryItems(String name) async{
-    Response response = await _productService.productItems(name);
-    final items = json.decode(response.body);
+    Response response = await _productService.subCategories(name);
+    final subCategoryList = json.decode(response.body);
     Map<String,dynamic> args = new Map();
     args['heading'] = name.toLowerCase();
-    args['itemList'] = items;
-    Navigator.pushNamed(context, '/item', arguments: args);
+    args['list'] = subCategoryList;
+    Navigator.pushNamed(context, '/subCategory', arguments: args);
   }
 
   @override

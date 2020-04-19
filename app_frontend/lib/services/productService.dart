@@ -12,8 +12,8 @@ class ProductService{
     'Accept': 'application/json',
   };
 
-  Future <Response> productItems(String item) async{
-    var uri = Uri.parse("$url/$item/items");
+  Future <Response> subCategories(String item) async{
+    var uri = Uri.parse("$url/$item/sub");
     Response response = await get(uri,headers: headers);
     return response;
   }
