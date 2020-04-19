@@ -28,7 +28,6 @@ function createCategoryData() {
       for(i=0;i<categoryList.length;i++){
         for(let j=0;j<data.length;j++){
           if(data[j]['category'] == categoryList[i]){
-            console.log(data[j]['image'])
             await category.update(
               {
                 'categoryName': categoryList[i]
@@ -36,8 +35,8 @@ function createCategoryData() {
               {
                 $push: {
                   subCategory: {
-                    name: data[j]['subCategory'],
-                    image: data[j]['image']
+                    name: data[j]['subCategory']
+                    // image: data[j]['image']
                   }
                 }
               },
