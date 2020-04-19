@@ -1,6 +1,10 @@
+const { category } = require('../models')
+
 const categoryHandler = {
-  categoryItems : async (req,res) =>{
-    res.status(200).send({msg:'hello'})
+  listSubCategory : async (req,res) =>{
+    let categoryName = req.params.category.toLowerCase()
+    let subCategoryList = await category.findOne({categoryName:categoryName}).select({subCategory:1,image:1})
+    res.status(200).send(subCategoryList)
   }
 }
 

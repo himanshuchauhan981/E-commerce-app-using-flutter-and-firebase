@@ -1,8 +1,8 @@
 const { categoryHandler } = require('../handlers')
 
 const categoryController = {
-  categoryItems : async (req,res) =>{
-    let response = await categoryHandler.categoryItems(req,res)
+  listSubCategory : async (req,res) =>{
+    let response = await categoryHandler.listSubCategory(req,res)
     return response
   }
 }

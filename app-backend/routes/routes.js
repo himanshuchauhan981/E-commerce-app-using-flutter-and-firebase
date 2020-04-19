@@ -12,8 +12,8 @@ module.exports = ()=>{
       userController.signupUsers
    )
 
-   router.get('/:category/items',
-      categoryController.categoryItems
+   router.get('/:category/sub',
+      categoryController.listSubCategory
    )
 
    return router
