@@ -11,6 +11,11 @@ const categoryHandler = {
     let randomNumber = Math.floor(Math.random()*20) + 1;
     let newItems = await products.find().skip(randomNumber).limit(5).select({image:1,name:1});
     res.status(200).send(newItems)
+  },
+
+  listAllItems : async (req,res) =>{
+    let allItems = await products.find().limit(15).select({image:1, cost:1,name:1})
+    res.status(200).send(newItems)
   }
 }
 

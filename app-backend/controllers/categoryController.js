@@ -9,6 +9,11 @@ const categoryController = {
   listNewItems : async (req,res) =>{
     let response = await categoryHandler.listNewItems(req,res)
     return response
+  },
+
+  listAllItems : async (req,res) =>{
+    let response = await categoryHandler.listAllItems(req,res)
+    return response
   }
 }
 

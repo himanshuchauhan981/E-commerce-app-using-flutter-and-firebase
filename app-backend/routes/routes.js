@@ -20,5 +20,9 @@ module.exports = ()=>{
       categoryController.listNewItems
    )
 
+   router.get('/items',
+      categoryController.listAllItems
+   )
+
    return router
 }

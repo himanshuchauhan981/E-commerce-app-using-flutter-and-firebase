@@ -40,13 +40,14 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
         return Transform.scale(
           scale: index == _index ? 1 : 0.9,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 child: Expanded(
                   child: Card(
                     semanticContainer: true,
                     clipBehavior: Clip.antiAlias,
-//                  elevation: 6,
+                    elevation: 6,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)
                     ),
