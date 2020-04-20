@@ -23,34 +23,46 @@ class _HomeState extends State<Home> {
       drawer: sidebar(context),
       body: Container(
         padding: EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Flexible(
-              fit: FlexFit.loose,
-              child: Container(
-                  height: 80.0,
-                  child: CategoryCarousal()
-              )
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 20.0),
-              child: Text(
-                'New Arrivals',
-                style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Flexible(
+                child: Container(
+                    height: 80.0,
+                    child: CategoryCarousal()
                 ),
               ),
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              child: Container(
-                  child: SnapEffectCarousel()
+              Padding(
+                padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 20.0),
+                child: Text(
+                  'New Arrivals',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2
+                  ),
+                ),
               ),
-            ),
-          ],
+              Flexible(
+                child: Container(
+                  height: 420.0,
+                    child: SnapEffectCarousel()
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0),
+                child: Text(
+                  'Featured',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+
+            ],
+          ),
         ),
       )
     );

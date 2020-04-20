@@ -15,7 +15,7 @@ const categoryHandler = {
 
   listAllItems : async (req,res) =>{
     let allItems = await products.find().limit(15).select({image:1, cost:1,name:1})
-    res.status(200).send(newItems)
+    res.status(200).send(allItems)
   }
 }
 

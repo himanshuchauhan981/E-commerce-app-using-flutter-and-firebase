@@ -23,6 +23,12 @@ class ProductService{
     Response response = await get(uri, headers: headers);
     return response;
   }
+  
+  Future <Response> featuredItems() async{
+    var uri = Uri.parse("$url/items");
+    Response response = await get(uri,headers: headers);
+    return response;
+  }
 }
 
 class NewArrival{

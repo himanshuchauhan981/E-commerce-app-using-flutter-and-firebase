@@ -32,15 +32,14 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
     return PageView.builder(
       itemCount: newArrival.length,
       controller: PageController(
-        viewportFraction: 0.8
+        viewportFraction: 0.7
       ),
       onPageChanged: (int index) => setState(()=> _index = index),
       itemBuilder: (context,index){
         var item = newArrival[index];
         return Transform.scale(
-          scale: index == _index ? 1 : 0.9,
+          scale: index == _index ? 1 : 0.8,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 child: Expanded(
