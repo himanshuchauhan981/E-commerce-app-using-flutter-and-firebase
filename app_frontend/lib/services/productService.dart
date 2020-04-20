@@ -17,4 +17,17 @@ class ProductService{
     Response response = await get(uri,headers: headers);
     return response;
   }
+  
+  Future <Response> newItemArrivals() async{
+    var uri = Uri.parse("$url/items/new");
+    Response response = await get(uri, headers: headers);
+    return response;
+  }
+}
+
+class NewArrival{
+  final String name;
+  final String image;
+
+  NewArrival({this.name, this.image});
 }

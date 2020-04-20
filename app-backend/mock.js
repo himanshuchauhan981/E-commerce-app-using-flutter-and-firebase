@@ -36,7 +36,6 @@ function createCategoryData() {
                 $push: {
                   subCategory: {
                     name: data[j]['subCategory']
-                    // image: data[j]['image']
                   }
                 }
               },
