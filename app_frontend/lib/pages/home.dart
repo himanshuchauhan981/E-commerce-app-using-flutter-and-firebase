@@ -21,50 +21,44 @@ class _HomeState extends State<Home> {
       key: _scaffoldKey,
       appBar: header('Shop Mart', _scaffoldKey,showCartIcon),
       drawer: sidebar(context),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Flexible(
-              child: Container(
-                  height: 80.0,
-                  child: CategoryCarousal()
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 20.0),
-              child: Text(
-                'New Arrivals',
-                style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2
+      body: Container(
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Container(
+                    height: 80.0,
+                    child: CategoryCarousal()
                 ),
-              ),
-            ),
-            Flexible(
-              child: Container(
-                height: 420.0,
-                  child: SnapEffectCarousel()
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 20.0),
-              child: Text(
-                'Featured',
-                style: TextStyle(
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.bold
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 20.0),
+                  child: Text(
+                    'New Arrivals',
+                    style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                    height: 420.0,
+                    child: SnapEffectCarousel()
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: Text(
+                    'Featured',
+                    style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+              ]),
             ),
-            Flexible(
-              child: Container(
-                height: 100,
-                child: GridItemList(),
-              ),
-            )
+GridItemList(),
+
           ],
         ),
       )
