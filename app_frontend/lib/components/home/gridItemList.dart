@@ -28,28 +28,53 @@ class _GridItemListState extends State<GridItemList> {
 
   Widget build(BuildContext context){
     return SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2
-        ),
-        delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2
+      ),
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index){
           var item = featuredItems[index];
           return featuredItemCard(item);
         },
-            childCount: featuredItems.length
-        )
+        childCount: featuredItems.length
+      )
     );
   }
 
   Widget featuredItemCard(item){
     return Card(
       semanticContainer: true,
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Image.network(
-        item['image'],
-        fit: BoxFit.fill,
-      ),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0)
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+              child: Material(
+                child: InkWell(
+                  onTap: (){},
+                  child: GridTile(
+                    footer: Container(
+                      color: Colors.white70,
+                      child: ListTile(
+                        leading: Text(
+                          item['name'],
+                          style: TextStyle(
+                              fontSize: 16.0
+                          ),
+                        ),
+                      ),
+                    ),
+                    child: Image.network(
+                      item['image'],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              )
+          )
+        ],
       ),
     );
   }
