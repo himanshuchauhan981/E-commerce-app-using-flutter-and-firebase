@@ -1,9 +1,10 @@
 import 'dart:collection';
-import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/components/alertBox.dart';
+import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
-import 'package:http/http.dart';
+
 
 class Signup extends StatefulWidget {
   @override
@@ -30,85 +31,19 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  createAlertDialog(BuildContext context,String message){
-    return showDialog(
-      context: context,
-      builder: (BuildContext context){
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(16.0))
-          ),
-          contentPadding: EdgeInsets.all(0.0),
-          content: Container(
-            width: 200.0,
-            height: 200.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(height: 1.0),
-                Text(
-                  'Alert',
-                  style: TextStyle(
-                    fontSize: 26.0,
-                    letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Divider(
-                  color: Colors.grey,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 0.0),
-                  child: Text(
-                    message,
-                    style: TextStyle(
-                      fontSize: 23.0,
-                      letterSpacing: 1.0
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                InkWell(
-                  onTap: (){
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    padding: EdgeInsets.only(top:20.0, bottom: 20.0),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[800],
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(16.0),
-                        bottomRight: Radius.circular(16.0)
-                      ),
-                    ),
-                    child: Text(
-                      "Close",
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          )
-        );
-      }
-    );
-  }
-
-
   signup() async {
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
       await userService.signup(userValues);
       int statusCode = userService.statusCode;
       if(statusCode == 400){
-        this.createAlertDialog(context,userService.msg);
+        AlertBox alertBox = AlertBox(userService.msg);
+        return showDialog(
+          context: context,
+          builder: (BuildContext context){
+            return alertBox.build(context);
+          }
+        );
       }
       else{
         Navigator.pushReplacementNamed(context, '/');
@@ -119,6 +54,17 @@ class _SignupState extends State<Signup> {
         _autoValidate = true;
       });
     }
+  }
+
+  InputDecoration customFormField(String hintText){
+    return InputDecoration(
+        hintText: hintText,
+        contentPadding: EdgeInsets.all(20.0),
+        errorBorder: this.setBorder(1.0, Colors.red),
+        focusedErrorBorder: this.setBorder(1.0, Colors.red),
+        focusedBorder: this.setBorder(1.0, Colors.black),
+        enabledBorder: this.setBorder(1.0, Colors.black)
+    );
   }
 
   @override
@@ -159,14 +105,7 @@ class _SignupState extends State<Signup> {
                   child: Column(
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'First name',
-                            contentPadding: EdgeInsets.all(20.0),
-                            errorBorder: this.setBorder(1.0, Colors.red),
-                            focusedErrorBorder: this.setBorder(1.0, Colors.red),
-                            focusedBorder: this.setBorder(1.0, Colors.black),
-                            enabledBorder: this.setBorder(1.0, Colors.black)
-                        ),
+                        decoration: customFormField('First name'),
                         validator: (value) => validateService.isEmptyField(value),
                         onSaved: (String val){
                           userValues['firstName'] = val;
@@ -174,14 +113,7 @@ class _SignupState extends State<Signup> {
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'Last name',
-                            contentPadding: EdgeInsets.all(20.0),
-                            errorBorder: this.setBorder(1.0, Colors.red),
-                            focusedErrorBorder: this.setBorder(1.0, Colors.red),
-                            focusedBorder: this.setBorder(1.0, Colors.black),
-                            enabledBorder: this.setBorder(1.0, Colors.black)
-                        ),
+                        decoration: customFormField('Last name'),
                         validator: (value) => validateService.isEmptyField(value),
                         onSaved: (String val){
                           userValues['lastName'] = val;
@@ -189,14 +121,7 @@ class _SignupState extends State<Signup> {
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'Phone number',
-                            contentPadding: EdgeInsets.all(20.0),
-                            errorBorder: this.setBorder(1.0, Colors.red),
-                            focusedErrorBorder: this.setBorder(1.0, Colors.red),
-                            focusedBorder: this.setBorder(1.0, Colors.black),
-                            enabledBorder: this.setBorder(1.0, Colors.black)
-                        ),
+                        decoration: customFormField('Phone number'),
                         keyboardType: TextInputType.phone,
                         validator: (value) => validateService.validatePhoneNumber(value),
                         onSaved: (String val){
@@ -205,14 +130,7 @@ class _SignupState extends State<Signup> {
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'E-mail Address',
-                            contentPadding: EdgeInsets.all(20.0),
-                            errorBorder: this.setBorder(1.0, Colors.red),
-                            focusedErrorBorder: this.setBorder(1.0, Colors.red),
-                            focusedBorder: this.setBorder(1.0, Colors.black),
-                            enabledBorder: this.setBorder(1.0, Colors.black)
-                        ),
+                        decoration: customFormField('E-mail Address'),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) => validateService.validateEmail(value),
                         onSaved: (String val){
@@ -222,14 +140,7 @@ class _SignupState extends State<Signup> {
                       SizedBox(height: 30.0),
                       TextFormField(
                         obscureText: true,
-                        decoration: InputDecoration(
-                            hintText: 'Password',
-                            contentPadding: EdgeInsets.all(20.0),
-                            errorBorder: this.setBorder(1.0, Colors.red),
-                            focusedErrorBorder: this.setBorder(1.0, Colors.red),
-                            focusedBorder: this.setBorder(1.0, Colors.black),
-                            enabledBorder: this.setBorder(1.0, Colors.black)
-                        ),
+                        decoration: customFormField('Password'),
                         validator: (value) => validateService.validatePassword(value),
                         onSaved: (String val){
                           userValues['password'] = val;

@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/services/userService.dart';
@@ -25,13 +24,13 @@ class _LoginState extends State<Login> {
   login() async{
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
-      Response response = await userService.login(userValues);
-      int statusCode = response.statusCode;
+      await userService.login(userValues);
+      int statusCode = userService.statusCode;
       if(statusCode == 200){
-        print(response.body);
+        Navigator.pushNamed(context, '/home');
       }
       else{
-        AlertBox alertBox = AlertBox(response.body);
+        AlertBox alertBox = AlertBox(userService.msg);
         return showDialog(
             context: context,
           builder: (BuildContext context){
@@ -54,6 +53,18 @@ class _LoginState extends State<Login> {
             width: width,
             color: color
         )
+    );
+  }
+
+  InputDecoration customFormField(String hintText){
+    return InputDecoration(
+        hintText: hintText,
+        contentPadding: EdgeInsets.all(20.0),
+        border: InputBorder.none,
+        errorBorder: this.setBorder(borderWidth, Colors.red),
+        focusedErrorBorder: this.setBorder(borderWidth, Colors.red),
+        focusedBorder: this.setBorder(borderWidth, Colors.black),
+        enabledBorder: this.setBorder(borderWidth, Colors.black)
     );
   }
 
@@ -96,31 +107,16 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: <Widget>[
                       TextFormField(
-                        decoration: InputDecoration(
-                            hintText: 'E-mail or Mobile number',
-                            contentPadding: EdgeInsets.all(20.0),
-                            border: InputBorder.none,
-                            errorBorder: this.setBorder(borderWidth, Colors.red),
-                            focusedErrorBorder: this.setBorder(borderWidth, Colors.red),
-                            focusedBorder: this.setBorder(borderWidth, Colors.black),
-                            enabledBorder: this.setBorder(borderWidth, Colors.black)
-                        ),
+                        decoration: customFormField('E-mail or Mobile number'),
                         validator: (value)=> validateService.isEmptyField(value),
                         onSaved: (String val){
-                          userValues['username'] = val;
+                          userValues['email'] = val;
                         }
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
                         obscureText: true,
-                        decoration: InputDecoration(
-                            hintText: 'Password',
-                            contentPadding: EdgeInsets.all(20),
-                            errorBorder: this.setBorder(borderWidth, Colors.red),
-                            focusedErrorBorder: this.setBorder(borderWidth, Colors.red),
-                            focusedBorder: this.setBorder(borderWidth, Colors.black),
-                            enabledBorder: this.setBorder(borderWidth, Colors.black)
-                        ),
+                        decoration: customFormField('Password'),
                         validator: (value) => validateService.isEmptyField(value),
                         onSaved: (String val){
                           userValues['password'] = val;
