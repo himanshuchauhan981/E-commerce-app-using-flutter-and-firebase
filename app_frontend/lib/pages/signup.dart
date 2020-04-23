@@ -105,10 +105,10 @@ class _SignupState extends State<Signup> {
   signup() async {
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
-      Response response = await userService.signup(userValues);
-      int statusCode = response.statusCode;
+      await userService.signup(userValues);
+      int statusCode = userService.statusCode;
       if(statusCode == 400){
-        this.createAlertDialog(context,response.body);
+        this.createAlertDialog(context,userService.msg);
       }
       else{
         Navigator.pushReplacementNamed(context, '/');
