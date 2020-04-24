@@ -33,9 +33,9 @@ class _SubCategoryState extends State<SubCategory> {
           crossAxisCount: 2
         ),
         itemBuilder: (BuildContext context, int index){
-          String name = subCategoryList[index];
-          String imagePath = 'assets/subCategory/${name.toLowerCase()}.jpg';
-          name = "${name[0].toUpperCase()}${name.substring(1)}";
+          String name = subCategoryList[index]['subCategoryName'];
+          name = name[0].toUpperCase()+name.substring(1);
+          String imagePath = subCategoryList[index]['image'];
           return Padding(
             padding: EdgeInsets.all(5.0),
             child: Card(
@@ -64,7 +64,7 @@ class _SubCategoryState extends State<SubCategory> {
                               ),
                             ),
                           ),
-                          child: Image.asset(
+                          child: Image.network(
                             imagePath,
                             fit: BoxFit.cover,
                           ),

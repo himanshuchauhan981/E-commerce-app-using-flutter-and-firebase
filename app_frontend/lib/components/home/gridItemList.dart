@@ -23,18 +23,12 @@ class _GridItemListState extends State<GridItemList> {
     items.listen((data){
       List<DocumentSnapshot> featuredItemsData = data.documents;
       List featuredItemList = featuredItemsData.map((DocumentSnapshot doc){
-        print(doc.data.runtimeType);
         return doc.data;
       }).toList();
       setState(() {
         featuredItems = featuredItemList;
       });
     });
-//    var items = await _productService.featuredItems();
-//    List itemList = json.decode(items.body);
-//    setState(() {
-//      featuredItems = itemList;
-//    });
   }
 
   Widget build(BuildContext context){

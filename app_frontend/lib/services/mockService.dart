@@ -64,9 +64,12 @@ class GenerateMock{
       }
 
       for(String key in hashMap.keys){
-        List <String> subCategory = List<String>();
+        List <dynamic> subCategory = List<dynamic>();
         for(var j in hashMap[key]){
-          subCategory.add(j[1]);
+          subCategory.add({
+            'subCategoryName': j[1],
+            'image': j[2]
+          });
         }
         await saveCategoryMockData(key, subCategory);
       }
