@@ -1,1 +1,0 @@
-exports.connection = require('./connection')
