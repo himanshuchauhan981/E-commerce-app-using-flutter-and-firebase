@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -11,15 +9,6 @@ class UserService{
   int statusCode;
   String msg;
 
-  static const Map<String,String> headers = {
-    'Content-type' : 'application/json',
-    'Accept': 'application/json',
-  };
-
-  UserService(){
-    url = 'http://127.0.0.1:8000';
-  }
-
   Future<void> login(userValues) async{
     String email = userValues['email'];
     String password = userValues['password'];
@@ -29,9 +18,6 @@ class UserService{
     }).catchError((error){
       handleAuthErrors(error);
     });
-//    var uri = Uri.parse("$url/login");
-//    Response response = await post(uri,headers:headers,body:json.encode(userValues));
-//    return response;
   }
 
   Future<void> signup(userValues) async{

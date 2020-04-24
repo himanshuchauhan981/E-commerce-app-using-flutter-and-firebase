@@ -1,5 +1,4 @@
 # app_frontend
-
 A new Flutter application.
 
 ## Getting Started

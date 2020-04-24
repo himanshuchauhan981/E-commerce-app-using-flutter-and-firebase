@@ -8,7 +8,7 @@ import 'package:app_frontend/pages/home.dart';
 import 'package:app_frontend/components/shop.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/signup',
+  initialRoute: '/',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
