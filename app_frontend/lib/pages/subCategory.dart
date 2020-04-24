@@ -1,4 +1,6 @@
 import 'package:app_frontend/components/header.dart';
+import 'package:app_frontend/services/productService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SubCategory extends StatefulWidget {
@@ -7,6 +9,7 @@ class SubCategory extends StatefulWidget {
 }
 
 class _SubCategoryState extends State<SubCategory> {
+  ProductService _productService = new ProductService();
   String heading;
   bool showIcon = false;
   List subCategoryList = new List();
@@ -16,6 +19,23 @@ class _SubCategoryState extends State<SubCategory> {
     this.setState(() {
       heading = args['heading'];
       subCategoryList = args['list'][0]['subCategory'];
+    });
+  }
+
+  listSubCategoryItems(String name){
+    name = name.toLowerCase();
+    Map<String,dynamic> args = new Map();
+
+    var items = _productService.listSubCategoryItems(name);
+    items.listen((data){
+      List<DocumentSnapshot> arrivalData = data.documents;
+      var itemsList = arrivalData.map((DocumentSnapshot doc){
+        return doc.data;
+      }).toList();
+
+      args['heading'] = name;
+      args['list'] = itemsList;
+      Navigator.pushNamed(context, '/items', arguments: args);
     });
   }
 
@@ -50,7 +70,9 @@ class _SubCategoryState extends State<SubCategory> {
                   Expanded(
                     child: Material(
                       child: InkWell(
-                        onTap: (){},
+                        onTap: (){
+                          listSubCategoryItems(name);
+                        },
                         child: GridTile(
                           footer: Container(
                             color: Colors.white70,

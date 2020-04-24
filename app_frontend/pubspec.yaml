@@ -51,7 +51,6 @@ flutter:
   assets:
     - assets/
     - assets/shop/
-    - assets/subCategory/
     - assets/csv/PRODUCTS_MOCK_DATA.csv
     - assets/csv/CATEGORY_MOCK_DATA.csv
 

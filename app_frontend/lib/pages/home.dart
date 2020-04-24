@@ -48,13 +48,14 @@ class _HomeState extends State<Home> {
                       child: SnapEffectCarousel()
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 20.0),
+                    padding: EdgeInsets.only(top: 30.0,bottom: 15.0),
                     child: Center(
                       child: Text(
                         'Featured',
                         style: TextStyle(
                             fontSize: 30.0,
-                            fontWeight: FontWeight.bold
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2
                         ),
                       ),
                     ),

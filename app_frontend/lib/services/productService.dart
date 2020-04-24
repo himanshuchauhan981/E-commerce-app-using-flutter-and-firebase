@@ -18,6 +18,10 @@ class ProductService{
   Stream <QuerySnapshot> featuredItems(){
     return firestore.collection("products").limit(15).snapshots();
   }
+  
+  Stream <QuerySnapshot> listSubCategoryItems(String subCategory){
+    return firestore.collection("products").where("subCategory",isEqualTo: subCategory).snapshots();
+  }
 }
 
 class NewArrival{
