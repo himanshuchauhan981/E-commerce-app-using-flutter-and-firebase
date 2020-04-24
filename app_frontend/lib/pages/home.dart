@@ -32,12 +32,14 @@ class _HomeState extends State<Home> {
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 20.0),
-                    child: Text(
-                      'New Arrivals',
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2
+                    child: Center(
+                      child: Text(
+                        'New Arrivals',
+                        style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2
+                        ),
                       ),
                     ),
                   ),
@@ -47,11 +49,13 @@ class _HomeState extends State<Home> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 20.0),
-                    child: Text(
-                      'Featured',
-                      style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold
+                    child: Center(
+                      child: Text(
+                        'Featured',
+                        style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold
+                        ),
                       ),
                     ),
                   ),

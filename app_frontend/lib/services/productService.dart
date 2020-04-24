@@ -1,33 +1,22 @@
-import 'package:http/http.dart';
+import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductService{
-  String url;
+  Firestore firestore = Firestore.instance;
+  List subCategoryList = List();
 
-  ProductService(){
-    url = 'http://127.0.0.1:8000';
+  Stream<QuerySnapshot> listSubCategories(String item) {
+    return firestore.collection('category').where("categoryName", isEqualTo: item).snapshots();
   }
 
-  static const Map<String,String> headers = {
-    'Content-type' : 'application/json',
-    'Accept': 'application/json',
-  };
-
-  Future <Response> subCategories(String item) async{
-    var uri = Uri.parse("$url/$item/sub");
-    Response response = await get(uri,headers: headers);
-    return response;
+  Stream<QuerySnapshot> newItemArrivals(){
+    Random rdn = new Random();
+    int randomNumber = 1 + rdn.nextInt(20);
+    return firestore.collection('products').orderBy('name').startAt([randomNumber]).limit(5).snapshots();
   }
   
-  Future <Response> newItemArrivals() async{
-    var uri = Uri.parse("$url/items/new");
-    Response response = await get(uri, headers: headers);
-    return response;
-  }
-  
-  Future <Response> featuredItems() async{
-    var uri = Uri.parse("$url/items");
-    Response response = await get(uri,headers: headers);
-    return response;
+  Stream <QuerySnapshot> featuredItems(){
+    return firestore.collection("products").limit(15).snapshots();
   }
 }
 

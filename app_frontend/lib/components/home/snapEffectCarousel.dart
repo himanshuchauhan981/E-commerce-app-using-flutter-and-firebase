@@ -1,8 +1,8 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import 'package:app_frontend/services/productService.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+
 
 class SnapEffectCarousel extends StatefulWidget {
   @override
@@ -20,10 +20,15 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
   }
 
   void listNewArrivals() async{
-    Response response = await _productService.newItemArrivals();
-    List newArrivals = json.decode(response.body);
-    setState(() {
-      newArrival = newArrivals;
+    var newArrivals = _productService.newItemArrivals();
+    newArrivals.listen((data){
+      List<DocumentSnapshot> arrivalData = data.documents;
+      var newArrivalList = arrivalData.map((DocumentSnapshot doc){
+        return doc.data;
+      }).toList();
+      setState(() {
+        newArrival = newArrivalList;
+      });
     });
   }
 

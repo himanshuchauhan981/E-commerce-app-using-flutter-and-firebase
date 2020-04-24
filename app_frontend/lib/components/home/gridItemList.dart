@@ -1,7 +1,7 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import 'package:app_frontend/services/productService.dart';
-import 'package:flutter/material.dart';
 
 class GridItemList extends StatefulWidget {
   @override
@@ -19,11 +19,22 @@ class _GridItemListState extends State<GridItemList> {
   List featuredItems  = new List(0);
 
   void listFeaturedItems() async{
-    var items = await _productService.featuredItems();
-    List itemList = json.decode(items.body);
-    setState(() {
-      featuredItems = itemList;
+    var items = _productService.featuredItems();
+    items.listen((data){
+      List<DocumentSnapshot> featuredItemsData = data.documents;
+      List featuredItemList = featuredItemsData.map((DocumentSnapshot doc){
+        print(doc.data.runtimeType);
+        return doc.data;
+      }).toList();
+      setState(() {
+        featuredItems = featuredItemList;
+      });
     });
+//    var items = await _productService.featuredItems();
+//    List itemList = json.decode(items.body);
+//    setState(() {
+//      featuredItems = itemList;
+//    });
   }
 
   Widget build(BuildContext context){

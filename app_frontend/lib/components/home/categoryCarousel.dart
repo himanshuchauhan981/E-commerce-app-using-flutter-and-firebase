@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:app_frontend/services/productService.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+
 
 class Category{
   final String name;
@@ -42,13 +42,22 @@ class _HorizontalListState extends State<CategoryCarousal> {
     )
   ];
 
-  listCategoryItems(String name) async{
-    Response response = await _productService.subCategories(name);
-    final subCategoryList = json.decode(response.body);
+  listCategoryItems(String name){
+    name = name.toLowerCase();
     Map<String,dynamic> args = new Map();
-    args['heading'] = name.toLowerCase();
-    args['list'] = subCategoryList;
-    Navigator.pushNamed(context, '/subCategory', arguments: args);
+
+    var subCategory = _productService.listSubCategories(name);
+
+    subCategory.listen((QuerySnapshot data) {
+      List<DocumentSnapshot> subCategoryData = data.documents;
+      var subCategoryList = subCategoryData.map((DocumentSnapshot doc){
+        return doc.data;
+      }).toList();
+
+      args['heading'] = name;
+      args['list'] = subCategoryList;
+      Navigator.pushNamed(context, '/subCategory', arguments: args);
+    });
   }
 
   @override

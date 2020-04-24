@@ -12,10 +12,10 @@ class _SubCategoryState extends State<SubCategory> {
   List subCategoryList = new List();
 
   setSubCategory(context){
-    Map<String,dynamic>args = ModalRoute.of(context).settings.arguments;
+    Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
     this.setState(() {
       heading = args['heading'];
-      subCategoryList = args['list']['subCategory'];
+      subCategoryList = args['list'][0]['subCategory'];
     });
   }
 
@@ -33,7 +33,7 @@ class _SubCategoryState extends State<SubCategory> {
           crossAxisCount: 2
         ),
         itemBuilder: (BuildContext context, int index){
-          String name = subCategoryList[index]['name'];
+          String name = subCategoryList[index];
           String imagePath = 'assets/subCategory/${name.toLowerCase()}.jpg';
           name = "${name[0].toUpperCase()}${name.substring(1)}";
           return Padding(
