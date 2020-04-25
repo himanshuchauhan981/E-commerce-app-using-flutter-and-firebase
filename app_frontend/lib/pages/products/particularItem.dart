@@ -15,7 +15,7 @@ class _ParticularItemState extends State<ParticularItem> {
         SystemUiOverlayStyle(statusBarColor: Colors.black)
     );
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
-    print(args['itemDetails']);
+
     setState(() {
       itemDetails = args['itemDetails'];
     });
@@ -33,9 +33,53 @@ class _ParticularItemState extends State<ParticularItem> {
               Expanded(
                 flex: 7,
                   child: Container(
-                    child: Image.network(
-                        itemDetails['image'],
-                      fit: BoxFit.fill,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          itemDetails['image']
+                        ),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 20, 25, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 42.0,
+                                color: Colors.grey,
+                              ),
+                              Icon(
+                                Icons.share,
+                                size: 36.0,
+                                color: Colors.grey,
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 25, 20),
+                          child: Row(
+                            children: <Widget>[
+                              RawMaterialButton(
+                                onPressed: () {},
+                                elevation: 2.0,
+                                fillColor: Colors.white,
+                                child: Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                ),
+                                shape: CircleBorder(),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   )
               ),

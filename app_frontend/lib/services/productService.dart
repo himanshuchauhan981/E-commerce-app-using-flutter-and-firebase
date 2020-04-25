@@ -22,6 +22,10 @@ class ProductService{
   Stream <QuerySnapshot> listSubCategoryItems(String subCategory){
     return firestore.collection("products").where("subCategory",isEqualTo: subCategory).snapshots();
   }
+  
+  Stream <QuerySnapshot> listAllCategories(){
+    return firestore.collection("category").snapshots();
+  }
 }
 
 class NewArrival{
