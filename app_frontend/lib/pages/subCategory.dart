@@ -16,6 +16,7 @@ class _SubCategoryState extends State<SubCategory> {
 
   setSubCategory(context){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+    print(args['list'][0]['subCategory']);
     this.setState(() {
       heading = args['heading'];
       subCategoryList = args['list'][0]['subCategory'];
@@ -25,11 +26,12 @@ class _SubCategoryState extends State<SubCategory> {
   listSubCategoryItems(String name){
     name = name.toLowerCase();
     Map<String,dynamic> args = new Map();
-
     var items = _productService.listSubCategoryItems(name);
+
     items.listen((data){
       List<DocumentSnapshot> arrivalData = data.documents;
       var itemsList = arrivalData.map((DocumentSnapshot doc){
+        print(doc.data);
         return doc.data;
       }).toList();
 

@@ -9,7 +9,10 @@ class Items extends StatefulWidget {
 
 class _ItemsState extends State<Items> {
   String heading;
+
   bool showIcon = true;
+  bool showButton = true;
+  int childCount = 4;
   List itemList = new List(0);
 
   setItems(){
@@ -20,6 +23,121 @@ class _ItemsState extends State<Items> {
     });
   }
 
+  setAllItems(){
+    setState(() {
+      showButton  = false;
+      childCount =  itemList.length;
+    });
+  }
+
+  Widget itemsCard(item){
+    return Card(
+      elevation: 0,
+      semanticContainer: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: Material(
+              child: InkWell(
+                onTap: () {},
+                child: GridTile(
+                  child: Image.network(
+                    item['image'],
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "\$${item['price'].toString()}.00",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                Text(
+                  item['name'],
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    color: Colors.grey
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget setCustomScrollView(){
+    var size = MediaQuery.of(context).size;
+
+    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
+    final double itemWidth = size.width / 2;
+
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverGrid(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            childAspectRatio: (itemWidth / itemHeight),
+            crossAxisSpacing: 26.0,
+            mainAxisSpacing: 26.0,
+            crossAxisCount: 2,
+          ),
+          delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+            var item = itemList[index];
+            return itemsCard(item);
+          },
+              childCount: childCount
+          ),
+        ),
+        SliverFillRemaining(
+            hasScrollBody: false,
+            child: Visibility(
+              visible: showButton,
+              child: ButtonTheme(
+                  minWidth: 250.0,
+                  child: RaisedButton(
+                    onPressed: (){
+                      setAllItems();
+                    },
+                    color: Colors.white,
+                    child: Text(
+                      'Browse All',
+                      style: TextStyle(
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                          color: Colors.black,
+                          width: 2.0
+                      ),
+                    ),
+                  )
+              ),
+            )
+        )
+      ],
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -28,6 +146,10 @@ class _ItemsState extends State<Items> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: header(heading, _scaffoldKey, showIcon),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20.0),
+        child: setCustomScrollView(),
+      ),
     );
   }
 }
