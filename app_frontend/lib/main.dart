@@ -1,3 +1,4 @@
+import 'package:app_frontend/pages/particularItem.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -17,6 +18,8 @@ void main() => runApp(MaterialApp(
     '/home': (context) => Home(),
     '/shop': (context) => Shop(),
     '/subCategory': (context) => SubCategory(),
-    '/items': (context) => Items()
+    '/items': (context) => Items(),
+    '/particularItem': (context) => ParticularItem()
   },
+
 ));

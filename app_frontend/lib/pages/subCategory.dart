@@ -16,7 +16,6 @@ class _SubCategoryState extends State<SubCategory> {
 
   setSubCategory(context){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
-    print(args['list'][0]['subCategory']);
     this.setState(() {
       heading = args['heading'];
       subCategoryList = args['list'][0]['subCategory'];

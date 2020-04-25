@@ -32,6 +32,13 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
     });
   }
 
+  void showParticularItem(item){
+    Map<String,dynamic> args = new Map();
+
+    args['itemDetails'] = item;
+    Navigator.pushNamed(context, '/particularItem', arguments: args);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
@@ -48,19 +55,24 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
             children: <Widget>[
               Container(
                 child: Expanded(
-                  child: Card(
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAlias,
-                    elevation: 6,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius:  BorderRadius.all(Radius.circular(8.0)),
-                        image: DecorationImage(
-                            image: NetworkImage(item['image']),
-                            fit: BoxFit.cover
+                  child: GestureDetector(
+                    onTap: () {
+                      showParticularItem(item);
+                    },
+                    child: Card(
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 6,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:  BorderRadius.all(Radius.circular(8.0)),
+                          image: DecorationImage(
+                              image: NetworkImage(item['image']),
+                              fit: BoxFit.cover
+                          ),
                         ),
                       ),
                     ),
