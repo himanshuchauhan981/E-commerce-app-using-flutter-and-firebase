@@ -1,20 +1,59 @@
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jaguar_jwt/jaguar_jwt.dart';
 
 class UserService{
   FirebaseAuth _auth = FirebaseAuth.instance;
-  Firestore _firestore = Firestore.instance;
-
-  String url;
+  Firestore firestore = Firestore.instance;
+  final storage = new FlutterSecureStorage();
+  final String sharedKey = 'sharedKey';
   int statusCode;
   String msg;
+
+  void createAndStoreJWTToken(String email) async{
+    final claimSet = new JwtClaim(
+        maxAge: Duration(minutes: 3),
+        otherClaims: <String, String>{
+          'email': email
+        }
+    );
+
+    final token = issueJwtHS256(claimSet, sharedKey);
+    await storage.write(key: 'token', value: token);
+  }
+
+  String validateToken(String token){
+    try{
+      final decClaimSet = verifyJwtHS256Signature(token, sharedKey);
+
+      final parts = token.split('.');
+      final payload = parts[1];
+      final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
+
+      return jsonDecode(decoded)['email'];
+    }
+    catch(e){
+      return null;
+    }
+  }
+
+  void logOut(context) async{
+    await storage.delete(key: 'token');
+    Navigator.of(context).pushReplacementNamed('/');
+  }
 
   Future<void> login(userValues) async{
     String email = userValues['email'];
     String password = userValues['password'];
 
     await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user){
+      createAndStoreJWTToken(email);
+
       statusCode = 200;
+
     }).catchError((error){
       handleAuthErrors(error);
     });
@@ -26,7 +65,7 @@ class UserService{
 
     await _auth.createUserWithEmailAndPassword(email: email, password: password).then((dynamic user){
       String uid = user.user.uid;
-      _firestore.collection('users').add({
+      firestore.collection('users').add({
         'firstName': capitalizeName(userValues['firstName']),
         'lastName': capitalizeName(userValues['lastName']),
         'mobileNumber': userValues['mobileNumber'],

@@ -22,19 +22,31 @@ class _ShopState extends State<Shop> {
     categories.listen((data){
       List<DocumentSnapshot> categoryData = data.documents;
       var list = categoryData.map((DocumentSnapshot doc){
-        print(doc.data);
         return doc.data;
       }).toList();
       setState(() {
         categoryList = list;
       });
-      print(categoryList[0]['categoryImage']);
+    });
+  }
+
+  void listSubCategories(item){
+    Map<String,dynamic> args = new Map();
+
+    var subCategory = _productService.listSubCategories(item);
+    subCategory.listen((data){
+      List <DocumentSnapshot> list = data.documents;
+      var subCategoryList = list.map((DocumentSnapshot doc){
+        return doc.data;
+      }).toList();
+      args['heading'] = item;
+      args['list'] = subCategoryList;
+      Navigator.pushNamed(context, '/subCategory', arguments: args);
     });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     listCategories();
   }
@@ -61,28 +73,33 @@ class _ShopState extends State<Shop> {
             },
             itemBuilder: (context,index){
               var item = categoryList[index];
-              return Container(
-                constraints: new BoxConstraints.expand(
-                    height: 130.0
-                ),
-                alignment: Alignment.bottomLeft,
-                padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                    image: DecorationImage(
-                        image: AssetImage(item['categoryImage']),
-                        fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
-                    )
-                ),
-                child: Center(
-                  child: Text(
-                    item['categoryName'].toString().toUpperCase(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 35.0,
-                        color: Colors.white,
-                        letterSpacing: 1.0
+              return GestureDetector(
+                onTap: (){
+                  listSubCategories(item['categoryName']);
+                },
+                child: Container(
+                  constraints: new BoxConstraints.expand(
+                      height: 130.0
+                  ),
+                  alignment: Alignment.bottomLeft,
+                  padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      image: DecorationImage(
+                          image: AssetImage(item['categoryImage']),
+                          fit: BoxFit.cover,
+                          colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
+                      )
+                  ),
+                  child: Center(
+                    child: Text(
+                      item['categoryName'].toString().toUpperCase(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 35.0,
+                          color: Colors.white,
+                          letterSpacing: 1.0
+                      ),
                     ),
                   ),
                 ),

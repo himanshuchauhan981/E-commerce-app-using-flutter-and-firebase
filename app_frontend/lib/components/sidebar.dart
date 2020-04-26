@@ -1,6 +1,9 @@
+import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
 Widget sidebar(context){
+  UserService _userService = new UserService();
+
   return SafeArea(
     child: Drawer(
       child: Column(
@@ -103,6 +106,9 @@ Widget sidebar(context){
                       letterSpacing: 1.0
                   ),
                 ),
+                onTap: (){
+                  _userService.logOut(context);
+                },
               )
             ],
           )

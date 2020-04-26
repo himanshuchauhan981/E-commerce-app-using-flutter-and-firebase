@@ -1,6 +1,28 @@
+import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class Start extends StatelessWidget {
+class Start extends StatelessWidget{
+  final UserService _userService = new UserService();
+
+  validateToken(context) async{
+    final storage = new FlutterSecureStorage();
+
+    String value = await storage.read(key: 'token');
+    if(value != null){
+      String decodedToken = _userService.validateToken(value);
+      if(decodedToken != null){
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+      else{
+        Navigator.of(context).pushReplacementNamed('/login');
+      }
+    }
+    else{
+      Navigator.of(context).pushReplacementNamed('/login');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +72,7 @@ class Start extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/login');
+                        validateToken(context);
                       },
                     ),
                   ),

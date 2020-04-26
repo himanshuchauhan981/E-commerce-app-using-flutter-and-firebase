@@ -31,6 +31,13 @@ class _GridItemListState extends State<GridItemList> {
     });
   }
 
+  void showParticularItem(item){
+    Map<String,dynamic> args = new Map();
+
+    args['itemDetails'] = item;
+    Navigator.pushNamed(context, '/particularItem', arguments: args);
+  }
+
   Widget build(BuildContext context){
     return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -58,7 +65,9 @@ class _GridItemListState extends State<GridItemList> {
           Expanded(
               child: Material(
                 child: InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    showParticularItem(item);
+                  },
                   child: GridTile(
                     footer: Container(
                       color: Colors.white70,

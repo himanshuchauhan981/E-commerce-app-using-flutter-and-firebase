@@ -10,7 +10,7 @@ import 'package:app_frontend/pages/products/items.dart';
 import 'package:app_frontend/pages/products/subCategory.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/home',
+  initialRoute: '/',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
