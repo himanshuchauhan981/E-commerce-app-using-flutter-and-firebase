@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:app_frontend/components/loader.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/services/userService.dart';
@@ -14,6 +15,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<State> keyLoader = new GlobalKey<State>();
   HashMap userValues = new HashMap<String, String>();
   bool _autoValidate = false;
   double borderWidth = 2.0;
@@ -24,7 +26,9 @@ class _LoginState extends State<Login> {
   login() async{
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
+      Loader.showLoadingScreen(context, keyLoader);
       await userService.login(userValues);
+      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
       int statusCode = userService.statusCode;
       if(statusCode == 200){
         Navigator.pushNamed(context, '/home');
