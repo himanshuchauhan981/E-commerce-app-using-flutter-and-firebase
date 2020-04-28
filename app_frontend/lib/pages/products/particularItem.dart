@@ -1,3 +1,4 @@
+import 'package:app_frontend/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,10 +50,16 @@ class _ParticularItemState extends State<ParticularItem> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 42.0,
-                                color: Colors.grey,
+                              IconButton(
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  size: 42.0,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: (){
+                                  Navigator.pop(context);
+//                                  Navigator.of(context).pop(_createRoute());
+                                },
                               ),
                               Icon(
                                 Icons.share,
@@ -163,4 +170,22 @@ class _ParticularItemState extends State<ParticularItem> {
       ),
     );
    }
+}
+
+Route _createRoute(){
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => Home(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child){
+      var begin = Offset(0.0, 1.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    }
+  );
 }
