@@ -9,6 +9,7 @@ class SubCategory extends StatefulWidget {
 }
 
 class _SubCategoryState extends State<SubCategory> {
+
   ProductService _productService = new ProductService();
   String heading;
   bool showIcon = false;
@@ -36,6 +37,7 @@ class _SubCategoryState extends State<SubCategory> {
 
       args['heading'] = name;
       args['list'] = itemsList;
+//      Navigator.push(context, CustomTransition(type: CustomTransitionType.downToUp, child: Items()));
       Navigator.pushNamed(context, '/items', arguments: args);
     });
   }

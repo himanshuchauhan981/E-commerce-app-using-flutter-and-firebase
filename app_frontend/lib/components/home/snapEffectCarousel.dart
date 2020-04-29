@@ -1,3 +1,5 @@
+import 'package:app_frontend/components/customTransition.dart';
+import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +38,15 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
     Map<String,dynamic> args = new Map();
 
     args['itemDetails'] = item;
-    Navigator.pushNamed(context, '/particularItem', arguments: args);
+    Navigator.push(
+        context,
+        CustomTransition(
+            type: CustomTransitionType.downToUp,
+            child: ParticularItem(
+                itemDetails: args
+            )
+        )
+    );
   }
 
   @override
