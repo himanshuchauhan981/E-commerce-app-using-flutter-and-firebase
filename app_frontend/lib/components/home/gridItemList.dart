@@ -81,7 +81,7 @@ class _GridItemListState extends State<GridItemList> {
                       ),
                     ),
                     child: Image.network(
-                      item['image'],
+                      item['image'][0],
                       fit: BoxFit.cover,
                     ),
                   ),

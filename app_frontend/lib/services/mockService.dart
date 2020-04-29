@@ -13,7 +13,7 @@ class GenerateMock{
     return await rootBundle.loadString(path);
   }
 
-  Future<void> saveProductMockData(String name,String category,String subCategory,int available,int ordered,int price, String image) async{
+  Future<void> saveProductMockData(String name,String category,String subCategory,int available,int ordered,int price, var image) async{
     await _firestore.collection('products').add({
       'name': name,
       'category': category,
@@ -46,8 +46,8 @@ class GenerateMock{
        var ordered = productsdata[i][4];
        var price = productsdata[i][5];
        String image = productsdata[i][6];
-
-       await saveProductMockData(name, category, subCategory, available, ordered, price, image);
+       var imageList = [image,image,image];
+       await saveProductMockData(name, category, subCategory, available, ordered, price, imageList);
      }
    });
   }

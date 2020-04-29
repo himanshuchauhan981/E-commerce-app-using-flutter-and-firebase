@@ -1,5 +1,7 @@
 import 'package:app_frontend/components/customTransition.dart';
 import 'package:app_frontend/pages/home.dart';
+import 'package:app_frontend/services/mockService.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +17,7 @@ class ParticularItem extends StatefulWidget {
 
 class _ParticularItemState extends State<ParticularItem> {
   Map <String,dynamic> itemDetails  = new Map<String,dynamic>();
+  List<String> imageList;
 
   setItemDetails(){
     SystemChrome.setSystemUIOverlayStyle(
@@ -26,6 +29,69 @@ class _ParticularItemState extends State<ParticularItem> {
       itemDetails = args['itemDetails'];
     });
   }
+
+  carouselSlider(image){
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(image),
+          fit: BoxFit.cover
+        )
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(25, 20, 25, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 42.0,
+                    color: Colors.grey,
+                  ),
+                  onPressed: (){
+                    Navigator.pop(
+                        context,
+                        CustomTransition(
+                            type: CustomTransitionType.upToDown,
+                            child: Home()
+                        ));
+//                                  Navigator.of(context).pop(_createRoute());
+                  },
+                ),
+                Icon(
+                  Icons.share,
+                  size: 36.0,
+                  color: Colors.grey,
+                )
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 25, 20),
+            child: Row(
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed: () {},
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  child: Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  shape: CircleBorder(),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     setItemDetails();
@@ -36,68 +102,23 @@ class _ParticularItemState extends State<ParticularItem> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Expanded(
-                    flex: 7,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                              itemDetails['image']
-                          ),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(25, 20, 25, 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 42.0,
-                                    color: Colors.grey,
-                                  ),
-                                  onPressed: (){
-                                    Navigator.pop(
-                                        context,
-                                        CustomTransition(
-                                          type: CustomTransitionType.upToDown,
-                                          child: Home()
-                                        ));
-//                                  Navigator.of(context).pop(_createRoute());
-                                  },
-                                ),
-                                Icon(
-                                  Icons.share,
-                                  size: 36.0,
-                                  color: Colors.grey,
-                                )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 25, 20),
-                            child: Row(
-                              children: <Widget>[
-                                RawMaterialButton(
-                                  onPressed: () {},
-                                  elevation: 2.0,
-                                  fillColor: Colors.white,
-                                  child: Icon(
-                                    Icons.favorite,
-                                    color: Colors.red,
-                                  ),
-                                  shape: CircleBorder(),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )
+                    flex: 6,
+                    child: Carousel(
+                      boxFit: BoxFit.cover,
+                      autoplay: false,
+                      animationCurve: Curves.fastOutSlowIn,
+                      animationDuration: Duration(milliseconds: 1000),
+                      dotSize: 6.0,
+                      dotIncreasedColor: Colors.black,
+                      dotBgColor: Colors.transparent,
+                      dotPosition: DotPosition.bottomCenter,
+                      dotVerticalPadding: 10.0,
+                      showIndicator: true,
+                      indicatorBgPadding: 7.0,
+                      images: itemDetails['image'].map((image){
+                        return carouselSlider(image);
+                      }).toList(),
+                    ),
                 ),
                 Expanded(
                     flex: 3,
@@ -164,7 +185,9 @@ class _ParticularItemState extends State<ParticularItem> {
                                         color: Colors.black
                                     ),
                                   ),
-                                  onPressed: (){},
+                                  onPressed: (){
+
+                                  },
                                 ),
                               )
                             ],

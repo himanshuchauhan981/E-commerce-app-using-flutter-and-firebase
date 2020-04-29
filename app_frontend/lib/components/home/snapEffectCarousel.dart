@@ -80,7 +80,7 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
                         decoration: BoxDecoration(
                           borderRadius:  BorderRadius.all(Radius.circular(8.0)),
                           image: DecorationImage(
-                              image: NetworkImage(item['image']),
+                              image: NetworkImage(item['image'][0]),
                               fit: BoxFit.cover
                           ),
                         ),
