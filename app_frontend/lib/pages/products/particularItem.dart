@@ -1,6 +1,6 @@
-import 'package:app_frontend/components/customTransition.dart';
+import 'package:app_frontend/components/item/bottomSheet.dart';
+import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/home.dart';
-import 'package:app_frontend/services/mockService.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,14 +23,13 @@ class _ParticularItemState extends State<ParticularItem> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.black)
     );
-
     Map<String,dynamic> args = widget.itemDetails;
     setState(() {
       itemDetails = args['itemDetails'];
     });
   }
 
-  carouselSlider(image){
+  carouselSlider(image,context){
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -59,13 +58,22 @@ class _ParticularItemState extends State<ParticularItem> {
                             type: CustomTransitionType.upToDown,
                             child: Home()
                         ));
-//                                  Navigator.of(context).pop(_createRoute());
                   },
                 ),
-                Icon(
-                  Icons.share,
-                  size: 36.0,
-                  color: Colors.grey,
+                IconButton(
+                  icon: Icon(
+                    Icons.share,
+                    size: 36.0,
+                    color: Colors.grey,
+                  ),
+                  onPressed: (){
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext bc){
+                          return ShowBottomScreen();
+                        }
+                    );
+                  },
                 )
               ],
             ),
@@ -93,7 +101,7 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext buildcontext) {
     setItemDetails();
     return Scaffold(
       body: SafeArea(
@@ -116,7 +124,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       showIndicator: true,
                       indicatorBgPadding: 7.0,
                       images: itemDetails['image'].map((image){
-                        return carouselSlider(image);
+                        return carouselSlider(image,buildcontext);
                       }).toList(),
                     ),
                 ),
@@ -185,9 +193,7 @@ class _ParticularItemState extends State<ParticularItem> {
                                         color: Colors.black
                                     ),
                                   ),
-                                  onPressed: (){
-
-                                  },
+                                  onPressed: (){ },
                                 ),
                               )
                             ],

@@ -1,4 +1,4 @@
-import 'package:app_frontend/components/customTransition.dart';
+import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
