@@ -247,6 +247,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.8"
+  mobx:
+    dependency: transitive
+    description:
+      name: mobx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.37"
+  modal_bottom_sheet:
+    dependency: "direct main"
+    description:
+      name: modal_bottom_sheet
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.5"
   path:
     dependency: transitive
     description:
@@ -315,6 +329,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliver_glue:
+    dependency: "direct main"
+    description:
+      name: sliver_glue
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   source_span:
     dependency: transitive
     description:

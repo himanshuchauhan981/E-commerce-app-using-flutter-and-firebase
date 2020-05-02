@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
 
-  ParticularItem({Key key, @required this.itemDetails}):super(key: key);
+  ParticularItem({var key, @required this.itemDetails}):super(key: key);
 
   @override
   _ParticularItemState createState() => _ParticularItemState();
@@ -67,12 +67,9 @@ class _ParticularItemState extends State<ParticularItem> {
                     color: Colors.grey,
                   ),
                   onPressed: (){
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext bc){
-                          return ShowBottomScreen();
-                        }
-                    );
+                    showModalBottomSheet(context: context, builder: (context){
+                      return ShowBottomScreen();
+                    });
                   },
                 )
               ],
