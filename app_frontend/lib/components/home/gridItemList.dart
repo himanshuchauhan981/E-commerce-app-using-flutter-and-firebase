@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/services/productService.dart';
@@ -41,7 +42,10 @@ class _GridItemListState extends State<GridItemList> {
   Widget build(BuildContext context){
     return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2
+          crossAxisCount: 2,
+          mainAxisSpacing: 20.0,
+          crossAxisSpacing: 20.0,
+
         ),
         delegate: SliverChildBuilderDelegate((BuildContext context, int index){
           var item = featuredItems[index];
