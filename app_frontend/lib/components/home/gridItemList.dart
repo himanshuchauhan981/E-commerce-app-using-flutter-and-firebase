@@ -1,3 +1,5 @@
+import 'package:app_frontend/components/item/customTransition.dart';
+import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,15 @@ class _GridItemListState extends State<GridItemList> {
     Map<String,dynamic> args = new Map();
 
     args['itemDetails'] = item;
-    Navigator.pushNamed(context, '/particularItem', arguments: args);
+    Navigator.push(
+        context,
+        CustomTransition(
+            type: CustomTransitionType.downToUp,
+            child: ParticularItem(
+                itemDetails: args
+            )
+        )
+    );
   }
 
   Widget build(BuildContext context){
@@ -84,9 +94,11 @@ class _GridItemListState extends State<GridItemList> {
                         ),
                       ),
                     ),
-                    child: Image.network(
-                      item['image'][0],
-                      fit: BoxFit.cover,
+                    child: FittedBox(
+                      child: Image.network(
+                        item['image'][0],
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
