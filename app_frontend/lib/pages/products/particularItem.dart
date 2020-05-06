@@ -1,7 +1,7 @@
 import 'package:app_frontend/components/item/bottomSheet.dart';
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/home.dart';
-import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/services/orderService.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +31,8 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   addToShoppingBag(){
-    ProductService productService = new ProductService();
-    productService.addToShoppingBag(itemDetails.documentID);
+    OrderService orderService = new OrderService();
+    orderService.addToShoppingBag(itemDetails.documentID);
   }
 
   carouselSlider(image,context){

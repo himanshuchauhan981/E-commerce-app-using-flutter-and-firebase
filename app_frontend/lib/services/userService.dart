@@ -62,6 +62,12 @@ class UserService{
     });
   }
 
+  Future<String> getUserId() async{
+    var token = await storage.read(key: 'token');
+    var uid = validateToken(token);
+    return uid;
+  }
+
   Future<void> signup(userValues) async{
     String email = userValues['email'];
     String password = userValues['password'];
