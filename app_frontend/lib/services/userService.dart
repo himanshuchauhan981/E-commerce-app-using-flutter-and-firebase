@@ -13,11 +13,11 @@ class UserService{
   int statusCode;
   String msg;
 
-  void createAndStoreJWTToken(String email) async{
+  void createAndStoreJWTToken(String uid) async{
     final claimSet = new JwtClaim(
         maxAge: Duration(minutes: 3),
         otherClaims: <String, String>{
-          'email': email
+          'uid': uid
         }
     );
 
@@ -33,7 +33,7 @@ class UserService{
       final payload = parts[1];
       final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
 
-      return jsonDecode(decoded)['email'];
+      return jsonDecode(decoded)['uid'];
     }
     catch(e){
       return null;
@@ -49,8 +49,11 @@ class UserService{
     String email = userValues['email'];
     String password = userValues['password'];
 
-    await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user){
-      createAndStoreJWTToken(email);
+    await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user) async{
+      final FirebaseUser currentUser = await _auth.currentUser();
+      final uid = currentUser.uid;
+
+      createAndStoreJWTToken(uid);
 
       statusCode = 200;
 

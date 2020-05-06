@@ -13,7 +13,7 @@ class _ItemsState extends State<Items> {
   bool showIcon = true;
   bool showButton = true;
   int childCount = 4;
-  List itemList = new List(0);
+  var itemList = new List<dynamic>();
 
   setItems(){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
@@ -47,7 +47,7 @@ class _ItemsState extends State<Items> {
                 onTap: () {},
                 child: GridTile(
                   child: Image.network(
-                    item['image'],
+                    item['image'][0],
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:app_frontend/components/item/bottomSheet.dart';
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/home.dart';
+import 'package:app_frontend/services/productService.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class ParticularItem extends StatefulWidget {
 }
 
 class _ParticularItemState extends State<ParticularItem> {
-  Map <String,dynamic> itemDetails  = new Map<String,dynamic>();
+  var itemDetails;
   List<String> imageList;
 
   setItemDetails(){
@@ -27,6 +28,11 @@ class _ParticularItemState extends State<ParticularItem> {
     setState(() {
       itemDetails = args['itemDetails'];
     });
+  }
+
+  addToShoppingBag(){
+    ProductService productService = new ProductService();
+    productService.addToShoppingBag(itemDetails.documentID);
   }
 
   carouselSlider(image,context){
@@ -170,7 +176,9 @@ class _ParticularItemState extends State<ParticularItem> {
                                         color: Colors.white
                                     ),
                                   ),
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    addToShoppingBag();
+                                  },
                                 ),
                               ),
                               SizedBox(width: 10.0),

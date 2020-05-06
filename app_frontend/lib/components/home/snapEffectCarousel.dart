@@ -26,7 +26,7 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
     newArrivals.listen((data){
       List<DocumentSnapshot> arrivalData = data.documents;
       var newArrivalList = arrivalData.map((DocumentSnapshot doc){
-        return doc.data;
+        return doc;
       }).toList();
       setState(() {
         newArrival = newArrivalList;

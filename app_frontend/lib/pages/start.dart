@@ -7,7 +7,6 @@ class Start extends StatelessWidget{
 
   validateToken(context) async{
     final storage = new FlutterSecureStorage();
-
     String value = await storage.read(key: 'token');
     if(value != null){
       String decodedToken = _userService.validateToken(value);

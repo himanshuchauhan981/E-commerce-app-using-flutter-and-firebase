@@ -31,12 +31,12 @@ class _SubCategoryState extends State<SubCategory> {
     items.listen((data){
       List<DocumentSnapshot> arrivalData = data.documents;
       var itemsList = arrivalData.map((DocumentSnapshot doc){
-        print(doc.data);
         return doc.data;
       }).toList();
 
       args['heading'] = name;
       args['list'] = itemsList;
+
 //      Navigator.push(context, CustomTransition(type: CustomTransitionType.downToUp, child: Items()));
       Navigator.pushNamed(context, '/items', arguments: args);
     });

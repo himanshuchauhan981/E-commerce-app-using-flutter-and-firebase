@@ -26,6 +26,10 @@ class ProductService{
   Stream <QuerySnapshot> listAllCategories(){
     return firestore.collection("category").snapshots();
   }
+
+  void addToShoppingBag(String productId){
+
+  }
 }
 
 class NewArrival{
