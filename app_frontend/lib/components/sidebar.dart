@@ -51,6 +51,9 @@ Widget sidebar(context){
                       letterSpacing: 1.0
                   ),
                 ),
+                onTap: (){
+                  Navigator.pushReplacementNamed(context, '/bag');
+                },
               ),
               ListTile(
                 leading: Icon(Icons.search),

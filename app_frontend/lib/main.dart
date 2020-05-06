@@ -8,6 +8,7 @@ import 'package:app_frontend/pages/home.dart';
 import 'package:app_frontend/components/shop.dart';
 import 'package:app_frontend/pages/products/items.dart';
 import 'package:app_frontend/pages/products/subCategory.dart';
+import 'package:app_frontend/pages/shoppingBag.dart';
 
 void main() => runApp(MaterialApp(
   initialRoute: '/',
@@ -19,7 +20,8 @@ void main() => runApp(MaterialApp(
     '/shop': (context) => Shop(),
     '/subCategory': (context) => SubCategory(),
     '/items': (context) => Items(),
-    '/particularItem': (context) => ParticularItem()
+    '/particularItem': (context) => ParticularItem(),
+    '/bag': (context) => ShoppingBag()
   },
 
 ));

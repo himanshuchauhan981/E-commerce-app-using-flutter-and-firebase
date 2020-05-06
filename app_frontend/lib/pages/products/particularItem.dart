@@ -19,6 +19,22 @@ class ParticularItem extends StatefulWidget {
 class _ParticularItemState extends State<ParticularItem> {
   var itemDetails;
   List<String> imageList;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  void showInSnackBar(String msg) {
+    _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+            content: new Text(msg),
+          action: SnackBarAction(
+            label:'Close',
+            textColor: Colors.white,
+            onPressed: (){
+              _scaffoldKey.currentState.removeCurrentSnackBar();
+            },
+          ),
+        ),
+    );
+  }
 
   setItemDetails(){
     SystemChrome.setSystemUIOverlayStyle(
@@ -30,9 +46,10 @@ class _ParticularItemState extends State<ParticularItem> {
     });
   }
 
-  addToShoppingBag(){
+  addToShoppingBag() async{
     OrderService orderService = new OrderService();
-    orderService.addToShoppingBag(itemDetails.documentID);
+    String msg = await orderService.addToShoppingBag(itemDetails.documentID);
+    showInSnackBar(msg);
   }
 
   carouselSlider(image,context){
@@ -107,6 +124,7 @@ class _ParticularItemState extends State<ParticularItem> {
   Widget build(BuildContext buildcontext) {
     setItemDetails();
     return Scaffold(
+      key: _scaffoldKey,
       body: SafeArea(
         child: Container(
             child: Column(
