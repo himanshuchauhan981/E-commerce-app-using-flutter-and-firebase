@@ -1,6 +1,4 @@
-
 import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'dart:async' show Future;
@@ -35,19 +33,21 @@ class GenerateMock{
   }
 
   void generateProductMockData() async{
-   loadAsset('assets/csv/PRODUCTS_MOCK_DATA.csv').then((dynamic output) async{
+   loadAsset('assets/csv/PRODUCT_MOCK_DATA.csv').then((dynamic output) async{
      List<List<dynamic>> productsdata = const CsvToListConverter().convert(output);
      int i;
      for(i=1;i<productsdata.length;i++){
-       String name = productsdata[i][0];
        String category = productsdata[i][1];
-       String subCategory = productsdata[i][2];
-       var available = productsdata[i][3];
-       var ordered = productsdata[i][4];
-       var price = productsdata[i][5];
-       String image = productsdata[i][6];
-       var imageList = [image,image,image];
-       await saveProductMockData(name, category, subCategory, available, ordered, price, imageList);
+       if(category != 'clothing'){
+         String name = productsdata[i][0];
+         String subCategory = productsdata[i][2];
+         var available = productsdata[i][3];
+         var ordered = productsdata[i][4];
+         var price = productsdata[i][5];
+         String image = productsdata[i][6];
+         var imageList = [image,image,image];
+         await saveProductMockData(name, category, subCategory, available, ordered, price, imageList);
+       }
      }
    });
   }
