@@ -1,4 +1,5 @@
 import 'package:app_frontend/components/header.dart';
+import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/services/productService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,6 @@ class _SubCategoryState extends State<SubCategory> {
       args['heading'] = name;
       args['list'] = itemsList;
 
-//      Navigator.push(context, CustomTransition(type: CustomTransitionType.downToUp, child: Items()));
       Navigator.pushNamed(context, '/items', arguments: args);
     });
   }
@@ -49,6 +49,7 @@ class _SubCategoryState extends State<SubCategory> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: header(heading, _scaffoldKey, showIcon),
+      drawer: sidebar(context),
       body: GridView.builder(
         itemCount: subCategoryList.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
