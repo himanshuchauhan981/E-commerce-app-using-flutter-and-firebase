@@ -52,6 +52,20 @@ class GenerateMock{
    });
   }
 
+  void updateProductMockData() async {
+    List<String> size = ['S','M','L','XL','2XL'];
+    List<String> color = ['blue','black'];
+    QuerySnapshot docRef = await _firestore.collection('products').where('category',isEqualTo: 'clothing').getDocuments();
+    for(int i=0;i<docRef.documents.length;i++){
+      String documentId = docRef.documents[i].documentID;
+      print(documentId);
+      await _firestore.collection('products').document(documentId).setData({
+        'size': size,
+        'color':color
+      },merge: true);
+    }
+  }
+
   void generateCategoryMockData() async{
     HashMap hashMap = new HashMap<String,dynamic>();
     loadAsset('assets/csv/CATEGORY_MOCK_DATA.csv').then((dynamic output) async{
