@@ -1,11 +1,12 @@
-import 'package:app_frontend/components/item/bottomSheet.dart';
-import 'package:app_frontend/components/item/customTransition.dart';
-import 'package:app_frontend/pages/home.dart';
-import 'package:app_frontend/services/orderService.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:app_frontend/components/item/bottomSheet.dart';
+import 'package:app_frontend/components/item/customTransition.dart';
+import 'package:app_frontend/pages/home.dart';
+import 'package:app_frontend/services/orderService.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
@@ -19,6 +20,8 @@ class ParticularItem extends StatefulWidget {
 class _ParticularItemState extends State<ParticularItem> {
   var itemDetails;
   List<String> imageList;
+  Map<String, bool> sizeList;
+  bool sizeIsChecked  = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   void showInSnackBar(String msg) {
@@ -41,8 +44,24 @@ class _ParticularItemState extends State<ParticularItem> {
         SystemUiOverlayStyle(statusBarColor: Colors.black)
     );
     Map<String,dynamic> args = widget.itemDetails;
+
     setState(() {
       itemDetails = args['itemDetails'];
+      sizeList = setSizeList(args['itemDetails']['size']);
+    });
+  }
+
+  setSizeList(List colors){
+    Map<String, bool> colorMap = new Map();
+    colors.forEach((color){
+      colorMap[color] = false;
+    });
+    return colorMap;
+  }
+
+  setColorCheck(String key,bool value){
+    setState(() {
+      sizeList[key] = value;
     });
   }
 
@@ -51,6 +70,7 @@ class _ParticularItemState extends State<ParticularItem> {
     String msg = await orderService.addToShoppingBag(itemDetails.documentID);
     showInSnackBar(msg);
   }
+
 
   carouselSlider(image,context){
     return Container(
@@ -61,6 +81,7 @@ class _ParticularItemState extends State<ParticularItem> {
         )
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Padding(
@@ -99,8 +120,11 @@ class _ParticularItemState extends State<ParticularItem> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 25, 20),
+            padding: EdgeInsets.fromLTRB(0, 0, 25, 20),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              textBaseline: TextBaseline.ideographic,
               children: <Widget>[
                 RawMaterialButton(
                   onPressed: () {},
@@ -111,7 +135,7 @@ class _ParticularItemState extends State<ParticularItem> {
                     color: Colors.red,
                   ),
                   shape: CircleBorder(),
-                )
+                ),
               ],
             ),
           )
@@ -131,7 +155,7 @@ class _ParticularItemState extends State<ParticularItem> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Expanded(
-                    flex: 6,
+                    flex: 7,
                     child: Carousel(
                       boxFit: BoxFit.cover,
                       autoplay: false,
@@ -176,7 +200,7 @@ class _ParticularItemState extends State<ParticularItem> {
                           Divider(
                               color: Colors.black
                           ),
-                          SizedBox(height: 40.0),
+                          SizedBox(height: 10.0),
                           Row(
                             children: <Widget>[
                               ButtonTheme(

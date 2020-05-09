@@ -85,7 +85,9 @@ class _GridItemListState extends State<GridItemList> {
           Expanded(
             child: Material(
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  showParticularItem(item);
+                },
                 child: GridTile(
                   child: Image.network(
                     item['image'][0],

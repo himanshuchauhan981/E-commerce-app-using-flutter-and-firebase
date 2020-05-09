@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/components/item/customTransition.dart';
+import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/components/header.dart';
 
 class Items extends StatefulWidget {
@@ -30,6 +32,21 @@ class _ItemsState extends State<Items> {
     });
   }
 
+  openParticularItem(item){
+    Map<String,dynamic> args = new Map();
+
+    args['itemDetails'] = item;
+    Navigator.push(
+        context,
+        CustomTransition(
+            type: CustomTransitionType.downToUp,
+            child: ParticularItem(
+                itemDetails: args
+            )
+        )
+    );
+  }
+
   Widget itemsCard(item){
     return Card(
       elevation: 0,
@@ -44,7 +61,9 @@ class _ItemsState extends State<Items> {
           Expanded(
             child: Material(
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  openParticularItem(item);
+                },
                 child: GridTile(
                   child: Image.network(
                     item['image'][0],
