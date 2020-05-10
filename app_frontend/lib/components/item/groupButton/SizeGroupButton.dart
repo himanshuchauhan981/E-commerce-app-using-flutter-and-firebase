@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
 
-class RadioGroupButton extends StatefulWidget {
-  List<Map<String, bool>> selectList;
+class SizeGroupButton extends StatefulWidget {
+  final List<Map<String, bool>> selectList;
   final int index;
-  Function(int) selectItem;
+  final Function(int) selectItem;
 
-  RadioGroupButton(this.selectItem, {
+  SizeGroupButton(this.selectItem, {
     Key key,
     this.selectList,
-    this.index
+    this.index,
   }): super(key: key);
 
   @override
-  _RadioGroupButtonState createState() => _RadioGroupButtonState();
+  _SizeGroupButtonState createState() => _SizeGroupButtonState();
 }
 
-class _RadioGroupButtonState extends State<RadioGroupButton> {
+class _SizeGroupButtonState extends State<SizeGroupButton> {
   @override
   Widget build(BuildContext context) {
     return Row(

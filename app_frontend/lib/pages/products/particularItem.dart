@@ -19,6 +19,7 @@ class _ParticularItemState extends State<ParticularItem> {
   var itemDetails;
   List<String> imageList;
   List<dynamic> size;
+  List<dynamic> colors;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -46,6 +47,7 @@ class _ParticularItemState extends State<ParticularItem> {
     setState(() {
       itemDetails = args['itemDetails'];
       size = args['itemDetails']['size'];
+      colors = args['itemDetails']['color'];
     });
   }
 
@@ -80,7 +82,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       showIndicator: true,
                       indicatorBgPadding: 7.0,
                       images: itemDetails['image'].map((image){
-                        return CustomCarouselSlider(image,buildcontext,size);
+                        return CustomCarouselSlider(image,buildcontext,size,colors);
                       }).toList(),
                     ),
                 ),
