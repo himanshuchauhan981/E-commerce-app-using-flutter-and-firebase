@@ -33,7 +33,6 @@ dependencies:
   font_awesome_flutter: ^8.8.1
   modal_bottom_sheet: ^0.1.5
   sliver_glue: ^1.2.0
-  grouped_buttons: ^1.0.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -3,10 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:app_frontend/components/item/bottomSheet.dart';
-import 'package:app_frontend/components/item/customTransition.dart';
-import 'package:app_frontend/pages/home.dart';
 import 'package:app_frontend/services/orderService.dart';
+import 'package:app_frontend/components/item/customCarousel.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
@@ -20,8 +18,8 @@ class ParticularItem extends StatefulWidget {
 class _ParticularItemState extends State<ParticularItem> {
   var itemDetails;
   List<String> imageList;
-  Map<String, bool> sizeList;
-  bool sizeIsChecked  = false;
+  List<dynamic> size;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   void showInSnackBar(String msg) {
@@ -47,21 +45,7 @@ class _ParticularItemState extends State<ParticularItem> {
 
     setState(() {
       itemDetails = args['itemDetails'];
-      sizeList = setSizeList(args['itemDetails']['size']);
-    });
-  }
-
-  setSizeList(List colors){
-    Map<String, bool> colorMap = new Map();
-    colors.forEach((color){
-      colorMap[color] = false;
-    });
-    return colorMap;
-  }
-
-  setColorCheck(String key,bool value){
-    setState(() {
-      sizeList[key] = value;
+      size = args['itemDetails']['size'];
     });
   }
 
@@ -69,79 +53,6 @@ class _ParticularItemState extends State<ParticularItem> {
     OrderService orderService = new OrderService();
     String msg = await orderService.addToShoppingBag(itemDetails.documentID);
     showInSnackBar(msg);
-  }
-
-
-  carouselSlider(image,context){
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(image),
-          fit: BoxFit.cover
-        )
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(25, 20, 25, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 42.0,
-                    color: Colors.grey,
-                  ),
-                  onPressed: (){
-                    Navigator.pop(
-                        context,
-                        CustomTransition(
-                            type: CustomTransitionType.upToDown,
-                            child: Home()
-                        ));
-                  },
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.share,
-                    size: 36.0,
-                    color: Colors.grey,
-                  ),
-                  onPressed: (){
-                    showModalBottomSheet(context: context, builder: (context){
-                      return ShowBottomScreen();
-                    });
-                  },
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 25, 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              textBaseline: TextBaseline.ideographic,
-              children: <Widget>[
-                RawMaterialButton(
-                  onPressed: () {},
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
-                  shape: CircleBorder(),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
   }
 
   @override
@@ -169,7 +80,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       showIndicator: true,
                       indicatorBgPadding: 7.0,
                       images: itemDetails['image'].map((image){
-                        return carouselSlider(image,buildcontext);
+                        return CustomCarouselSlider(image,buildcontext,size);
                       }).toList(),
                     ),
                 ),
