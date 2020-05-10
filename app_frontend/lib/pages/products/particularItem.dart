@@ -20,13 +20,17 @@ class _ParticularItemState extends State<ParticularItem> {
   List<String> imageList;
   List<dynamic> size;
   List<dynamic> colors;
+  Map<String,bool> errors = {'size':true,'color':true};
+  List<String> errorList;
+  String _id;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  void showInSnackBar(String msg) {
+  void showInSnackBar(String msg, Color color) {
     _scaffoldKey.currentState.showSnackBar(
         SnackBar(
-            content: new Text(msg),
+          backgroundColor: color,
+          content: new Text(msg),
           action: SnackBarAction(
             label:'Close',
             textColor: Colors.white,
@@ -45,16 +49,30 @@ class _ParticularItemState extends State<ParticularItem> {
     Map<String,dynamic> args = widget.itemDetails;
 
     setState(() {
+      _id = args['_id'];
       itemDetails = args['itemDetails'];
       size = args['itemDetails']['size'];
       colors = args['itemDetails']['color'];
     });
   }
 
+  setError(String key, bool value){
+    setState(() {
+      errors[key] = value;
+    });
+  }
+
   addToShoppingBag() async{
-    OrderService orderService = new OrderService();
-    String msg = await orderService.addToShoppingBag(itemDetails.documentID);
-    showInSnackBar(msg);
+    bool errorValue = errors.containsValue(true);
+    if(errorValue){
+      if(errors['size']) showInSnackBar('Select size',Colors.red);
+      else if(errors['color']) showInSnackBar('Select color', Colors.red);
+    }
+    else{
+      OrderService orderService = new OrderService();
+      String msg = await orderService.addToShoppingBag(_id);
+      showInSnackBar(msg,Colors.black);
+    }
   }
 
   @override
@@ -82,7 +100,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       showIndicator: true,
                       indicatorBgPadding: 7.0,
                       images: itemDetails['image'].map((image){
-                        return CustomCarouselSlider(image,buildcontext,size,colors);
+                        return CustomCarouselSlider(image,buildcontext,size,colors,setError);
                       }).toList(),
                     ),
                 ),

@@ -12,8 +12,9 @@ class CustomCarouselSlider extends StatefulWidget {
   final BuildContext buildContext;
   final dynamic sizes;
   final dynamic colors;
+  final void Function(String key, bool value) setErrors;
 
-  CustomCarouselSlider(this.image, this.buildContext,this.sizes,this.colors);
+  CustomCarouselSlider(this.image, this.buildContext,this.sizes,this.colors,this.setErrors);
   @override
   _CustomCarouselSliderState createState() => _CustomCarouselSliderState();
 }
@@ -39,6 +40,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
         });
       }
       else sizeList[index][particularKey] = true;
+      widget.setErrors('size',false);
     });
   }
 
@@ -60,6 +62,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
       }
       else colorList[index][particularKey] = true;
     });
+    widget.setErrors('color',false);
   }
 
   setSizeList(List sizes){
