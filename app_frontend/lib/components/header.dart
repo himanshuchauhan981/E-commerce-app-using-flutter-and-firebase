@@ -11,7 +11,7 @@ capitalizeHeading(String text){
 }
 
 
-Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon){
+Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon, BuildContext context){
 
   return AppBar(
     centerTitle: true,
@@ -50,7 +50,9 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
             size: 35.0,
             color: Colors.black,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/bag');
+          },
         ),
       )
     ],

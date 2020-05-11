@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: header('Shop Mart', _scaffoldKey,showCartIcon),
+        appBar: header('Shop Mart', _scaffoldKey,showCartIcon,context),
         drawer: sidebar(context),
         body: Container(
           child: CustomScrollView(

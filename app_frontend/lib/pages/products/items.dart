@@ -164,7 +164,7 @@ class _ItemsState extends State<Items> {
     setItems();
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header(heading, _scaffoldKey, showIcon),
+      appBar: header(heading, _scaffoldKey, showIcon,context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20.0),
         child: setCustomScrollView(),

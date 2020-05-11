@@ -59,7 +59,7 @@ class _ShopState extends State<Shop> {
 //    listCategories();
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header('Shop', _scaffoldKey, showCartIcon),
+      appBar: header('Shop', _scaffoldKey, showCartIcon, context),
       drawer: sidebar(context),
       body: SingleChildScrollView(
         child: Padding(

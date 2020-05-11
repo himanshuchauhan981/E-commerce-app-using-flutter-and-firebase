@@ -1,3 +1,4 @@
+import 'package:app_frontend/components/loader.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class ParticularItem extends StatefulWidget {
 }
 
 class _ParticularItemState extends State<ParticularItem> {
+  final GlobalKey<State> keyLoader = new GlobalKey<State>();
   var itemDetails;
   List<String> imageList;
   List<dynamic> size;
@@ -81,8 +83,10 @@ class _ParticularItemState extends State<ParticularItem> {
       else if(errors['color']) showInSnackBar('Select color', Colors.red);
     }
     else{
+      Loader.showLoadingScreen(context, keyLoader);
       OrderService orderService = new OrderService();
       String msg = await orderService.addToShoppingBag(_id,sizeValue,colorValue);
+      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
       showInSnackBar(msg,Colors.black);
     }
   }

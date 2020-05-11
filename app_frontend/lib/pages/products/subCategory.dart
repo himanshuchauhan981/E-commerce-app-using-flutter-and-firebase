@@ -48,7 +48,7 @@ class _SubCategoryState extends State<SubCategory> {
     setSubCategory(context);
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header(heading, _scaffoldKey, showIcon),
+      appBar: header(heading, _scaffoldKey, showIcon, context),
       drawer: sidebar(context),
       body: GridView.builder(
         itemCount: subCategoryList.length,

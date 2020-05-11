@@ -40,7 +40,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       key: _scaffoldKey,
-      appBar: header('Shopping Bag', _scaffoldKey, showCartIcon),
+      appBar: header('Shopping Bag', _scaffoldKey, showCartIcon, context),
       drawer: sidebar(context),
       body: Container(
         child: ListView.builder(
