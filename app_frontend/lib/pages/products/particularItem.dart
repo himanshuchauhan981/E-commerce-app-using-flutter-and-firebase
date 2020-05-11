@@ -21,8 +21,9 @@ class _ParticularItemState extends State<ParticularItem> {
   List<dynamic> size;
   List<dynamic> colors;
   Map<String,bool> errors = {'size':true,'color':true};
-  List<String> errorList;
   String _id;
+  String sizeValue;
+  String colorValue;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -62,6 +63,17 @@ class _ParticularItemState extends State<ParticularItem> {
     });
   }
 
+  setProductOptions(key,value){
+    setState(() {
+      if(key == 'color'){
+        colorValue = value;
+      }
+      else if(key == 'size'){
+        sizeValue = value;
+      }
+    });
+  }
+
   addToShoppingBag() async{
     bool errorValue = errors.containsValue(true);
     if(errorValue){
@@ -70,7 +82,7 @@ class _ParticularItemState extends State<ParticularItem> {
     }
     else{
       OrderService orderService = new OrderService();
-      String msg = await orderService.addToShoppingBag(_id);
+      String msg = await orderService.addToShoppingBag(_id,sizeValue,colorValue);
       showInSnackBar(msg,Colors.black);
     }
   }
@@ -100,7 +112,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       showIndicator: true,
                       indicatorBgPadding: 7.0,
                       images: itemDetails['image'].map((image){
-                        return CustomCarouselSlider(image,buildcontext,size,colors,setError);
+                        return CustomCarouselSlider(image,buildcontext,size,colors,setError,setProductOptions);
                       }).toList(),
                     ),
                 ),

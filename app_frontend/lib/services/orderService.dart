@@ -16,7 +16,7 @@ class OrderService{
     }
   }
 
-  Future<String> addToShoppingBag(String productId) async{
+  Future<String> addToShoppingBag(String productId,String size,String color) async{
     String uid = await userService.getUserId();
     QuerySnapshot data = await firestore.collection('bags').where("userId", isEqualTo: uid).getDocuments();
 
@@ -29,7 +29,9 @@ class OrderService{
           productIdList = docs.data['productId'];
           productIdList.add(productId);
           await firestore.collection('bags').document(documentID).updateData({
-            "productId":productIdList
+            "productId":productIdList,
+            "size": size,
+            "color": color
           });
         });
         return "Product added to shopping bag";
@@ -40,7 +42,9 @@ class OrderService{
       await firestore.collection('bags').add({
         'quantity': 1,
         'userId': uid,
-        'productId': [productId]
+        'productId': [productId],
+        'size': size,
+        'color': color
       });
       return "Product added to shopping bag";
     }

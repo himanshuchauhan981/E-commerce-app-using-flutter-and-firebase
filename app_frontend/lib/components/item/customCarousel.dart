@@ -13,8 +13,9 @@ class CustomCarouselSlider extends StatefulWidget {
   final dynamic sizes;
   final dynamic colors;
   final void Function(String key, bool value) setErrors;
+  final void Function(String key, String value) setProductOptions;
 
-  CustomCarouselSlider(this.image, this.buildContext,this.sizes,this.colors,this.setErrors);
+  CustomCarouselSlider(this.image, this.buildContext,this.sizes,this.colors,this.setErrors,this.setProductOptions);
   @override
   _CustomCarouselSliderState createState() => _CustomCarouselSliderState();
 }
@@ -28,6 +29,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
     var boolValues = sizeList.map((size) =>  size.values.toList()[0]);
     setState(() {
       if(boolValues.contains(true)){
+        widget.setErrors('size',true);
         sizeList.forEach((size){
           String key = size.keys.toList()[0];
           if(size[key] == true) size[key] = false;
@@ -35,12 +37,16 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
             String particularKey = sizeList[index].keys.toList()[0];
             if(particularKey == key){
               size[key] = true;
+              widget.setErrors('size',false);
             }
           }
         });
       }
-      else sizeList[index][particularKey] = true;
-      widget.setErrors('size',false);
+      else{
+        sizeList[index][particularKey] = true;
+        widget.setErrors('size',false);
+      }
+      widget.setProductOptions('size',sizeList[index].keys.toList()[0]);
     });
   }
 
@@ -49,6 +55,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
     var boolValues = colorList.map((color) => color.values.toList()[0]);
     setState(() {
       if(boolValues.contains(true)){
+        widget.setErrors('color',true);
         colorList.forEach((size){
           Color key = size.keys.toList()[0];
           if(size[key] == true) size[key] = false;
@@ -56,13 +63,18 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
             Color particularKey = colorList[index].keys.toList()[0];
             if(particularKey == key){
               size[key] = true;
+              widget.setErrors('color',false);
             }
           }
         });
       }
-      else colorList[index][particularKey] = true;
+      else{
+        colorList[index][particularKey] = true;
+        widget.setErrors('color',false);
+      }
     });
-    widget.setErrors('color',false);
+    String color = colorList[index].keys.toList()[0].toString().substring(10,16);
+    widget.setProductOptions('color',color);
   }
 
   setSizeList(List sizes){
