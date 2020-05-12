@@ -58,7 +58,7 @@ class GenerateMock{
     QuerySnapshot docRef = await _firestore.collection('products').where('category',isEqualTo: 'clothing').getDocuments();
     for(int i=0;i<docRef.documents.length;i++){
       String documentId = docRef.documents[i].documentID;
-      print(documentId);
+
       await _firestore.collection('products').document(documentId).setData({
         'size': size,
         'color':color

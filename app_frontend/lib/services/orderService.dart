@@ -6,48 +6,52 @@ class OrderService{
   UserService userService = new UserService();
   Firestore firestore = Firestore.instance;
 
-  Future<bool> checkItemsInBags(String productId) async{
-    var data = await firestore.collection('bags').where("productId", arrayContains: productId).getDocuments();
-    if(data.documents.length != 0){
-      return true;
+  Future<String> updateBagItems(String productId, String size, String color, QuerySnapshot data) async{
+    String documentId;
+    String msg;
+    List productItems = data.documents.map((doc){
+      documentId = doc.documentID;
+      return doc['products'][0];
+    }).toList();
+    List product = productItems.where((test)=> test['id'] == productId).toList();
+
+    if(product.length != 0){
+      productItems.forEach((items){
+        if(items['id'] == productId){
+          items['size'] = size;
+          items['color'] = color;
+        }
+      });
+      msg =  "Product added to shopping bag";
     }
     else{
-      return false;
+      productItems.add({'id':productId,'size':size,'color':color,'quantity':1});
+      msg = 'Product updated in shopping bag';
     }
+    await firestore.collection('bags').document(documentId).setData({'products':productItems},merge: true);
+    return msg;
   }
 
   Future<String> addToShoppingBag(String productId,String size,String color) async{
     String uid = await userService.getUserId();
+    String msg;
     QuerySnapshot data = await firestore.collection('bags').where("userId", isEqualTo: uid).getDocuments();
-
-    if(data.documents.length != 0){
-      bool status = await checkItemsInBags(productId);
-      if(!status){
-        data.documents.forEach((DocumentSnapshot docs)async{
-          List<dynamic> productIdList;
-          String documentID = docs.documentID;
-          productIdList = docs.data['productId'];
-          productIdList.add(productId);
-          await firestore.collection('bags').document(documentID).updateData({
-            "productId":productIdList,
-            "size": size,
-            "color": color
-          });
-        });
-        return "Product added to shopping bag";
-      }
-      return "Product already existed in shopping bag";
+    if(data.documents.length == 0){
+      await firestore.collection('bags').add({
+        'userId': uid,
+        'products':[{
+          'id': productId,
+          'size': size,
+          'color': color,
+          'quantity': 1
+        }]
+      });
+      msg =  "Product added to shopping bag";
     }
     else{
-      await firestore.collection('bags').add({
-        'quantity': 1,
-        'userId': uid,
-        'productId': [productId],
-        'size': size,
-        'color': color
-      });
-      return "Product added to shopping bag";
+      msg = await updateBagItems(productId, size, color, data);
     }
+    return msg;
   }
 
   Future<List> listBagItems() async{
@@ -55,10 +59,10 @@ class OrderService{
     String uid = await userService.getUserId();
     QuerySnapshot docRef = await firestore.collection('bags').where("userId",isEqualTo: uid).getDocuments();
     var itemDetails = docRef.documents.map((doc){
-      Map<String,dynamic> mapProductId = new Map<String,dynamic>();
-      mapProductId['productId'] = doc.data['productId'];
-      mapProductId['quantity'] = doc.data['quantity'];
-      return mapProductId;
+      Map<String,dynamic> mapProduct = new Map<String,dynamic>();
+      mapProduct['productId'] = doc.data['productId'];
+      mapProduct['quantity'] = doc.data['quantity'];
+      return mapProduct;
     }).toList()[0];
     List productIdList = itemDetails['productId'];
 

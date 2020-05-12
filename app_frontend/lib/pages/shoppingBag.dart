@@ -20,12 +20,6 @@ class _ShoppingBagState extends State<ShoppingBag> {
       bagItemList = bagItems;
     });
   }
-  Size _textSize(String text, TextStyle style) {
-    final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)
-      ..layout(minWidth: 0, maxWidth: double.infinity);
-    return textPainter.size;
-  }
 
   @override
   void initState() {
@@ -47,6 +41,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
           itemCount: bagItemList.length,
           itemBuilder: (BuildContext context, int index){
             var item = bagItemList[index];
+            print(item);
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 12.0,horizontal: 20.0),
               child: Card(
@@ -58,7 +53,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      height: 230.0,
+                      height: 200.0,
                       width: 150.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.0),
@@ -85,11 +80,12 @@ class _ShoppingBagState extends State<ShoppingBag> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.only(left: 15.0),
                             child: Text(
                               "\$${item['price']}.00",
                               style: TextStyle(
-                                fontSize: 18.0,
+                                color: Colors.grey,
+                                fontSize: 17.0,
                                 fontWeight: FontWeight.bold
                               ),
                             ),
