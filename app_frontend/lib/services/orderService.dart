@@ -57,14 +57,14 @@ class OrderService{
   Future<List> listBagItems() async{
     List bagItemsList = new List();
     String uid = await userService.getUserId();
+
     QuerySnapshot docRef = await firestore.collection('bags').where("userId",isEqualTo: uid).getDocuments();
-    var itemDetails = docRef.documents.map((doc){
-      Map<String,dynamic> mapProduct = new Map<String,dynamic>();
-      mapProduct['productId'] = doc.data['productId'];
-      mapProduct['quantity'] = doc.data['quantity'];
-      return mapProduct;
+
+    List itemDetails = docRef.documents.map((doc){
+      return doc.data['products'];
     }).toList()[0];
-    List productIdList = itemDetails['productId'];
+
+    var productIdList = itemDetails.map((value) => value['id']).toList();
 
     for(int i=0;i< productIdList.length;i++){
       Map <String,dynamic> mapProduct = new Map<String,dynamic>();
@@ -72,6 +72,10 @@ class OrderService{
       mapProduct['name'] = productRef.data['name'];
       mapProduct['image'] = productRef.data['image'][0];
       mapProduct['price']  = productRef.data['price'];
+      mapProduct['size'] = productRef.data['size'];
+      mapProduct['color'] = productRef.data['color'];
+      mapProduct['selectedSize'] = itemDetails[i]['size'];
+      mapProduct['selectedColor'] = itemDetails[i]['color'];
       bagItemsList.add(mapProduct);
     }
     return bagItemsList;

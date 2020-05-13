@@ -53,9 +53,9 @@ class GenerateMock{
   }
 
   void updateProductMockData() async {
-    List<String> size = ['S','M','L','XL','2XL'];
-    List<String> color = ['0xFF0000ff','0xFF000000'];
-    QuerySnapshot docRef = await _firestore.collection('products').where('category',isEqualTo: 'clothing').getDocuments();
+    List<String> size = [];
+    List<String> color = ['0xFF0000ff','0xFF000000','0xFF8b4513'];
+    QuerySnapshot docRef = await _firestore.collection('products').where('subCategory',isEqualTo: 'wallets').getDocuments();
     for(int i=0;i<docRef.documents.length;i++){
       String documentId = docRef.documents[i].documentID;
 

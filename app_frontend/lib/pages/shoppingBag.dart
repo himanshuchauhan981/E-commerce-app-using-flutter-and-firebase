@@ -41,7 +41,6 @@ class _ShoppingBagState extends State<ShoppingBag> {
           itemCount: bagItemList.length,
           itemBuilder: (BuildContext context, int index){
             var item = bagItemList[index];
-            print(item);
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 12.0,horizontal: 20.0),
               child: Card(

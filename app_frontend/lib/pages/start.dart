@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/mockService.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -96,7 +97,9 @@ class Start extends StatelessWidget{
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
+                        GenerateMock mock = new GenerateMock();
+                        mock.updateProductMockData();
+//                        Navigator.pushNamed(context, '/signup');
                       },
                     ),
                   ),
