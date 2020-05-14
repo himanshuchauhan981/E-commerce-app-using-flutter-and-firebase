@@ -10,7 +10,7 @@ import 'package:app_frontend/components/item/customCarousel.dart';
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
 
-  ParticularItem({var key, @required this.itemDetails}):super(key: key);
+  ParticularItem({var key, this.itemDetails}):super(key: key);
 
   @override
   _ParticularItemState createState() => _ParticularItemState();
@@ -77,6 +77,8 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   addToShoppingBag() async{
+    if(colors.length == 0) setError('color', false);
+    else if(size.length == 0) setError('size', false);
     bool errorValue = errors.containsValue(true);
     if(errorValue){
       if(errors['size']) showInSnackBar('Select size',Colors.red);

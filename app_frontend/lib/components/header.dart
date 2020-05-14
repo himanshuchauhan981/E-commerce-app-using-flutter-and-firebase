@@ -1,3 +1,5 @@
+import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/services/orderService.dart';
 import 'package:flutter/material.dart';
 
 capitalizeHeading(String text){
@@ -12,7 +14,9 @@ capitalizeHeading(String text){
 
 
 Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon, BuildContext context){
+  final GlobalKey<State> keyLoader = new GlobalKey<State>();
 
+  OrderService orderService = new OrderService();
   return AppBar(
     centerTitle: true,
     title: Text(
@@ -50,8 +54,13 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
             size: 35.0,
             color: Colors.black,
           ),
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/bag');
+          onPressed: () async{
+            Map<String,dynamic> args = new Map();
+            Loader.showLoadingScreen(context, keyLoader);
+            List bagItems = await orderService.listBagItems();
+            args['bagItems'] = bagItems;
+            Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+            Navigator.pushNamed(context, '/bag', arguments: args);
           },
         ),
       )

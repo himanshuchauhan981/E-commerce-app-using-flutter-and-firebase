@@ -13,24 +13,19 @@ class ShoppingBag extends StatefulWidget {
 class _ShoppingBagState extends State<ShoppingBag> {
   List bagItemList = new List(0);
 
-  void listBagItems()async{
-    OrderService orderService = new OrderService();
-    List bagItems = await orderService.listBagItems();
+  void listBagItems(context)async{
+    Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
     setState(() {
-      bagItemList = bagItems;
+      bagItemList = args['bagItems'];
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    listBagItems();
-  }
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     bool showCartIcon  = false;
 
+    listBagItems(context);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       key: _scaffoldKey,
