@@ -24,8 +24,8 @@ class _ParticularItemState extends State<ParticularItem> {
   List<dynamic> colors;
   Map<String,bool> errors = {'size':true,'color':true};
   String _id;
-  String sizeValue;
-  String colorValue;
+  String sizeValue = "";
+  String colorValue = "";
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -50,9 +50,8 @@ class _ParticularItemState extends State<ParticularItem> {
         SystemUiOverlayStyle(statusBarColor: Colors.black)
     );
     Map<String,dynamic> args = widget.itemDetails;
-
     setState(() {
-      _id = args['_id'];
+      _id = args['itemDetails'].documentID;
       itemDetails = args['itemDetails'];
       size = args['itemDetails']['size'];
       colors = args['itemDetails']['color'];

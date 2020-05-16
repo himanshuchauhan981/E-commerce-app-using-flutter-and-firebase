@@ -36,6 +36,7 @@ class OrderService{
     String uid = await userService.getUserId();
     String msg;
     QuerySnapshot data = await firestore.collection('bags').where("userId", isEqualTo: uid).getDocuments();
+
     if(data.documents.length == 0){
       await firestore.collection('bags').add({
         'userId': uid,
@@ -59,25 +60,25 @@ class OrderService{
     String uid = await userService.getUserId();
 
     QuerySnapshot docRef = await firestore.collection('bags').where("userId",isEqualTo: uid).getDocuments();
-
     List itemDetails = docRef.documents.map((doc){
       return doc.data['products'];
     }).toList()[0];
-
     var productIdList = itemDetails.map((value) => value['id']).toList();
 
     for(int i=0;i< productIdList.length;i++){
-      Map <String,dynamic> mapProduct = new Map<String,dynamic>();
+      Map mapProduct = new Map();
       DocumentSnapshot productRef = await firestore.collection('products').document(productIdList[i]).get();
       mapProduct['name'] = productRef.data['name'];
       mapProduct['image'] = productRef.data['image'][0];
-      mapProduct['price']  = productRef.data['price'];
-      mapProduct['size'] = productRef.data['size'];
-      mapProduct['color'] = productRef.data['color'];
+      mapProduct['price']  = productRef.data['price'].toString();
+      mapProduct['size'] = List<String>.from(productRef.data['size']);
+      mapProduct['color'] = List<String>.from(productRef.data['color']);
       mapProduct['selectedSize'] = itemDetails[i]['size'];
       mapProduct['selectedColor'] = itemDetails[i]['color'];
       bagItemsList.add(mapProduct);
     }
+    print(bagItemsList.runtimeType);
+    
     return bagItemsList;
   }
 

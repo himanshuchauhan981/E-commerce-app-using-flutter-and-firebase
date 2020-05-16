@@ -36,7 +36,6 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
 
   void showParticularItem(item){
     Map<String,dynamic> args = new Map();
-
     args['itemDetails'] = item;
     Navigator.push(
         context,
