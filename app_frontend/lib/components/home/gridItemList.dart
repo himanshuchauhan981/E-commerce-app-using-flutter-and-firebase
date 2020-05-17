@@ -42,7 +42,8 @@ class _GridItemListState extends State<GridItemList> {
         CustomTransition(
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
-                itemDetails: args
+              itemDetails: args,
+              edit: false,
             )
         )
     );

@@ -42,7 +42,8 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
         CustomTransition(
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
-                itemDetails: args
+              itemDetails: args,
+              edit: false,
             )
         )
     );

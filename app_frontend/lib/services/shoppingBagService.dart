@@ -69,11 +69,14 @@ class ShoppingBagService{
     for(int i=0;i< productIdList.length;i++){
       Map mapProduct = new Map();
       DocumentSnapshot productRef = await firestore.collection('products').document(productIdList[i]).get();
+      mapProduct['id'] = productRef.documentID;
       mapProduct['name'] = productRef.data['name'];
-      mapProduct['image'] = productRef.data['image'][0];
+      mapProduct['image'] = productRef.data['image'].cast<String>().toList();
       mapProduct['price']  = productRef.data['price'].toString();
-      mapProduct['size'] = itemDetails[i]['size'];
-      mapProduct['color'] = itemDetails[i]['color'];
+      mapProduct['color'] = productRef.data['color'].cast<String>().toList();
+      mapProduct['size'] = productRef.data['size'].cast<String>().toList();
+      mapProduct['selectedSize'] = itemDetails[i]['size'];
+      mapProduct['selectedColor'] = itemDetails[i]['color'];
       mapProduct['quantity'] = itemDetails[i]['quantity'];
       bagItemsList.add(mapProduct);
     }

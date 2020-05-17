@@ -9,8 +9,9 @@ import 'package:app_frontend/components/item/customCarousel.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
+  final bool edit;
 
-  ParticularItem({var key, this.itemDetails}):super(key: key);
+  ParticularItem({var key, this.itemDetails, this.edit}):super(key: key);
 
   @override
   _ParticularItemState createState() => _ParticularItemState();
@@ -46,16 +47,32 @@ class _ParticularItemState extends State<ParticularItem> {
     );
   }
 
+  editItemDetails(){
+    Map<String,dynamic> args = widget.itemDetails;
+    setState(() {
+      _id = args['itemDetails']['id'];
+      itemDetails = args['itemDetails'];
+      size = args['itemDetails']['size'];
+      colors = args['itemDetails']['color'];
+      quantity = args['itemDetails']['quantity'];
+    });
+  }
+
   setItemDetails(){
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.black)
     );
     Map<String,dynamic> args = widget.itemDetails;
     setState(() {
-      _id = args['itemDetails'].documentID;
-      itemDetails = args['itemDetails'];
-      size = args['itemDetails']['size'];
-      colors = args['itemDetails']['color'];
+      if(!widget.edit){
+        _id = args['itemDetails'].documentID;
+        itemDetails = args['itemDetails'];
+        size = args['itemDetails']['size'];
+        colors = args['itemDetails']['color'];
+      }
+      else{
+        editItemDetails();
+      }
     });
   }
 
