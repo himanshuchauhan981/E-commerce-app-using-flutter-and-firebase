@@ -1,12 +1,12 @@
 import 'package:app_frontend/components/loader.dart';
-import 'package:app_frontend/services/orderService.dart';
+import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
 Widget sidebar(context){
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
   UserService _userService = new UserService();
-  OrderService _orderService = new OrderService();
+  ShoppingBagService _shoppingBagService = new ShoppingBagService();
 
   return SafeArea(
     child: Drawer(
@@ -58,7 +58,7 @@ Widget sidebar(context){
                 onTap: () async{
                   Map<String,dynamic> args = new Map();
                   Loader.showLoadingScreen(context, keyLoader);
-                  List bagItems = await _orderService.listBagItems();
+                  List bagItems = await _shoppingBagService.listBagItems();
                   args['bagItems'] = bagItems;
                   Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
                   Navigator.pushNamed(context, '/bag', arguments: args);

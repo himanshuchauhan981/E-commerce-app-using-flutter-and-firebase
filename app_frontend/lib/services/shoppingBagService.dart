@@ -2,7 +2,7 @@ import 'package:app_frontend/services/userService.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class OrderService{
+class ShoppingBagService{
   UserService userService = new UserService();
   Firestore firestore = Firestore.instance;
 
@@ -72,15 +72,12 @@ class OrderService{
       mapProduct['name'] = productRef.data['name'];
       mapProduct['image'] = productRef.data['image'][0];
       mapProduct['price']  = productRef.data['price'].toString();
-      mapProduct['size'] = List<String>.from(productRef.data['size']);
-      mapProduct['color'] = List<String>.from(productRef.data['color']);
-      mapProduct['selectedSize'] = itemDetails[i]['size'];
-      mapProduct['selectedColor'] = itemDetails[i]['color'];
+      mapProduct['size'] = itemDetails[i]['size'];
+      mapProduct['color'] = itemDetails[i]['color'];
+      mapProduct['quantity'] = itemDetails[i]['quantity'];
       bagItemsList.add(mapProduct);
     }
-    print(bagItemsList.runtimeType);
-    
-    return bagItemsList;
+     return bagItemsList;
   }
 
 }

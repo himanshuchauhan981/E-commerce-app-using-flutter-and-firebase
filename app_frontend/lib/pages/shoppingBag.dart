@@ -24,7 +24,15 @@ class _ShoppingBagState extends State<ShoppingBag> {
     });
   }
 
+  String colorList(String colorName){
+    Map colorMap = new Map();
+    colorMap['000000'] = 'Black';
+    colorMap['0000ff'] = 'Blue';
+    return colorMap[colorName];
+  }
+
   buildExpandedList(item) {
+    print(item);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Column(
@@ -32,74 +40,79 @@ class _ShoppingBagState extends State<ShoppingBag> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Text(
-                    'Size',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
-                    ),
-                  ),
-                  SizedBox(height: 5.0),
-                  Text(
-                    item['selectedSize'],
-                    style: TextStyle(
-                        fontSize: 18.0,
-                        letterSpacing: 1.0
-                    ),
+              Expanded(
+                child: Container(
+                  width: MediaQuery.of(context).size.width/3,
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Size',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0
+                        ),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        item['size'],
+                        style: TextStyle(
+                            fontSize: 18.0,
+                            letterSpacing: 1.0
+                        ),
+                      )
+                    ],
                   )
-                ],
+                ),
               ),
-              Container(
-                color: Colors.black45,
-                height: 60,
-                width: 1
-              ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    'Color',
-                    style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0
-                    ),
-                  ),
-                  SizedBox(height: 5.0),
-                  Text(
-                    item['selectedColor'],
-                    style: TextStyle(
-                        fontSize: 18.0
-                    ),
+              Expanded(
+                child: Container(
+                  width: MediaQuery.of(context).size.width/3,
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Color',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0
+                        ),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        colorList(item['color']),
+                        style: TextStyle(
+                            fontSize: 18.0
+                        ),
+                      )
+                    ],
                   )
-                ],
+                ),
               ),
-              Container(
-                  color: Colors.black45,
-                  height: 60,
-                  width: 1
-              ),
-              Column(
-                children: <Widget>[
-                  Text(
-                    'Quantity',
-                    style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0
-                    ),
+              Expanded(
+                child: Container(
+                  width: MediaQuery.of(context).size.width/3,
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Quantity',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0
+                        ),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        "${item['quantity']}",
+                        style: TextStyle(
+                            fontSize: 18.0
+                        ),
+                      )
+                    ],
                   ),
-                  SizedBox(height: 5.0),
-                  Text(
-                    '1',
-                    style: TextStyle(
-                        fontSize: 18.0
-                    ),
-                  )
-                ],
-              ),
+                ),
+              )
             ],
           ),
           SizedBox(height: 7.0),

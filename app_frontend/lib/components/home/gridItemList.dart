@@ -26,9 +26,7 @@ class _GridItemListState extends State<GridItemList> {
     items.listen((data){
       List<DocumentSnapshot> featuredItemsData = data.documents;
       List featuredItemList = featuredItemsData.map((DocumentSnapshot doc){
-        print(doc.data);
         return doc;
-//        return {'data': doc.data, '_id':doc.documentID};
       }).toList();
       setState(() {
         featuredItems = featuredItemList;

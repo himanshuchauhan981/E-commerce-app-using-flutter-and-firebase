@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:app_frontend/services/orderService.dart';
+import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/components/item/customCarousel.dart';
 
 class ParticularItem extends StatefulWidget {
@@ -86,8 +86,8 @@ class _ParticularItemState extends State<ParticularItem> {
     }
     else{
       Loader.showLoadingScreen(context, keyLoader);
-      OrderService orderService = new OrderService();
-      String msg = await orderService.addToShoppingBag(_id,sizeValue,colorValue,quantity);
+      ShoppingBagService _shoppingBagService = new ShoppingBagService();
+      String msg = await _shoppingBagService.addToShoppingBag(_id,sizeValue,colorValue,quantity);
       Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
       showInSnackBar(msg,Colors.black);
     }
