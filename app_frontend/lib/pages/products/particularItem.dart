@@ -26,6 +26,7 @@ class _ParticularItemState extends State<ParticularItem> {
   String _id;
   String sizeValue = "";
   String colorValue = "";
+  int quantity = 1;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -86,10 +87,25 @@ class _ParticularItemState extends State<ParticularItem> {
     else{
       Loader.showLoadingScreen(context, keyLoader);
       OrderService orderService = new OrderService();
-      String msg = await orderService.addToShoppingBag(_id,sizeValue,colorValue);
+      String msg = await orderService.addToShoppingBag(_id,sizeValue,colorValue,quantity);
       Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
       showInSnackBar(msg,Colors.black);
     }
+  }
+
+  setQuantity(String type){
+    setState(() {
+      if(type == 'inc'){
+        if(quantity != 5){
+          quantity = quantity + 1;
+        }
+      }
+      else{
+        if(quantity != 1){
+          quantity = quantity - 1;
+        }
+      }
+    });
   }
 
   @override
@@ -103,7 +119,7 @@ class _ParticularItemState extends State<ParticularItem> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Expanded(
-                    flex: 7,
+                    flex: 6,
                     child: Carousel(
                       boxFit: BoxFit.cover,
                       autoplay: false,
@@ -122,7 +138,7 @@ class _ParticularItemState extends State<ParticularItem> {
                     ),
                 ),
                 Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 15.0),
                       child: Column(
@@ -145,6 +161,55 @@ class _ParticularItemState extends State<ParticularItem> {
                                 fontSize: 18.0
                             ),
                           ),
+                          SizedBox(height: 10.0),
+                          Center(
+                            child: Text(
+                              'Quantity',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              MaterialButton(
+                                onPressed: (){
+                                  setQuantity('inc');
+                                },
+                                color: Colors.white,
+                                child: Icon(
+                                  Icons.add,
+                                  size: 30.0,
+                                ),
+                                padding: EdgeInsets.all(12.0),
+                                shape: CircleBorder(),
+                              ),
+                              Text(
+                                "$quantity",
+                                style: TextStyle(
+                                  fontSize: 26.0,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              MaterialButton(
+                                onPressed: (){
+                                  setQuantity('dec');
+                                },
+                                textColor: Colors.white,
+                                color: Colors.black,
+                                child: Icon(
+                                    Icons.remove,
+                                    size: 30.0
+                                ),
+                                padding: EdgeInsets.all(12.0),
+                                shape: CircleBorder(),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20.0),
                           Divider(
                               color: Colors.black
                           ),

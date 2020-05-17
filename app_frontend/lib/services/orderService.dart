@@ -6,7 +6,7 @@ class OrderService{
   UserService userService = new UserService();
   Firestore firestore = Firestore.instance;
 
-  Future<String> updateBagItems(String productId, String size, String color, QuerySnapshot data) async{
+  Future<String> updateBagItems(String productId, String size, String color, int quantity, QuerySnapshot data) async{
     String documentId;
     String msg;
     List productItems = data.documents.map((doc){
@@ -20,19 +20,20 @@ class OrderService{
         if(items['id'] == productId){
           items['size'] = size;
           items['color'] = color;
+          items['quantity'] = quantity;
         }
       });
       msg =  "Product added to shopping bag";
     }
     else{
-      productItems.add({'id':productId,'size':size,'color':color,'quantity':1});
+      productItems.add({'id':productId,'size':size,'color':color,'quantity':quantity});
       msg = 'Product updated in shopping bag';
     }
     await firestore.collection('bags').document(documentId).setData({'products':productItems},merge: true);
     return msg;
   }
 
-  Future<String> addToShoppingBag(String productId,String size,String color) async{
+  Future<String> addToShoppingBag(String productId,String size,String color,int quantity) async{
     String uid = await userService.getUserId();
     String msg;
     QuerySnapshot data = await firestore.collection('bags').where("userId", isEqualTo: uid).getDocuments();
@@ -44,13 +45,13 @@ class OrderService{
           'id': productId,
           'size': size,
           'color': color,
-          'quantity': 1
+          'quantity': quantity
         }]
       });
       msg =  "Product added to shopping bag";
     }
     else{
-      msg = await updateBagItems(productId, size, color, data);
+      msg = await updateBagItems(productId, size, color, quantity, data);
     }
     return msg;
   }

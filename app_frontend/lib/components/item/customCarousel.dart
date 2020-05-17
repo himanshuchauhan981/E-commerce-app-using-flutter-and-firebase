@@ -110,9 +110,10 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40.0), bottomRight: Radius.circular(40.0)),
           image: DecorationImage(
               image: NetworkImage(widget.image),
-              fit: BoxFit.cover
+              fit: BoxFit.fill
           )
       ),
       child: Column(

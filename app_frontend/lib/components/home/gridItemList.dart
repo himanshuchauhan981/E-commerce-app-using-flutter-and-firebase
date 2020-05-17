@@ -26,7 +26,9 @@ class _GridItemListState extends State<GridItemList> {
     items.listen((data){
       List<DocumentSnapshot> featuredItemsData = data.documents;
       List featuredItemList = featuredItemsData.map((DocumentSnapshot doc){
-        return {'data': doc.data, '_id':doc.documentID};
+        print(doc.data);
+        return doc;
+//        return {'data': doc.data, '_id':doc.documentID};
       }).toList();
       setState(() {
         featuredItems = featuredItemList;
@@ -34,11 +36,9 @@ class _GridItemListState extends State<GridItemList> {
     });
   }
 
-  void showParticularItem(index){
+  void showParticularItem(item){
     Map<String,dynamic> args = new Map();
-
-    args['itemDetails'] = featuredItems[index]['data'];
-    args['_id'] = featuredItems[index]['_id'];
+    args['itemDetails'] = item;
     Navigator.push(
         context,
         CustomTransition(
@@ -64,7 +64,7 @@ class _GridItemListState extends State<GridItemList> {
 
         ),
         delegate: SliverChildBuilderDelegate((BuildContext context, int index){
-          var item = featuredItems[index]['data'];
+          var item = featuredItems[index];
           return featuredItemCard(item,index);
         },
             childCount: featuredItems.length
@@ -87,7 +87,7 @@ class _GridItemListState extends State<GridItemList> {
             child: Material(
               child: InkWell(
                 onTap: () {
-                  showParticularItem(index);
+                  showParticularItem(item);
                 },
                 child: GridTile(
                   child: Image.network(
