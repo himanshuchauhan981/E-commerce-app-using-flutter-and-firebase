@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/services/productService.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SubCategory extends StatefulWidget {
@@ -32,12 +33,10 @@ class _SubCategoryState extends State<SubCategory> {
     items.listen((data){
       List<DocumentSnapshot> arrivalData = data.documents;
       var itemsList = arrivalData.map((DocumentSnapshot doc){
-        return doc.data;
+        return doc;
       }).toList();
-
       args['heading'] = name;
       args['list'] = itemsList;
-
       Navigator.pushNamed(context, '/items', arguments: args);
     });
   }

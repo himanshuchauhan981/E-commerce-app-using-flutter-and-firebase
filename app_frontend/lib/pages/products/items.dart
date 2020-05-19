@@ -41,7 +41,8 @@ class _ItemsState extends State<Items> {
         CustomTransition(
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
-                itemDetails: args
+              itemDetails: args,
+              edit: false,
             )
         )
     );
@@ -119,6 +120,7 @@ class _ItemsState extends State<Items> {
           ),
           delegate: SliverChildBuilderDelegate((BuildContext context, int index){
             var item = itemList[index];
+
             return itemsCard(item);
           },
               childCount: childCount
