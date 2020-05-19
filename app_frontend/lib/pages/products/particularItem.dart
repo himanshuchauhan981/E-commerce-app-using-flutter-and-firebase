@@ -1,11 +1,10 @@
 import 'package:app_frontend/components/loader.dart';
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_frontend/services/shoppingBagService.dart';
-import 'package:app_frontend/components/item/customCarousel.dart';
+import 'package:app_frontend/components/item/productImage.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
@@ -136,23 +135,15 @@ class _ParticularItemState extends State<ParticularItem> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Expanded(
-                    flex: 6,
-                    child: Carousel(
-                      boxFit: BoxFit.cover,
-                      autoplay: false,
-                      animationCurve: Curves.fastOutSlowIn,
-                      animationDuration: Duration(milliseconds: 1000),
-                      dotSize: 6.0,
-                      dotIncreasedColor: Colors.black,
-                      dotBgColor: Colors.transparent,
-                      dotPosition: DotPosition.bottomCenter,
-                      dotVerticalPadding: 10.0,
-                      showIndicator: true,
-                      indicatorBgPadding: 7.0,
-                      images: itemDetails['image'].map((image){
-                        return CustomCarouselSlider(image,buildcontext,size,colors,setError,setProductOptions);
-                      }).toList(),
-                    ),
+                  flex: 6,
+                  child: CustomProductImage(
+                      itemDetails['image'][0],
+                      buildcontext,
+                      size,
+                      colors,
+                      setError,
+                      setProductOptions
+                  ),
                 ),
                 Expanded(
                     flex: 4,

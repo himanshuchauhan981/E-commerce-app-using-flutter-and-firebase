@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'customTransition.dart';
 
-class CustomCarouselSlider extends StatefulWidget {
+class CustomProductImage extends StatefulWidget {
   final String image;
   final BuildContext buildContext;
   final dynamic sizes;
@@ -15,12 +15,12 @@ class CustomCarouselSlider extends StatefulWidget {
   final void Function(String key, bool value) setErrors;
   final void Function(String key, String value) setProductOptions;
 
-  CustomCarouselSlider(this.image, this.buildContext,this.sizes,this.colors,this.setErrors,this.setProductOptions);
+  CustomProductImage(this.image, this.buildContext,this.sizes,this.colors,this.setErrors,this.setProductOptions);
   @override
-  _CustomCarouselSliderState createState() => _CustomCarouselSliderState();
+  _CustomProductImageState createState() => _CustomProductImageState();
 }
 
-class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
+class _CustomProductImageState extends State<CustomProductImage> {
   List<Map<String, bool>> sizeList;
   List<Map<Color,bool>> colorList;
 
