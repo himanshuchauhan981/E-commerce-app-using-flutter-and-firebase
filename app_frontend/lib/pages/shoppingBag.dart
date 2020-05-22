@@ -34,6 +34,58 @@ class _ShoppingBagState extends State<ShoppingBag> {
     return colorMap[colorName];
   }
 
+  void removeItem(item,context){
+    bagItemList.removeWhere((items) => items['id'] == item['id']);
+
+    setState(() {
+      bagItemList = bagItemList;
+    });
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  void removeAlertBox(BuildContext context, Map id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0))
+          ),
+          title: Text(
+              'Are you sure you want to remove this item ?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.0
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              children: <Widget>[
+                RaisedButton(
+                  color: Colors.redAccent,
+                  onPressed: (){
+                    removeItem(id,context);
+                  },
+                  child: Text('Yes'),
+                ),
+                SizedBox(width: 10.0),
+                RaisedButton(
+                  color: Colors.green,
+                  onPressed: (){
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: Text('No'),
+                ),
+                SizedBox(width: 10.0)
+              ],
+            )
+          ],
+        );
+      }
+    );
+  }
+
   openParticularItem(item){
     Map<String,dynamic> args = new Map();
     args['itemDetails'] = item;
@@ -133,25 +185,55 @@ class _ShoppingBagState extends State<ShoppingBag> {
             ],
           ),
           SizedBox(height: 7.0),
-          ButtonTheme(
-//            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            minWidth: 200.0,
-            height: 50.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0)
-            ),
-            child: RaisedButton(
-              onPressed: (){
-                openParticularItem(item);
-              },
-              child: Text(
-                  'Edit',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                  letterSpacing: 1.0
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 35.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Ink(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.indigoAccent, width: 4.0),
+                    color: Colors.indigo[900],
+                    shape: BoxShape.circle
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20.0),
+                    onTap: (){
+                      openParticularItem(item);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Icon(
+                        Icons.edit,
+                        size: 25.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: 5.0),
+                Ink(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.red, width: 4.0),
+                      color: Colors.red[900],
+                      shape: BoxShape.circle
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20.0),
+                    onTap: (){
+                      removeAlertBox(context,item);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Icon(
+                        Icons.remove_shopping_cart,
+                        size: 25.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
         ],
