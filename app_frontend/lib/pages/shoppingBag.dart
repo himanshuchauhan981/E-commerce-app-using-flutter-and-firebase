@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
 
   String selectedSize;
   String selectedColor;
+  ShoppingBagService _shoppingBagService = new ShoppingBagService();
 
   void listBagItems(context) async {
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
@@ -34,16 +36,16 @@ class _ShoppingBagState extends State<ShoppingBag> {
     return colorMap[colorName];
   }
 
-  void removeItem(item,context){
+  void removeItem(item,context) async{
     bagItemList.removeWhere((items) => items['id'] == item['id']);
-
+    await _shoppingBagService.removeBagItems(item['id']);
     setState(() {
       bagItemList = bagItemList;
     });
     Navigator.of(context, rootNavigator: true).pop();
   }
 
-  void removeAlertBox(BuildContext context, Map id) {
+  void removeItemAlertBox(BuildContext context, Map id) {
     showDialog(
       context: context,
       builder: (BuildContext context){
@@ -102,6 +104,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
   }
 
   buildExpandedList(item) {
+    print(item['selectedSize'].toString().length);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Column(
@@ -124,7 +127,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                       ),
                       SizedBox(height: 5.0),
                       Text(
-                        item['selectedSize'],
+                        item['selectedSize'].toString().length == 0 ? 'None':item['selectedSize'],
                         style: TextStyle(
                             fontSize: 18.0,
                             letterSpacing: 1.0
@@ -221,7 +224,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(20.0),
                     onTap: (){
-                      removeAlertBox(context,item);
+                      removeItemAlertBox(context,item);
                     },
                     child: Padding(
                       padding: EdgeInsets.all(10.0),

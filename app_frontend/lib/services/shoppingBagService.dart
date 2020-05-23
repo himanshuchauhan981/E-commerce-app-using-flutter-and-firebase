@@ -37,7 +37,6 @@ class ShoppingBagService{
     String uid = await userService.getUserId();
     String msg;
     QuerySnapshot data = await firestore.collection('bags').where("userId", isEqualTo: uid).getDocuments();
-
     if(data.documents.length == 0){
       await firestore.collection('bags').add({
         'userId': uid,
@@ -51,7 +50,7 @@ class ShoppingBagService{
       msg =  "Product added to shopping bag";
     }
     else{
-      msg = await updateBagItems(productId, size, color, quantity, data);
+//      msg = await updateBagItems(productId, size, color, quantity, data);
     }
     return msg;
   }
@@ -83,4 +82,22 @@ class ShoppingBagService{
      return bagItemsList;
   }
 
+  Future<void> removeBagItems(String id) async{
+    String uid = await userService.getUserId();
+
+    await firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments().then((QuerySnapshot doc){
+      doc.documents.forEach((docRef) async{
+        List products = docRef['products'];
+        if(products.length == 1){
+          await firestore.collection('bags').document(docRef.documentID).delete();
+        }
+        else{
+          products.removeWhere((productData) => productData['id'] == id);
+          await firestore.collection('bags').document(docRef.documentID).setData({'products':products},merge:true);
+        }
+      });
+    });
+
+    print(id);
+  }
 }
