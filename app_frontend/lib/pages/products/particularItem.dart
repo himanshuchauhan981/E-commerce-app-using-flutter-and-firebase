@@ -27,6 +27,7 @@ class _ParticularItemState extends State<ParticularItem> {
   String sizeValue = "";
   String colorValue = "";
   int quantity = 1;
+  bool edit;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -48,12 +49,16 @@ class _ParticularItemState extends State<ParticularItem> {
 
   editItemDetails(){
     Map<String,dynamic> args = widget.itemDetails;
+
     setState(() {
       _id = args['itemDetails']['id'];
       itemDetails = args['itemDetails'];
       size = args['itemDetails']['size'];
       colors = args['itemDetails']['color'];
       quantity = args['itemDetails']['quantity'];
+      sizeValue = args['itemDetails']['selectedSize'];
+      colorValue = args['itemDetails']['selectedColor'];
+      edit = true;
     });
   }
 
@@ -68,6 +73,7 @@ class _ParticularItemState extends State<ParticularItem> {
         itemDetails = args['itemDetails'];
         size = args['itemDetails']['size'];
         colors = args['itemDetails']['color'];
+        edit = false;
       }
       else{
         editItemDetails();
@@ -125,8 +131,13 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   @override
-  Widget build(BuildContext buildcontext) {
+  void initState() {
+    super.initState();
     setItemDetails();
+  }
+
+  @override
+  Widget build(BuildContext buildContext) {
     return Scaffold(
       key: _scaffoldKey,
       body: SafeArea(
@@ -138,9 +149,12 @@ class _ParticularItemState extends State<ParticularItem> {
                   flex: 6,
                   child: CustomProductImage(
                       itemDetails['image'][0],
-                      buildcontext,
+                      buildContext,
                       size,
                       colors,
+                      sizeValue,
+                      colorValue,
+                      edit,
                       setError,
                       setProductOptions
                   ),
@@ -196,7 +210,7 @@ class _ParticularItemState extends State<ParticularItem> {
                                 shape: CircleBorder(),
                               ),
                               Text(
-                                "$quantity",
+                                quantity.toString(),
                                 style: TextStyle(
                                   fontSize: 26.0,
                                   fontWeight: FontWeight.bold

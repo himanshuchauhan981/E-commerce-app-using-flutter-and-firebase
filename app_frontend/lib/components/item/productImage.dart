@@ -12,10 +12,13 @@ class CustomProductImage extends StatefulWidget {
   final BuildContext buildContext;
   final dynamic sizes;
   final dynamic colors;
+  final String selectedSize;
+  final String selectedColor;
+  final bool edit;
   final void Function(String key, bool value) setErrors;
   final void Function(String key, String value) setProductOptions;
 
-  CustomProductImage(this.image, this.buildContext,this.sizes,this.colors,this.setErrors,this.setProductOptions);
+  CustomProductImage(this.image,this.buildContext,this.sizes,this.colors,this.selectedSize,this.selectedColor,this.edit,this.setErrors,this.setProductOptions);
   @override
   _CustomProductImageState createState() => _CustomProductImageState();
 }
@@ -100,14 +103,33 @@ class _CustomProductImageState extends State<CustomProductImage> {
   @override
   void initState() {
     super.initState();
+  }
+
+  setItemDetails(){
     setState(() {
       sizeList = setSizeList(widget.sizes);
       colorList = setColorList(widget.colors);
     });
+    if(widget.edit){
+      sizeList.forEach((values){
+        String key = values.keys.toList()[0];
+        if(key == widget.selectedSize){
+          values[key] = true;
+        }
+      });
+      colorList.forEach((values){
+        Color color = Color(int.parse("0xff${widget.selectedColor}"));
+        Color key = values.keys.toList()[0];
+        if(key == color){
+          values[key] = true;
+        }
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    setItemDetails();
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40.0), bottomRight: Radius.circular(40.0)),
@@ -218,7 +240,6 @@ class _CustomProductImageState extends State<CustomProductImage> {
                     ),
                   ],
                 )
-
               ],
             ),
           )
