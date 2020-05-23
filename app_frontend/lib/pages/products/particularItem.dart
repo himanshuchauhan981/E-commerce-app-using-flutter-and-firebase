@@ -94,7 +94,7 @@ class _ParticularItemState extends State<ParticularItem> {
 
   addToShoppingBag() async{
     if(colors.length == 0) setError('color', false);
-    else if(size.length == 0) setError('size', false);
+    if(size.length == 0) setError('size', false);
     bool errorValue = errors.containsValue(true);
     if(errorValue){
       if(errors['size']) showInSnackBar('Select size',Colors.red);

@@ -11,10 +11,9 @@ class ShoppingBagService{
     String msg;
     List productItems = data.documents.map((doc){
       documentId = doc.documentID;
-      return doc['products'][0];
-    }).toList();
+      return doc['products'];
+    }).toList()[0];
     List product = productItems.where((test)=> test['id'] == productId).toList();
-
     if(product.length != 0){
       productItems.forEach((items){
         if(items['id'] == productId){
@@ -50,7 +49,7 @@ class ShoppingBagService{
       msg =  "Product added to shopping bag";
     }
     else{
-//      msg = await updateBagItems(productId, size, color, quantity, data);
+      msg = await updateBagItems(productId, size, color, quantity, data);
     }
     return msg;
   }

@@ -20,19 +20,30 @@ class _ShoppingBagState extends State<ShoppingBag> {
 
   String selectedSize;
   String selectedColor;
+  String totalPrice;
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
 
   void listBagItems(context) async {
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
     setState(() {
       bagItemList = args['bagItems'];
+      totalPrice = setTotalPrice(args['bagItems']);
     });
+  }
+
+  String setTotalPrice(List items){
+    int totalPrice = 0;
+    items.forEach((item){
+      totalPrice = totalPrice + (int.parse(item['price']) * item['quantity']);
+    });
+    return totalPrice.toString();
   }
 
   String colorList(String colorName){
     Map colorMap = new Map();
     colorMap['000000'] = 'Black';
     colorMap['0000ff'] = 'Blue';
+    colorMap[''] = 'None';
     return colorMap[colorName];
   }
 
@@ -54,30 +65,54 @@ class _ShoppingBagState extends State<ShoppingBag> {
             borderRadius: BorderRadius.all(Radius.circular(15.0))
           ),
           title: Text(
-              'Are you sure you want to remove this item ?',
+            'Remove from cart',
             textAlign: TextAlign.center,
             style: TextStyle(
+              fontSize: 24.0,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.0
+            ),
+          ),
+          content: Text(
+            'This product will be removed from cart',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0
             ),
           ),
           actions: <Widget>[
             Row(
               children: <Widget>[
-                RaisedButton(
-                  color: Colors.redAccent,
-                  onPressed: (){
-                    removeItem(id,context);
-                  },
-                  child: Text('Yes'),
+                ButtonTheme(
+                  minWidth: (MediaQuery.of(context).size.width - 120) /2,
+                  child: FlatButton(
+                    onPressed: (){
+                      removeItem(id,context);
+                    },
+                    child: Text(
+                      'Remove',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.redAccent
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(width: 10.0),
-                RaisedButton(
-                  color: Colors.green,
-                  onPressed: (){
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                  child: Text('No'),
+                ButtonTheme(
+                  minWidth: (MediaQuery.of(context).size.width - 120) /2,
+                  child: FlatButton(
+                    onPressed: (){
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.blue
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(width: 10.0)
               ],
@@ -104,7 +139,6 @@ class _ShoppingBagState extends State<ShoppingBag> {
   }
 
   buildExpandedList(item) {
-    print(item['selectedSize'].toString().length);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15.0),
       child: Column(
@@ -256,6 +290,60 @@ class _ShoppingBagState extends State<ShoppingBag> {
       key: _scaffoldKey,
       appBar: header('Shopping Bag', _scaffoldKey, showCartIcon, context),
       drawer: sidebar(context),
+      bottomNavigationBar: BottomAppBar(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20.0, 3.0, 20.0, 0.0),
+          child: Container(
+            height: 100.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Total',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        Text(
+                            '\$ $totalPrice.00',
+                          style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w600
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  ButtonTheme(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(7.0))
+                    ),
+                    minWidth: MediaQuery.of(context).size.width,
+                    height: 50.0,
+                    child: RaisedButton(
+                      color: Color(0xff313134),
+                      onPressed: (){},
+                      child: Text(
+                        'CONTINUE',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+            ),
+          ),
+        ),
+      ),
       body: Container(
         child: ListView.builder(
           itemCount: bagItemList.length,
