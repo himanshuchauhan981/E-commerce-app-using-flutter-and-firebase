@@ -9,9 +9,10 @@ import 'package:app_frontend/components/shop.dart';
 import 'package:app_frontend/pages/products/items.dart';
 import 'package:app_frontend/pages/products/subCategory.dart';
 import 'package:app_frontend/pages/shoppingBag.dart';
+import 'package:app_frontend/pages/checkout/creditCard.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/',
+  initialRoute: '/checkout',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
@@ -21,7 +22,8 @@ void main() => runApp(MaterialApp(
     '/subCategory': (context) => SubCategory(),
     '/items': (context) => Items(),
     '/particularItem': (context) => ParticularItem(),
-    '/bag': (context) => ShoppingBag()
+    '/bag': (context) => ShoppingBag(),
+    '/checkout': (context) => AddCreditCard()
   },
 
 ));

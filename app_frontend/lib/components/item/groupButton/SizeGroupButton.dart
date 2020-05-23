@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class SizeGroupButton extends StatefulWidget {
   final List<Map<String, bool>> selectList;
   final int index;
