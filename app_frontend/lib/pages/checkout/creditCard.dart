@@ -17,6 +17,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
   PaymentCard _paymentCard = new PaymentCard();
   GlobalKey _formKey = new GlobalKey<FormState>();
   bool autoValidate = false;
+  String iconColorState = "";
 
   @override
   void initState() {
@@ -150,9 +151,17 @@ class _AddCreditCardState extends State<AddCreditCard> {
                   ListTile(
                     leading: Padding(
                       padding: EdgeInsets.only(top: 10.0),
-                      child: Icon(Icons.credit_card),
+                      child: Icon(
+                        Icons.credit_card,
+                        color: iconColorState == 'cardNumber'? Colors.black : Colors.grey,
+                      ),
                     ),
                     title: TextFormField(
+                      onTap: (){
+                        setState(() {
+                          iconColorState = 'cardNumber';
+                        });
+                      },
                       onChanged: (text){
                         setState(() {
                           if(text.length == 0) cardNumber = 'XXXX XXXX XXXX XXXX';
@@ -173,9 +182,17 @@ class _AddCreditCardState extends State<AddCreditCard> {
                   ListTile(
                     leading: Padding(
                       padding: EdgeInsets.only(top: 10.0),
-                      child: Icon(Icons.calendar_today),
+                      child: Icon(
+                        Icons.calendar_today,
+                        color: iconColorState == 'expiryDate'? Colors.black : Colors.grey,
+                      ),
                     ),
                     title: TextFormField(
+                      onTap: (){
+                        setState(() {
+                          iconColorState = 'expiryDate';
+                        });
+                      },
                       onChanged: (text){
                         setState(() {
                           if(text.length == 0) expiryDate = 'MM/YY';
@@ -206,11 +223,16 @@ class _AddCreditCardState extends State<AddCreditCard> {
                       child: Image.asset(
                         'assets/cvv.png',
                         width: 26.0,
-                        color: Colors.grey,
+                        color: iconColorState == 'cvvCode'? Colors.black : Colors.grey,
                       ),
                     ),
                     title: TextFormField(
                       obscureText: true,
+                      onTap: (){
+                        setState(() {
+                          iconColorState = 'cvvCode';
+                        });
+                      },
                       onChanged: (text){
                         setState(() {
                           if(text.length == 0) cvvCode = 'CVV/CVC';
@@ -234,9 +256,17 @@ class _AddCreditCardState extends State<AddCreditCard> {
                   ListTile(
                     leading: Padding(
                       padding: EdgeInsets.only(top: 10.0),
-                      child: Icon(Icons.person),
+                      child: Icon(
+                        Icons.person,
+                        color: iconColorState == 'cardHolderName'? Colors.black : Colors.grey,
+                      ),
                     ),
                     title: TextFormField(
+                      onTap: (){
+                        setState(() {
+                          iconColorState = 'cardHolderName';
+                        });
+                      },
                       onChanged: (text){
                         setState(() {
                           print(text);
