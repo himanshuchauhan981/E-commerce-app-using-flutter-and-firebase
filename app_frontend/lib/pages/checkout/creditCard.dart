@@ -58,7 +58,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
             GestureDetector(
               onTap: validateCardDetails,
               child: Text(
-                'Next',
+                'Done',
                 style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
       ),
       body: Container(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
+          padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
           child: Form(
             key: _formKey,
             autovalidate: autoValidate,

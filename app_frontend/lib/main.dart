@@ -1,3 +1,4 @@
+import 'package:app_frontend/pages/checkout/shipping.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ import 'package:app_frontend/pages/shoppingBag.dart';
 import 'package:app_frontend/pages/checkout/creditCard.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/checkout',
+  initialRoute: '/address',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
@@ -23,7 +24,8 @@ void main() => runApp(MaterialApp(
     '/items': (context) => Items(),
     '/particularItem': (context) => ParticularItem(),
     '/bag': (context) => ShoppingBag(),
-    '/checkout': (context) => AddCreditCard()
+    '/addCreditCard': (context) => AddCreditCard(),
+    '/address': (context) => ShippingAddress()
   },
 
 ));
