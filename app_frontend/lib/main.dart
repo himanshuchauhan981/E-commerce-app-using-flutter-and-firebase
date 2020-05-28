@@ -1,5 +1,3 @@
-import 'package:app_frontend/pages/checkout/shipping.dart';
-import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -10,10 +8,14 @@ import 'package:app_frontend/components/shop.dart';
 import 'package:app_frontend/pages/products/items.dart';
 import 'package:app_frontend/pages/products/subCategory.dart';
 import 'package:app_frontend/pages/shoppingBag.dart';
-import 'package:app_frontend/pages/checkout/creditCard.dart';
+import 'package:app_frontend/pages/checkout/addCreditCard.dart';
+import 'package:app_frontend/pages/checkout/paymentMethod.dart';
+import 'package:app_frontend/pages/checkout/shippingAddress.dart';
+import 'package:app_frontend/pages/checkout/shippingMethod.dart';
+import 'package:app_frontend/pages/products/particularItem.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/address',
+  initialRoute: '/paymentMethod',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
@@ -25,7 +27,9 @@ void main() => runApp(MaterialApp(
     '/particularItem': (context) => ParticularItem(),
     '/bag': (context) => ShoppingBag(),
     '/addCreditCard': (context) => AddCreditCard(),
-    '/address': (context) => ShippingAddress()
+    '/address': (context) => ShippingAddress(),
+    '/shippingMethod': (context) => ShippingMethod(),
+    '/paymentMethod': (context) => PaymentMethod()
   },
 
 ));

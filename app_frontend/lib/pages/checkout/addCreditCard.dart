@@ -29,7 +29,6 @@ class _AddCreditCardState extends State<AddCreditCard> {
   void validateCardDetails(){
     final FormState form = _formKey.currentState;
     if(!form.validate()){
-      print('bye');
       setState(() {
         autoValidate = true;
       });
