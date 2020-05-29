@@ -328,7 +328,9 @@ class _ShoppingBagState extends State<ShoppingBag> {
                     height: 50.0,
                     child: RaisedButton(
                       color: Color(0xff313134),
-                      onPressed: (){},
+                      onPressed: (){
+                        Navigator.of(context).pushNamed('/address');
+                      },
                       child: Text(
                         'CONTINUE',
                         style: TextStyle(

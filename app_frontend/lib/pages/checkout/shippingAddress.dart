@@ -1,3 +1,8 @@
+import 'dart:collection';
+
+import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
+import 'package:app_frontend/components/checkout/shippingAddressInput.dart';
+import 'package:app_frontend/services/checkoutService.dart';
 import 'package:flutter/material.dart';
 
 class ShippingAddress extends StatefulWidget {
@@ -6,43 +11,43 @@ class ShippingAddress extends StatefulWidget {
 }
 
 class _ShippingAddressState extends State<ShippingAddress> {
-  GlobalKey _formKey = new GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   bool autoValidate = false;
+  bool visibleInput = true;
+  CheckoutService _checkoutService = new CheckoutService();
+  HashMap addressValues = new HashMap();
+
+  showSavedAddress(){
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Text('No address saved'),
+        ],
+      ),
+    );
+  }
+
+  setAddressValues(key, value){
+    print(key);
+    print(value);
+    addressValues['key'] = value;
+  }
+
+  validateInput(){
+    if(_formKey.currentState.validate()){
+      _formKey.currentState.save();
+    }
+    else{
+      setState(() {
+        autoValidate = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black
-                ),
-              ),
-            ),
-            GestureDetector(
-              child: Text(
-                  'Next',
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
-                  )
-              ),
-            )
-          ],
-        ),
-      ),
+      appBar: CheckoutAppBar('Cancel','Next'),
       body: Container(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
@@ -76,94 +81,31 @@ class _ShippingAddressState extends State<ShippingAddress> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+                  Visibility(
+                    visible: visibleInput,
+                    child: ShippingAddressInput(setAddressValues),
+                  ),
+                  Visibility(
+                    visible: !visibleInput,
+                    child: showSavedAddress(),
+                  ),
+                  Center(
+                    child: ButtonTheme(
+                      minWidth: MediaQuery.of(context).size.width /3.2,
+                      child: OutlineButton(
+                        onPressed: (){validateInput();},
+
+                        child: Text(
+                          'Save',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        borderSide: BorderSide(color: Colors.black,width: 1.8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black)
-                      ),
-                      hintText: 'Name',
-                      prefixIcon: Icon(Icons.person)
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                        ),
-                        hintText: 'Email',
-                        prefixIcon: Icon(Icons.email)
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                        ),
-                        hintText: 'Address',
-                        prefixIcon: Icon(Icons.place)
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                        ),
-                        hintText: 'Apt',
-                        prefixIcon: Icon(Icons.home)
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                        ),
-                        hintText: 'Zip Code',
-                        prefixIcon: Icon(Icons.email)
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                        ),
-                        hintText: 'City',
-                        prefixIcon: Icon(Icons.location_city)
-                    ),
-                  ),
-                  SizedBox(height: 15.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black)
-                        ),
-                        hintText: 'State',
-                        prefixIcon: Icon(Icons.location_city)
                     ),
                   )
                 ],
