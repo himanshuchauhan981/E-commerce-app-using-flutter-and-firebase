@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ShippingAddressInput extends StatefulWidget {
-  final void Function (String key,dynamic value) setAddressValues;
+  final HashMap addressValues;
 
-  ShippingAddressInput(this.setAddressValues);
+  ShippingAddressInput(this.addressValues);
   @override
   _ShippingAddressInputState createState() => _ShippingAddressInputState();
 }
@@ -26,6 +26,9 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
       errorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: Colors.redAccent)
       ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.redAccent)
+      ),
       hintText: hintText,
       prefixIcon: Icon(textIcon),
     );
@@ -36,98 +39,125 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
     ValidateService _validateService = new ValidateService();
     return Column(
       children: <Widget>[
-        Theme(
-          child: TextFormField(
-            style: TextStyle(fontSize: 16.0),
-            decoration: customBorder('Full Name',Icons.person),
-            keyboardType: TextInputType.text,
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) => widget.setAddressValues('fullName',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              style: TextStyle(fontSize: 16.0),
+              decoration: customBorder('Full Name',Icons.person),
+              keyboardType: TextInputType.text,
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) => widget.addressValues['fullName'] = val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black),
         ),
         SizedBox(height: 15.0),
-        Theme(
-          child: TextFormField(
-            style: TextStyle(fontSize: 16.0),
-            decoration: customBorder('Mobile number',Icons.call),
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              WhitelistingTextInputFormatter(RegExp(r"^[^._]+$"))
-            ],
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) => widget.setAddressValues('mobileNumber',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              style: TextStyle(fontSize: 16.0),
+              autofocus: true,
+              decoration: customBorder('Mobile number',Icons.call),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                WhitelistingTextInputFormatter(RegExp(r"^[^._]+$")),
+                LengthLimitingTextInputFormatter(10)
+              ],
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) => widget.addressValues['mobileNumber'] = val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black)
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black)
         ),
         SizedBox(height: 15.0),
-        Theme(
-          child: TextFormField(
-            style: TextStyle(fontSize: 16.0),
-            decoration: customBorder('PIN code', Icons.code),
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              WhitelistingTextInputFormatter(RegExp(r"^[^._]+$"))
-            ],
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) => widget.setAddressValues('pinCode',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              style: TextStyle(fontSize: 16.0),
+              decoration: customBorder('PIN code', Icons.code),
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                WhitelistingTextInputFormatter(RegExp(r"^[^._]+$")),
+                LengthLimitingTextInputFormatter(6)
+              ],
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) => widget.addressValues['pinCode']= val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black),
         ),
         SizedBox(height: 15.0),
-        Theme(
-          child: TextFormField(
-            style: TextStyle(fontSize: 16.0),
-            decoration: customBorder('Flat, House no, Apartment', Icons.home),
-            keyboardType: TextInputType.text,
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) =>widget.setAddressValues('address',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              style: TextStyle(fontSize: 16.0),
+              decoration: customBorder('Flat, House no, Apartment', Icons.home),
+              keyboardType: TextInputType.text,
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) =>widget.addressValues['address']= val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black),
         ),
         SizedBox(height: 15.0),
-        Theme(
-          child: TextFormField(
-            style: TextStyle(fontSize: 16.0),
-            decoration: customBorder('Area, Colony, Street, Sector, Village', Icons.location_city),
-            keyboardType: TextInputType.text,
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) => widget.setAddressValues('area',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              style: TextStyle(fontSize: 16.0),
+              decoration: customBorder('Area, Colony, Street, Sector, Village', Icons.location_city),
+              keyboardType: TextInputType.text,
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) => widget.addressValues['area']= val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black),
         ),
         SizedBox(height: 15.0),
-        Theme(
-          child: TextFormField(
-            decoration: customBorder('Landmark', Icons.location_city),
-            style: TextStyle(fontSize: 16.0),
-            keyboardType: TextInputType.text,
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) => widget.setAddressValues('landMark',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              decoration: customBorder('Landmark', Icons.location_city),
+              style: TextStyle(fontSize: 16.0),
+              keyboardType: TextInputType.text,
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) => widget.addressValues['landMark']= val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black),
         ),
         SizedBox(height: 15.0),
-        Theme(
-          child: TextFormField(
-            decoration: customBorder('City', Icons.location_city),
-            style: TextStyle(fontSize: 16.0),
-            keyboardType: TextInputType.text,
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) => widget.setAddressValues('city',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              decoration: customBorder('City', Icons.location_city),
+              style: TextStyle(fontSize: 16.0),
+              keyboardType: TextInputType.text,
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) => widget.addressValues['city']= val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black),
         ),
         SizedBox(height: 15.0),
-        Theme(
-          child: TextFormField(
-            decoration: customBorder('State', Icons.location_city),
-            style: TextStyle(fontSize: 16.0),
-            keyboardType: TextInputType.text,
-            validator: (value) => _validateService.isEmptyField(value),
-            onSaved: (String val) => widget.setAddressValues('state',val)
+        SizedBox(
+          height: 80.0,
+          child: Theme(
+            child: TextFormField(
+              decoration: customBorder('State', Icons.location_city),
+              style: TextStyle(fontSize: 16.0),
+              keyboardType: TextInputType.text,
+              validator: (value) => _validateService.isEmptyField(value),
+              onSaved: (String val) => widget.addressValues['state']= val
+            ),
+            data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
-          data: Theme.of(context).copyWith(primaryColor: Colors.black),
         ),
       ],
     );

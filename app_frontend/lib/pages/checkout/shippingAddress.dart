@@ -27,15 +27,10 @@ class _ShippingAddressState extends State<ShippingAddress> {
     );
   }
 
-  setAddressValues(key, value){
-    print(key);
-    print(value);
-    addressValues['key'] = value;
-  }
-
-  validateInput(){
+  validateInput() async{
     if(_formKey.currentState.validate()){
       _formKey.currentState.save();
+      await _checkoutService.newShippingAddress(addressValues);
     }
     else{
       setState(() {
@@ -83,7 +78,10 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   SizedBox(height: 10.0),
                   Visibility(
                     visible: visibleInput,
-                    child: ShippingAddressInput(setAddressValues),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0,vertical: 10.0),
+                      child: ShippingAddressInput(addressValues),
+                    ),
                   ),
                   Visibility(
                     visible: !visibleInput,
