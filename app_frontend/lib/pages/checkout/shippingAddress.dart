@@ -15,10 +15,31 @@ class _ShippingAddressState extends State<ShippingAddress> {
   bool autoValidate = false;
   bool visibleInput = false;
   int selectedAddress;
-  int tempLength = 0;
   CheckoutService _checkoutService = new CheckoutService();
   HashMap addressValues = new HashMap();
   List shippingAddress = new List();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  checkoutAddress(){
+    if(selectedAddress == null){
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.black,
+          content: new Text('Select any address'),
+          action: SnackBarAction(
+            label:'Close',
+            textColor: Colors.white,
+            onPressed: (){
+              _scaffoldKey.currentState.removeCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+    }
+    else{
+      Navigator.of(context).pushNamed('/shippingMethod');
+    }
+  }
 
   saveNewAddress(){
     return Container(
@@ -191,7 +212,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CheckoutAppBar('Cancel','Next'),
+      key: _scaffoldKey,
+      appBar: CheckoutAppBar('Cancel','Next',this.checkoutAddress),
       body: Container(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
