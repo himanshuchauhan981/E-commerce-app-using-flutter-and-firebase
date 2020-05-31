@@ -42,4 +42,11 @@ class CheckoutService {
       await updateAddressData(data,address);
     }
   }
+
+  Future<List> listShippingAddress() async{
+    String uid = await _userService.getUserId();
+
+    QuerySnapshot docRef = await _firestore.collection('shippingAddress').where('userId',isEqualTo: uid).getDocuments();
+    return docRef.documents[0].data['address'];
+  }
 }

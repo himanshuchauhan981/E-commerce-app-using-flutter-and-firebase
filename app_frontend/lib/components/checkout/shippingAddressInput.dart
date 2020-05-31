@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 
 class ShippingAddressInput extends StatefulWidget {
   final HashMap addressValues;
+  final void Function () validateInput;
 
-  ShippingAddressInput(this.addressValues);
+  ShippingAddressInput(this.addressValues, this.validateInput);
   @override
   _ShippingAddressInputState createState() => _ShippingAddressInputState();
 }
@@ -52,13 +53,12 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
         ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         SizedBox(
           height: 80.0,
           child: Theme(
             child: TextFormField(
               style: TextStyle(fontSize: 16.0),
-              autofocus: true,
               decoration: customBorder('Mobile number',Icons.call),
               keyboardType: TextInputType.number,
               inputFormatters: [
@@ -71,7 +71,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black)
           ),
         ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         SizedBox(
           height: 80.0,
           child: Theme(
@@ -89,7 +89,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
         ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         SizedBox(
           height: 80.0,
           child: Theme(
@@ -103,7 +103,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
         ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         SizedBox(
           height: 80.0,
           child: Theme(
@@ -117,7 +117,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
         ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         SizedBox(
           height: 80.0,
           child: Theme(
@@ -131,7 +131,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
         ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         SizedBox(
           height: 80.0,
           child: Theme(
@@ -145,7 +145,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
         ),
-        SizedBox(height: 15.0),
+        SizedBox(height: 8.0),
         SizedBox(
           height: 80.0,
           child: Theme(
@@ -159,6 +159,24 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),
         ),
+        ButtonTheme(
+          minWidth: MediaQuery.of(context).size.width /3.2,
+          child: OutlineButton(
+            onPressed: (){
+              widget.validateInput();
+            },
+            child: Text(
+              'Save',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
+            borderSide: BorderSide(color: Colors.black,width: 1.8),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          ),
+        )
       ],
     );
   }
