@@ -49,4 +49,31 @@ class CheckoutService {
     QuerySnapshot docRef = await _firestore.collection('shippingAddress').where('userId',isEqualTo: uid).getDocuments();
     return docRef.documents[0].data['address'];
   }
+
+  Future<void> newCreditCardDetails(String cardNumber, String expiryDate, String cardHolderName) async{
+    String uid = await _userService.getUserId();
+    QuerySnapshot creditCardData = await _firestore.collection('creditCard').where("cardNumber", isEqualTo: cardNumber).getDocuments();
+
+    print(creditCardData.documents.length);
+    if(creditCardData.documents.length == 0){
+      await _firestore.collection('creditCard').add({
+        'cardNumber': cardNumber,
+        'expiryDate': expiryDate,
+        'cardHolderName': cardHolderName,
+        'userId': uid
+      });
+    }
+  }
+
+  Future<List> listCreditCardDetails() async{
+    String uid = await _userService.getUserId();
+    List<String> cardNumberList = new List<String>();
+    QuerySnapshot cardData = await _firestore.collection('creditCard').where('userId',isEqualTo: uid).getDocuments();
+    String cardNumber;
+    cardData.documents.forEach((docRef){
+      cardNumber = docRef.data['cardNumber'].toString().replaceAll(new RegExp(r"\s+\b|\b\s"),'');
+      cardNumberList.add(cardNumber.substring(cardNumber.length - 4));
+    });
+    return cardNumberList;
+  }
 }

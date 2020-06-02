@@ -1,3 +1,5 @@
+import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
+import 'package:app_frontend/services/checkoutService.dart';
 import 'package:app_frontend/services/creditCardFormatter.dart';
 import 'package:app_frontend/services/creditCardValidation.dart';
 import 'package:flutter/material.dart';
@@ -14,21 +16,26 @@ class _AddCreditCardState extends State<AddCreditCard> {
   String cardHolderName ='CardHolder name';
   String cvvCode = 'CVV/CVC';
   bool isCvvFocused = false;
-  PaymentCard _paymentCard = new PaymentCard();
-  GlobalKey _formKey = new GlobalKey<FormState>();
   bool autoValidate = false;
   String iconColorState = "";
 
+  PaymentCard _paymentCard = new PaymentCard();
+  CheckoutService _checkoutService = new CheckoutService();
+  GlobalKey _formKey = new GlobalKey<FormState>();
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _paymentCard.type = CardType.Others;
   }
 
-  void validateCardDetails(){
+  void addNewCard() async{
     final FormState form = _formKey.currentState;
-    if(!form.validate()){
+    if(form.validate()){
+      await _checkoutService.newCreditCardDetails(cardNumber, expiryDate, cardHolderName);
+      Navigator.of(context).pushNamed('/paymentMethod');
+    }
+    else{
       setState(() {
         autoValidate = true;
       });
@@ -38,36 +45,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Cancel',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black
-              )
-            ),
-            GestureDetector(
-              onTap: validateCardDetails,
-              child: Text(
-                'Done',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black
-                )
-              ),
-            )
-          ],
-        ),
-      ),
+      appBar: CheckoutAppBar('Cancel','Next',this.addNewCard),
       body: Container(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
@@ -79,7 +57,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Add a Card',
+                    'Add new Card',
                     style: TextStyle(
                       fontSize: 35.0,
                       letterSpacing: 1.0,
@@ -90,12 +68,14 @@ class _AddCreditCardState extends State<AddCreditCard> {
                     padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 20.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        boxShadow: [BoxShadow(
-                          color: Colors.black54,
-                          blurRadius: 2.0,
-                          spreadRadius: 0.0,
-                          offset: Offset(2.0, 2.0), // shadow direction: bottom right
-                        )],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black54,
+                            blurRadius: 2.0,
+                            spreadRadius: 0.0,
+                            offset: Offset(2.0, 2.0),
+                          )
+                        ],
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.black54,
                       ),
@@ -171,6 +151,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
                         labelText: 'Card Number'
                       ),
                       keyboardType: TextInputType.number,
+                      validator: CreditCardValidation.validateCardNumber,
                       inputFormatters: [
                         WhitelistingTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(16),
@@ -210,45 +191,8 @@ class _AddCreditCardState extends State<AddCreditCard> {
                       validator: CreditCardValidation.validateDate,
                       onSaved: (value){
                         List<int> expiryDate = CreditCardValidation.getExpiryDate(value);
-                        print(expiryDate);
                         _paymentCard.month = expiryDate[0];
                         _paymentCard.year = expiryDate[1];
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    leading: Padding(
-                      padding: EdgeInsets.only(top: 10.0),
-                      child: Image.asset(
-                        'assets/cvv.png',
-                        width: 26.0,
-                        color: iconColorState == 'cvvCode'? Colors.black : Colors.grey,
-                      ),
-                    ),
-                    title: TextFormField(
-                      obscureText: true,
-                      onTap: (){
-                        setState(() {
-                          iconColorState = 'cvvCode';
-                        });
-                      },
-                      onChanged: (text){
-                        setState(() {
-                          if(text.length == 0) cvvCode = 'CVV/CVC';
-                          else cvvCode = "*"*text.length;
-                        });
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'CVV'
-                      ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4)
-                      ],
-                      validator: CreditCardValidation.validateCVV,
-                      onSaved: (value){
-                        _paymentCard.cvv = int.parse(value);
                       },
                     ),
                   ),
@@ -268,7 +212,6 @@ class _AddCreditCardState extends State<AddCreditCard> {
                       },
                       onChanged: (text){
                         setState(() {
-                          print(text);
                           if(text.length == 0) cardHolderName = 'CardHolder name';
                           else cardHolderName = text;
                         });

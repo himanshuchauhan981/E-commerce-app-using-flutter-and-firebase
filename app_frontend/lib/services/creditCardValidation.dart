@@ -1,6 +1,6 @@
 class ErrorString{
   static const String reqField = 'This field is required';
-
+  static const String invalidCardNumber = 'Card is invalid';
 }
 
 enum CardType{
@@ -44,7 +44,6 @@ class CreditCardValidation{
   }
 
   static String validateDate(String value){
-    print(value);
     if(value.isEmpty){
       return ErrorString.reqField;
     }
@@ -111,5 +110,37 @@ class CreditCardValidation{
     int fourDigitsYear = convertYearTo4Digits(year);
     var now = DateTime.now();
     return fourDigitsYear < now.year;
+  }
+
+  static String formatCardNumber(String text){
+    RegExp exp = new RegExp(r"[^0-9]");
+    return text.replaceAll(exp,'');
+
+  }
+
+  static String validateCardNumber(String input){
+    if(input.isEmpty){
+      return ErrorString.reqField;
+    }
+
+    input = formatCardNumber(input);
+    if(input.length < 12){
+      return ErrorString.invalidCardNumber;
+    }
+
+    int sum = 0;
+    int length = input.length;
+    for (var i = 0; i < length; i++) {
+      int digit = int.parse(input[length - i - 1]);
+      if (i % 2 == 1) {
+        digit *= 2;
+      }
+      sum += digit > 9 ? (digit - 9) : digit;
+    }
+
+    if (sum % 10 == 0) {
+      return null;
+    }
+    return ErrorString.invalidCardNumber;
   }
 }
