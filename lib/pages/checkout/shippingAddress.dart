@@ -37,7 +37,10 @@ class _ShippingAddressState extends State<ShippingAddress> {
       );
     }
     else{
-      Navigator.of(context).pushNamed('/shippingMethod');
+      Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+
+      args['shippingAddress'] = shippingAddress[selectedAddress];
+      Navigator.of(context).pushNamed('/shippingMethod', arguments: args);
     }
   }
 

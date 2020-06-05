@@ -11,7 +11,9 @@ class _ShippingMethodState extends State<ShippingMethod> {
   String selectedShippingMethod = 'UPS Ground';
 
   checkoutShippingMethod(){
-    Navigator.of(context).pushNamed('/paymentMethod');
+    Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+    args['shippingMethod'] = selectedShippingMethod;
+    Navigator.of(context).pushNamed('/paymentMethod', arguments: args);
   }
 
   @override

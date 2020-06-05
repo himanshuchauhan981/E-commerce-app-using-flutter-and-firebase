@@ -15,7 +15,9 @@ class _PaymentMethodState extends State<PaymentMethod> {
 
   checkoutPaymentMethod(){
     if(selectedPaymentCard != null){
-      Navigator.pushNamed(context, '/placeOrder');
+      Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+      args['selectedCard'] = selectedPaymentCard;
+      Navigator.pushNamed(context, '/placeOrder',arguments: args);
     }
     else{
       _scaffoldKey.currentState.showSnackBar(

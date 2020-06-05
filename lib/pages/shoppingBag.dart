@@ -329,7 +329,9 @@ class _ShoppingBagState extends State<ShoppingBag> {
                     child: RaisedButton(
                       color: Color(0xff313134),
                       onPressed: (){
-                        Navigator.of(context).pushNamed('/address');
+                        Map<String,dynamic> args = new Map<String, dynamic>();
+                        args['price'] = totalPrice;
+                        Navigator.of(context).pushNamed('/address',arguments: args);
                       },
                       child: Text(
                         'CONTINUE',
