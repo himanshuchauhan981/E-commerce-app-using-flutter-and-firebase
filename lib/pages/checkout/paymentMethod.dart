@@ -10,11 +10,27 @@ class PaymentMethod extends StatefulWidget {
 class _PaymentMethodState extends State<PaymentMethod> {
   CheckoutService _checkoutService = new CheckoutService();
   List<String> cardNumberList = new List<String>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String selectedPaymentCard;
 
   checkoutPaymentMethod(){
     if(selectedPaymentCard != null){
       Navigator.pushNamed(context, '/placeOrder');
+    }
+    else{
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.black,
+          content: new Text('Select any address'),
+          action: SnackBarAction(
+            label:'Close',
+            textColor: Colors.white,
+            onPressed: (){
+              _scaffoldKey.currentState.removeCurrentSnackBar();
+            },
+          ),
+        ),
+      );
     }
   }
 

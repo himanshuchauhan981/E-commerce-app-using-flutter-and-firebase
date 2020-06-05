@@ -16,7 +16,7 @@ import 'package:app_frontend/pages/checkout/shippingMethod.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/paymentMethod',
+  initialRoute: '/',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),

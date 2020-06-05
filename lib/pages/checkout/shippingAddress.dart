@@ -43,15 +43,15 @@ class _ShippingAddressState extends State<ShippingAddress> {
 
   saveNewAddress(){
     return Container(
-      alignment: Alignment.center,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 30.0),
-        child: Column(
-          children: <Widget>[
-            Text(
-              'No address saved',
-              style: TextStyle(
-                fontSize: 20.0,
+        alignment: Alignment.center,
+        child: Padding(
+            padding: const EdgeInsets.only(top: 30.0),
+            child: Column(
+                children: <Widget>[
+                Text(
+                'No address saved',
+                style: TextStyle(
+                    fontSize: 20.0,
               ),
             ),
             SizedBox(height: 20.0),

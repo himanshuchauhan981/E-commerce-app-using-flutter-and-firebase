@@ -29,6 +29,9 @@ class _CheckoutAppBarState extends State<CheckoutAppBar> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+              },
               child: Text(
                 widget.leftButtonText,
                 style: TextStyle(
