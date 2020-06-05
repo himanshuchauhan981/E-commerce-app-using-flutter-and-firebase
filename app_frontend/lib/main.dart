@@ -1,3 +1,4 @@
+import 'package:app_frontend/pages/checkout/placeOrder.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -29,7 +30,8 @@ void main() => runApp(MaterialApp(
     '/addCreditCard': (context) => AddCreditCard(),
     '/address': (context) => ShippingAddress(),
     '/shippingMethod': (context) => ShippingMethod(),
-    '/paymentMethod': (context) => PaymentMethod()
+    '/paymentMethod': (context) => PaymentMethod(),
+    '/placeOrder': (context) => PlaceOrder()
   },
 
 ));

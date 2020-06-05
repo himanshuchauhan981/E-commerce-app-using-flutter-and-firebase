@@ -1,5 +1,4 @@
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
-import 'package:app_frontend/pages/checkout/addCreditCard.dart';
 import 'package:app_frontend/services/checkoutService.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +9,14 @@ class PaymentMethod extends StatefulWidget {
 
 class _PaymentMethodState extends State<PaymentMethod> {
   CheckoutService _checkoutService = new CheckoutService();
-  List<String> cardNumberList;
+  List<String> cardNumberList = new List<String>();
+  String selectedPaymentCard;
 
-  checkoutPaymentMethod(){ }
+  checkoutPaymentMethod(){
+    if(selectedPaymentCard != null){
+      Navigator.pushNamed(context, '/placeOrder');
+    }
+  }
 
   listPaymentMethod() async{
     List data = await _checkoutService.listCreditCardDetails();
@@ -21,9 +25,32 @@ class _PaymentMethodState extends State<PaymentMethod> {
     });
   }
 
-  saveNewCardDetails(){ }
-
-  showSavedCreditCard(){}
+  showSavedCreditCard(){
+    return Container(
+      child: Column(
+        children: <Widget>[
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: cardNumberList.length,
+            itemBuilder: (BuildContext context, int index){
+              var item = cardNumberList[index];
+              return CheckboxListTile(
+                secondary: Icon(Icons.credit_card),
+                title: Text('Visa Ending with $item'),
+                onChanged: (value){
+                  setState(() {
+                    selectedPaymentCard = item;
+                  });
+                },
+                value: selectedPaymentCard == item,
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
 
   animatePaymentContainers(){
     return AnimatedSwitcher(
@@ -31,7 +58,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
       transitionBuilder: (Widget child, Animation<double> animation){
         return ScaleTransition(child: child, scale: animation);
       },
-//      child: cardNumberList.length != 0 ? save,
+      child: cardNumberList.length != 0 ? showSavedCreditCard(): Text('No carf found')
     );
   }
 
@@ -64,27 +91,20 @@ class _PaymentMethodState extends State<PaymentMethod> {
                 child: Center(
                   child: Icon(
                     Icons.credit_card,
-                    size: 250.0,
+                    size: 200.0,
                   )
                 ),
               ),
               animatePaymentContainers(),
-              ListTile(
-                leading: Icon(Icons.credit_card),
-                title: Text('Apple Pay'),
-              ),
-              ListTile(
-                leading: Icon(Icons.credit_card),
-                title: Text('Visa Ending in 4242'),
-              ),
-              ListTile(
-                leading: Icon(Icons.credit_card),
-                title: Text('Visa Ending in 4242'),
-              ),
               SizedBox(height: 20.0),
-              ListTile(
-                leading: Icon(Icons.add),
-                title: Text('Add new Card'),
+              GestureDetector(
+                onTap: (){
+                  Navigator.pushNamed(context, '/addCreditCard');
+                },
+                child: ListTile(
+                  leading: Icon(Icons.add),
+                  title: Text('Add new Card'),
+                ),
               )
             ],
           ),
