@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -75,5 +76,22 @@ class CheckoutService {
       cardNumberList.add(cardNumber.substring(cardNumber.length - 4));
     });
     return cardNumberList;
+  }
+
+  Future<void> placeNewOrder(Map orderDetails) async{
+    String uid = await _userService.getUserId();
+    ShoppingBagService _shoppingBagService = new ShoppingBagService();
+    QuerySnapshot items = await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments();
+    String itemsId = items.documents[0].documentID;
+    await _firestore.collection('orders').add({
+      'userId': uid,
+      'items': itemsId,
+      'shippingAddress': orderDetails['shippingAddress'],
+      'shippingMethod': orderDetails['shippingMethod'],
+      'price': int.parse(orderDetails['price']),
+      'paymentCard': orderDetails['selectedCard']
+    });
+    
+    await _shoppingBagService.deleteShoppingBag();
   }
 }

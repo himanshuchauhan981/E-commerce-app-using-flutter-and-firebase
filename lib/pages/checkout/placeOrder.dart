@@ -1,4 +1,5 @@
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
+import 'package:app_frontend/services/checkoutService.dart';
 import 'package:flutter/material.dart';
 
 class PlaceOrder extends StatefulWidget {
@@ -9,13 +10,18 @@ class PlaceOrder extends StatefulWidget {
 class _PlaceOrderState extends State<PlaceOrder> {
   void thirdFunction(){}
   Map<String,dynamic> orderDetails;
-
+  CheckoutService _checkoutService = new CheckoutService();
 
   setOrderData(){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
     setState(() {
       orderDetails = args;
     });
+  }
+
+  placeNewOrder() async{
+    await _checkoutService.placeNewOrder(orderDetails);
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 
   @override
@@ -84,7 +90,9 @@ class _PlaceOrderState extends State<PlaceOrder> {
                     minWidth: MediaQuery.of(context).size.width/1.5,
                     height: 50.0,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        placeNewOrder();
+                      },
                       child: const Text(
                           'Place order',
                           style: TextStyle(

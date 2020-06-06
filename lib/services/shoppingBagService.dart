@@ -96,7 +96,19 @@ class ShoppingBagService{
         }
       });
     });
+  }
 
-    print(id);
+  Future<void> deleteShoppingBag() async{
+    String uid = await userService.getUserId();
+
+    QuerySnapshot bagItems = await firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments();
+    String shoppingBagItemId = bagItems.documents[0].documentID;
+
+    final TransactionHandler deleteTransaction = (Transaction tx) async{
+      final DocumentSnapshot ds = await tx.get(firestore.collection('bags').document(shoppingBagItemId));
+      await tx.delete(ds.reference);
+    };
+
+    await firestore.runTransaction(deleteTransaction);
   }
 }
