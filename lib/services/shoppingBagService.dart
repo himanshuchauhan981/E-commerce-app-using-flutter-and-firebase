@@ -56,13 +56,18 @@ class ShoppingBagService{
 
   Future<List> listBagItems() async{
     List bagItemsList = new List();
+    List itemDetails ;
+    List productIdList =  new List(0);
     String uid = await userService.getUserId();
 
     QuerySnapshot docRef = await _firestore.collection('bags').where("userId",isEqualTo: uid).getDocuments();
-    List itemDetails = docRef.documents.map((doc){
-      return doc.data['products'];
-    }).toList()[0];
-    var productIdList = itemDetails.map((value) => value['id']).toList();
+    int itemLength = docRef.documents.length;
+    if(itemLength != 0){
+      itemDetails = docRef.documents.map((doc){
+        return doc.data['products'];
+      }).toList()[0];
+      productIdList = itemDetails.map((value) => value['id']).toList();
+    }
 
     for(int i=0;i< productIdList.length;i++){
       Map mapProduct = new Map();
@@ -78,7 +83,7 @@ class ShoppingBagService{
       mapProduct['quantity'] = itemDetails[i]['quantity'];
       bagItemsList.add(mapProduct);
     }
-     return bagItemsList;
+    return bagItemsList;
   }
 
   Future<void> removeBagItems(String id) async{
