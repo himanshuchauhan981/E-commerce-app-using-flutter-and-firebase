@@ -1,4 +1,3 @@
-import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:math' as math;
 
 import 'package:app_frontend/components/header.dart';
+import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';

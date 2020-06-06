@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
+
 import 'package:app_frontend/components/home/categoryCarousel.dart';
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/home/gridItemList.dart';
 import 'package:app_frontend/components/home/snapEffectCarousel.dart';
 import 'package:app_frontend/components/sidebar.dart';
-
-import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
   @override

@@ -1,8 +1,8 @@
 import 'dart:collection';
-
-import 'package:app_frontend/services/validateService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:app_frontend/services/validateService.dart';
 
 class ShippingAddressInput extends StatefulWidget {
   final HashMap addressValues;

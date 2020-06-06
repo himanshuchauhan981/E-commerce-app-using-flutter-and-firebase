@@ -1,5 +1,6 @@
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
+
 import 'package:flutter/material.dart';
 
 capitalizeHeading(String text){

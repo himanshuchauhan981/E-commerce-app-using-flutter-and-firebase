@@ -7,7 +7,7 @@ import 'package:jaguar_jwt/jaguar_jwt.dart';
 
 class UserService{
   FirebaseAuth _auth = FirebaseAuth.instance;
-  Firestore firestore = Firestore.instance;
+  Firestore _firestore = Firestore.instance;
   final storage = new FlutterSecureStorage();
   final String sharedKey = 'sharedKey';
   int statusCode;
@@ -74,7 +74,7 @@ class UserService{
 
     await _auth.createUserWithEmailAndPassword(email: email, password: password).then((dynamic user){
       String uid = user.user.uid;
-      firestore.collection('users').add({
+      _firestore.collection('users').add({
         'firstName': capitalizeName(userValues['firstName']),
         'lastName': capitalizeName(userValues['lastName']),
         'mobileNumber': userValues['mobileNumber'],

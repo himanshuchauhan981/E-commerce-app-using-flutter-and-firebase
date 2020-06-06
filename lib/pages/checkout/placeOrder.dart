@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:app_frontend/services/checkoutService.dart';
-import 'package:flutter/material.dart';
 
 class PlaceOrder extends StatefulWidget {
   @override

@@ -1,4 +1,3 @@
-import 'package:app_frontend/pages/checkout/placeOrder.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -14,6 +13,7 @@ import 'package:app_frontend/pages/checkout/paymentMethod.dart';
 import 'package:app_frontend/pages/checkout/shippingAddress.dart';
 import 'package:app_frontend/pages/checkout/shippingMethod.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
+import 'package:app_frontend/pages/checkout/placeOrder.dart';
 
 void main() => runApp(MaterialApp(
   initialRoute: '/',

@@ -1,12 +1,11 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'customTransition.dart';
+
 import 'package:app_frontend/components/item/bottomSheet.dart';
 import 'package:app_frontend/components/item/groupButton/SizeGroupButton.dart';
 import 'package:app_frontend/components/item/groupButton/colorGroupButton.dart';
 import 'package:app_frontend/pages/home.dart';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
-import 'customTransition.dart';
 
 class CustomProductImage extends StatefulWidget {
   final String image;
@@ -19,7 +18,17 @@ class CustomProductImage extends StatefulWidget {
   final void Function(String key, bool value) setErrors;
   final void Function(String key, String value) setProductOptions;
 
-  CustomProductImage(this.image,this.buildContext,this.sizes,this.colors,this.selectedSize,this.selectedColor,this.edit,this.setErrors,this.setProductOptions);
+  CustomProductImage(
+      this.image,
+      this.buildContext,
+      this.sizes,
+      this.colors,
+      this.selectedSize,
+      this.selectedColor,
+      this.edit,
+      this.setErrors,
+      this.setProductOptions
+  );
   @override
   _CustomProductImageState createState() => _CustomProductImageState();
 }

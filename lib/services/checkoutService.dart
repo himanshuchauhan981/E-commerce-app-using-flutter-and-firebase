@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CheckoutService {
   Firestore _firestore = Firestore.instance;
   UserService _userService = new UserService();
+  ShoppingBagService _shoppingBagService = new ShoppingBagService();
 
   Map mapAddressValues(Map values){
     Map addressValues = new Map();
@@ -80,7 +81,6 @@ class CheckoutService {
 
   Future<void> placeNewOrder(Map orderDetails) async{
     String uid = await _userService.getUserId();
-    ShoppingBagService _shoppingBagService = new ShoppingBagService();
     QuerySnapshot items = await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments();
     String itemsId = items.documents[0].documentID;
     await _firestore.collection('orders').add({

@@ -1,5 +1,6 @@
-import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 
 class ShippingMethod extends StatefulWidget {
   @override

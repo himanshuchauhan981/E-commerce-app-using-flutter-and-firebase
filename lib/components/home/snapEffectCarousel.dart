@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/services/productService.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class SnapEffectCarousel extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class SnapEffectCarousel extends StatefulWidget {
 class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
   int _index = 0;
 
-  List newArrival  = new List(0);
+  List newArrival = new List(0);
   ProductService _productService = new ProductService();
 
   _SnapEffectCarouselState(){

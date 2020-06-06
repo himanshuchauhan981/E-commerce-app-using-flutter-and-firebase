@@ -1,7 +1,7 @@
 import 'dart:collection';
-import 'package:app_frontend/components/loader.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
 import 'package:app_frontend/components/alertBox.dart';
