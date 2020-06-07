@@ -3,17 +3,13 @@ import 'package:flutter/material.dart';
 import 'customTransition.dart';
 
 import 'package:app_frontend/components/item/bottomSheet.dart';
-import 'package:app_frontend/components/item/groupButton/SizeGroupButton.dart';
-import 'package:app_frontend/components/item/groupButton/colorGroupButton.dart';
 import 'package:app_frontend/pages/home.dart';
 
 class CustomProductImage extends StatefulWidget {
   final String image;
   final BuildContext buildContext;
   final dynamic sizes;
-  final dynamic colors;
   final String selectedSize;
-  final String selectedColor;
   final bool edit;
   final void Function(String key, bool value) setErrors;
   final void Function(String key, String value) setProductOptions;
@@ -22,9 +18,7 @@ class CustomProductImage extends StatefulWidget {
       this.image,
       this.buildContext,
       this.sizes,
-      this.colors,
       this.selectedSize,
-      this.selectedColor,
       this.edit,
       this.setErrors,
       this.setProductOptions
@@ -34,112 +28,43 @@ class CustomProductImage extends StatefulWidget {
 }
 
 class _CustomProductImageState extends State<CustomProductImage> {
-  List<Map<String, bool>> sizeList;
-  List<Map<Color,bool>> colorList;
+  Map<String, bool> sizeMap;
+  List<bool> sizeBoolList;
 
   selectSize(index) {
-    String particularKey = sizeList[index].keys.toList()[0];
-    var boolValues = sizeList.map((size) =>  size.values.toList()[0]);
     setState(() {
-      if(boolValues.contains(true)){
-        widget.setErrors('size',true);
-        sizeList.forEach((size){
-          String key = size.keys.toList()[0];
-          if(size[key] == true) size[key] = false;
-          else{
-            String particularKey = sizeList[index].keys.toList()[0];
-            if(particularKey == key){
-              size[key] = true;
-              widget.setErrors('size',false);
-            }
-          }
-        });
+      for(int i=0;i<sizeMap.length;i++){
+        String key = widget.sizes[i];
+        if(i== index) sizeMap[key] = true;
+        else sizeMap[key] = false;
       }
-      else{
-        sizeList[index][particularKey] = true;
-        widget.setErrors('size',false);
-      }
-      widget.setProductOptions('size',sizeList[index].keys.toList()[0]);
+      sizeBoolList = sizeMap.values.toList();
     });
-  }
-
-  selectColor(index){
-    Color particularKey = colorList[index].keys.toList()[0];
-    var boolValues = colorList.map((color) => color.values.toList()[0]);
-    setState(() {
-      if(boolValues.contains(true)){
-        widget.setErrors('color',true);
-        colorList.forEach((size){
-          Color key = size.keys.toList()[0];
-          if(size[key] == true) size[key] = false;
-          else{
-            Color particularKey = colorList[index].keys.toList()[0];
-            if(particularKey == key){
-              size[key] = true;
-              widget.setErrors('color',false);
-            }
-          }
-        });
-      }
-      else{
-        colorList[index][particularKey] = true;
-        widget.setErrors('color',false);
-      }
-    });
-    String color = colorList[index].keys.toList()[0].toString().substring(10,16);
-    widget.setProductOptions('color',color);
   }
 
   setSizeList(List sizes){
-    List <Map<String, bool>> sizeList = new List();
+    sizeBoolList = List.generate(sizes.length, (_) => false);
+    Map<String,bool> sizeList = new Map();
     sizes.forEach((size){
-      Map<String, bool> sizeMap = new Map();
-      sizeMap[size] = false;
-      sizeList.add(sizeMap);
+      sizeList[size] = false;
     });
     return sizeList;
   }
 
-  setColorList(List colors){
-    List <Map<Color,bool>> colorList = new List();
-    colors.forEach((value){
-      Map<Color,bool> colorMap = new Map();
-      colorMap[Color(int.parse(value))] = false;
-      colorList.add(colorMap);
+  setItemDetails(){
+    setState(() {
+      sizeMap = setSizeList(widget.sizes);
     });
-    return colorList;
   }
 
   @override
   void initState() {
     super.initState();
-  }
-
-  setItemDetails(){
-    setState(() {
-      sizeList = setSizeList(widget.sizes);
-      colorList = setColorList(widget.colors);
-    });
-    if(widget.edit){
-      sizeList.forEach((values){
-        String key = values.keys.toList()[0];
-        if(key == widget.selectedSize){
-          values[key] = true;
-        }
-      });
-      colorList.forEach((values){
-        Color color = Color(int.parse("0xff${widget.selectedColor}"));
-        Color key = values.keys.toList()[0];
-        if(key == color){
-          values[key] = true;
-        }
-      });
-    }
+    setItemDetails();
   }
 
   @override
   Widget build(BuildContext context) {
-    setItemDetails();
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40.0), bottomRight: Radius.circular(40.0)),
@@ -210,42 +135,28 @@ class _CustomProductImageState extends State<CustomProductImage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Container(
-                      height: 200.0,
-                      width: 40.0,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: sizeList.length,
-                        itemBuilder: (context, index){
-                          return SizeGroupButton(
-                            selectSize,
-                            index: index,
-                            selectList: sizeList,
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index){
-                          return SizedBox(height: 10.0);
-                        },
+                      decoration: BoxDecoration(
+                        color: Colors.white
                       ),
-                    ),
-                    SizedBox(width: 10.0),
-                    Container(
-                      height: 200.0,
-                      width: 40.0,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: colorList.length,
-                        itemBuilder: (context,index){
-                          return ColorGroupButton(
-                            selectColor,
-                            index: index,
-                            selectList: colorList,
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index){
-                          return SizedBox(height: 10.0);
-                        },
+                      child: RotatedBox(
+                        quarterTurns: 1,
+                        child: ToggleButtons(
+                          children: List.generate(widget.sizes.length, (index){
+                            return RotatedBox(
+                              quarterTurns: 3,
+                              child: Text(
+                                widget.sizes[index],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                            );
+                          }),
+                          isSelected: sizeBoolList,
+                          onPressed: (index) => selectSize(index),
+                          fillColor: Colors.black,
+                          selectedColor: Colors.white,
+                        ),
                       ),
                     ),
                   ],

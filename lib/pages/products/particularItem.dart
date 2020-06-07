@@ -151,9 +151,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       itemDetails['image'][0],
                       buildContext,
                       size,
-                      colors,
                       sizeValue,
-                      colorValue,
                       edit,
                       setError,
                       setProductOptions
