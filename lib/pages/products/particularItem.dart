@@ -1,3 +1,4 @@
+import 'package:app_frontend/components/item/colorGroupButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -72,7 +73,7 @@ class _ParticularItemState extends State<ParticularItem> {
         _id = args['itemDetails'].documentID;
         itemDetails = args['itemDetails'];
         size = args['itemDetails']['size'];
-        colors = args['itemDetails']['color'];
+        colors = setColorList(args['itemDetails']['color']);
         edit = false;
       }
       else{
@@ -130,6 +131,38 @@ class _ParticularItemState extends State<ParticularItem> {
     });
   }
 
+  setColorList(List colors){
+    List <Map<Color,bool>> colorList = new List();
+    colors.forEach((value){
+      Map<Color,bool> colorMap = new Map();
+      colorMap[Color(int.parse(value))] = false;
+      colorList.add(colorMap);
+    });
+    return colorList;
+  }
+
+  selectColor(index){
+    Color particularKey = colors[index].keys.toList()[0];
+    var boolValues = colors.map((color) => color.values.toList()[0]);
+    setState(() {
+      if(boolValues.contains(true)){
+        colors.forEach((size){
+          Color key = size.keys.toList()[0];
+          if(size[key] == true) size[key] = false;
+          else{
+            Color particularKey = colors[index].keys.toList()[0];
+            if(particularKey == key){
+              size[key] = true;
+            }
+          }
+        });
+      }
+      else{
+        colors[index][particularKey] = true;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -158,7 +191,7 @@ class _ParticularItemState extends State<ParticularItem> {
                   ),
                 ),
                 Expanded(
-                    flex: 4,
+                    flex: 5,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 15.0),
                       child: Column(
@@ -181,6 +214,19 @@ class _ParticularItemState extends State<ParticularItem> {
                                 fontSize: 18.0
                             ),
                           ),
+                          SizedBox(height: 10.0),
+                          Center(
+                            child: Text(
+                              'Color',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10.0),
+                          ColorGroupButton(this.colors, this.selectColor),
                           SizedBox(height: 10.0),
                           Center(
                             child: Text(
