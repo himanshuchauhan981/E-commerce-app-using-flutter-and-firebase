@@ -1,4 +1,3 @@
-import 'package:app_frontend/components/item/colorGroupButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/components/item/productImage.dart';
+import 'package:app_frontend/components/item/colorGroupButton.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
@@ -20,11 +20,9 @@ class ParticularItem extends StatefulWidget {
 class _ParticularItemState extends State<ParticularItem> {
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
   var itemDetails;
-  List<String> imageList;
   List<dynamic> size;
   List<dynamic> colors;
-  Map<String,bool> errors = {'size':true,'color':true};
-  String _id;
+  String productId;
   String sizeValue = "";
   String colorValue = "";
   int quantity = 1;
@@ -52,7 +50,7 @@ class _ParticularItemState extends State<ParticularItem> {
     Map<String,dynamic> args = widget.itemDetails;
 
     setState(() {
-      _id = args['itemDetails']['id'];
+      productId = args['itemDetails']['id'];
       itemDetails = args['itemDetails'];
       size = args['itemDetails']['size'];
       colors = args['itemDetails']['color'];
@@ -70,7 +68,7 @@ class _ParticularItemState extends State<ParticularItem> {
     Map<String,dynamic> args = widget.itemDetails;
     setState(() {
       if(!widget.edit){
-        _id = args['itemDetails'].documentID;
+        productId = args['itemDetails'].documentID;
         itemDetails = args['itemDetails'];
         size = args['itemDetails']['size'];
         colors = setColorList(args['itemDetails']['color']);
@@ -82,35 +80,19 @@ class _ParticularItemState extends State<ParticularItem> {
     });
   }
 
-  setError(String key, bool value){
+  setSizeOptions(String size){
     setState(() {
-      errors[key] = value;
-    });
-  }
-
-  setProductOptions(key,value){
-    setState(() {
-      if(key == 'color'){
-        colorValue = value;
-      }
-      else if(key == 'size'){
-        sizeValue = value;
-      }
+      sizeValue = size;
     });
   }
 
   addToShoppingBag() async{
-    if(colors.length == 0) setError('color', false);
-    if(size.length == 0) setError('size', false);
-    bool errorValue = errors.containsValue(true);
-    if(errorValue){
-      if(errors['size']) showInSnackBar('Select size',Colors.red);
-      else if(errors['color']) showInSnackBar('Select color', Colors.red);
-    }
+    if(sizeValue == '') showInSnackBar('Select size',Colors.red);
+    else if(colorValue == '') showInSnackBar('Select color', Colors.red);
     else{
       Loader.showLoadingScreen(context, keyLoader);
       ShoppingBagService _shoppingBagService = new ShoppingBagService();
-      String msg = await _shoppingBagService.addToShoppingBag(_id,sizeValue,colorValue,quantity);
+      String msg = await _shoppingBagService.addToShoppingBag(productId,sizeValue,colorValue,quantity);
       Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
       showInSnackBar(msg,Colors.black);
     }
@@ -146,13 +128,13 @@ class _ParticularItemState extends State<ParticularItem> {
     var boolValues = colors.map((color) => color.values.toList()[0]);
     setState(() {
       if(boolValues.contains(true)){
-        colors.forEach((size){
-          Color key = size.keys.toList()[0];
-          if(size[key] == true) size[key] = false;
+        colors.forEach((color){
+          Color key = color.keys.toList()[0];
+          if(color[key] == true) color[key] = false;
           else{
             Color particularKey = colors[index].keys.toList()[0];
             if(particularKey == key){
-              size[key] = true;
+              color[key] = true;
             }
           }
         });
@@ -160,6 +142,7 @@ class _ParticularItemState extends State<ParticularItem> {
       else{
         colors[index][particularKey] = true;
       }
+      colorValue = particularKey.value.toRadixString(16).substring(2);
     });
   }
 
@@ -186,8 +169,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       size,
                       sizeValue,
                       edit,
-                      setError,
-                      setProductOptions
+                      setSizeOptions
                   ),
                 ),
                 Expanded(

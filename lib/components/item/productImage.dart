@@ -11,8 +11,7 @@ class CustomProductImage extends StatefulWidget {
   final dynamic sizes;
   final String selectedSize;
   final bool edit;
-  final void Function(String key, bool value) setErrors;
-  final void Function(String key, String value) setProductOptions;
+  final void Function(String size) setSizeOptions;
 
   CustomProductImage(
       this.image,
@@ -20,8 +19,7 @@ class CustomProductImage extends StatefulWidget {
       this.sizes,
       this.selectedSize,
       this.edit,
-      this.setErrors,
-      this.setProductOptions
+      this.setSizeOptions
   );
   @override
   _CustomProductImageState createState() => _CustomProductImageState();
@@ -35,10 +33,14 @@ class _CustomProductImageState extends State<CustomProductImage> {
     setState(() {
       for(int i=0;i<sizeMap.length;i++){
         String key = widget.sizes[i];
-        if(i== index) sizeMap[key] = true;
+        if(i== index){
+          sizeMap[key] = true;
+          widget.setSizeOptions(key);
+        }
         else sizeMap[key] = false;
       }
       sizeBoolList = sizeMap.values.toList();
+
     });
   }
 
