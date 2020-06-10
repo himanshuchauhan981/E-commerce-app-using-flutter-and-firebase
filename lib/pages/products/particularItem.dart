@@ -26,7 +26,7 @@ class _ParticularItemState extends State<ParticularItem> {
   String sizeValue = "";
   String colorValue = "";
   int quantity = 1;
-  bool edit;
+  bool editProduct;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -50,15 +50,18 @@ class _ParticularItemState extends State<ParticularItem> {
     Map<String,dynamic> args = widget.itemDetails;
 
     setState(() {
+      editProduct = true;
+      sizeValue = args['itemDetails']['selectedSize'];
+      colorValue = args['itemDetails']['selectedColor'];
       productId = args['itemDetails']['id'];
       itemDetails = args['itemDetails'];
       size = args['itemDetails']['size'];
-      colors = args['itemDetails']['color'];
+      colors = setColorList(args['itemDetails']['color']);
       quantity = args['itemDetails']['quantity'];
-      sizeValue = args['itemDetails']['selectedSize'];
-      colorValue = args['itemDetails']['selectedColor'];
-      edit = true;
+      int index = args['itemDetails']['color'].indexOf("0xFF$colorValue");
+      selectColor(index);
     });
+
   }
 
   setItemDetails(){
@@ -68,11 +71,11 @@ class _ParticularItemState extends State<ParticularItem> {
     Map<String,dynamic> args = widget.itemDetails;
     setState(() {
       if(!widget.edit){
+        editProduct = false;
         productId = args['itemDetails'].documentID;
         itemDetails = args['itemDetails'];
         size = args['itemDetails']['size'];
         colors = setColorList(args['itemDetails']['color']);
-        edit = false;
       }
       else{
         editItemDetails();
@@ -168,7 +171,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       buildContext,
                       size,
                       sizeValue,
-                      edit,
+                      editProduct,  
                       setSizeOptions
                   ),
                 ),

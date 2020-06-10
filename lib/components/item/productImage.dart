@@ -8,9 +8,9 @@ import 'package:app_frontend/pages/home.dart';
 class CustomProductImage extends StatefulWidget {
   final String image;
   final BuildContext buildContext;
-  final dynamic sizes;
+  final List sizes;
   final String selectedSize;
-  final bool edit;
+  final bool editProduct;
   final void Function(String size) setSizeOptions;
 
   CustomProductImage(
@@ -18,7 +18,7 @@ class CustomProductImage extends StatefulWidget {
       this.buildContext,
       this.sizes,
       this.selectedSize,
-      this.edit,
+      this.editProduct,
       this.setSizeOptions
   );
   @override
@@ -40,16 +40,21 @@ class _CustomProductImageState extends State<CustomProductImage> {
         else sizeMap[key] = false;
       }
       sizeBoolList = sizeMap.values.toList();
-
     });
   }
 
   setSizeList(List sizes){
-    sizeBoolList = List.generate(sizes.length, (_) => false);
     Map<String,bool> sizeList = new Map();
     sizes.forEach((size){
       sizeList[size] = false;
     });
+    if(widget.editProduct){
+      sizeList[widget.selectedSize] = true;
+      sizeBoolList = sizeList.values.toList();
+    }
+    else{
+      sizeBoolList = List.generate(sizes.length, (_) => false);
+    }
     return sizeList;
   }
 
@@ -67,6 +72,9 @@ class _CustomProductImageState extends State<CustomProductImage> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.selectedSize != ''){
+      int index = widget.sizes.indexOf(widget.selectedSize);
+    }
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40.0), bottomRight: Radius.circular(40.0)),
