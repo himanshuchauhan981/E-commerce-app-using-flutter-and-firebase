@@ -6,10 +6,10 @@ class ShoppingBagService{
   UserService userService = new UserService();
   Firestore _firestore = Firestore.instance;
 
-  Future<String> updateBagItems(String productId, String size, String color, int quantity, QuerySnapshot data) async{
+  Future<String> updateBagItems(String productId, String size, String color, int quantity, QuerySnapshot bagItems) async{
     String documentId;
     String msg;
-    List productItems = data.documents.map((doc){
+    List productItems = bagItems.documents.map((doc){
       documentId = doc.documentID;
       return doc['products'];
     }).toList()[0];
@@ -22,11 +22,11 @@ class ShoppingBagService{
           items['quantity'] = quantity;
         }
       });
-      msg =  "Product added to shopping bag";
+      msg =  "Product updated in shopping bag";
     }
     else{
       productItems.add({'id':productId,'size':size,'color':color,'quantity':quantity});
-      msg = 'Product updated in shopping bag';
+      msg = 'Product added to shopping bag';
     }
     await _firestore.collection('bags').document(documentId).setData({'products':productItems},merge: true);
     return msg;
