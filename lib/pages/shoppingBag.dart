@@ -127,7 +127,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
   openParticularItem(item){
     Map<String,dynamic> args = new Map();
     args['itemDetails'] = item;
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         CustomTransition(
             type: CustomTransitionType.downToUp,
