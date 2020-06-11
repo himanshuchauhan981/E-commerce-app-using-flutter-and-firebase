@@ -90,8 +90,8 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   addToShoppingBag() async{
-    if(sizeValue == '') showInSnackBar('Select size',Colors.red);
-    else if(colorValue == '') showInSnackBar('Select color', Colors.red);
+    if(sizeValue == '' && size.length != 0) showInSnackBar('Select size',Colors.red);
+    else if(colorValue == '' && colors.length != 0) showInSnackBar('Select color', Colors.red);
     else{
       Loader.showLoadingScreen(context, keyLoader);
       ShoppingBagService _shoppingBagService = new ShoppingBagService();
@@ -171,7 +171,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       buildContext,
                       size,
                       sizeValue,
-                      editProduct,  
+                      editProduct,
                       setSizeOptions
                   ),
                 ),
