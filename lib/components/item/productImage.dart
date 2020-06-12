@@ -77,7 +77,7 @@ class _CustomProductImageState extends State<CustomProductImage> {
     }
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40.0), bottomRight: Radius.circular(40.0)),
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25.0), bottomRight: Radius.circular(25.0)),
           image: DecorationImage(
               image: NetworkImage(widget.image),
               fit: BoxFit.fill

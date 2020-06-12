@@ -161,21 +161,24 @@ class _ParticularItemState extends State<ParticularItem> {
       key: _scaffoldKey,
       body: SafeArea(
         child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Expanded(
-                  flex: 6,
-                  child: CustomProductImage(
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height + 22.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Expanded(
+                    flex: 6,
+                    child: CustomProductImage(
                       itemDetails['image'][0],
                       buildContext,
                       size,
                       sizeValue,
                       editProduct,
                       setSizeOptions
+                    ),
                   ),
-                ),
-                Expanded(
+                  Expanded(
                     flex: 5,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 15.0),
@@ -185,18 +188,18 @@ class _ParticularItemState extends State<ParticularItem> {
                           Text(
                             itemDetails['name'],
                             style: TextStyle(
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.1
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.1
                             ),
                           ),
                           SizedBox(height: 7.0),
                           Text(
                             "\$${itemDetails['price'].toString()}.00",
                             style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0
                             ),
                           ),
                           SizedBox(height: 10.0),
@@ -312,9 +315,11 @@ class _ParticularItemState extends State<ParticularItem> {
                         ],
                       ),
                     )
-                )
-              ],
-            )
+                  )
+                ],
+              ),
+            ),
+          )
         ),
       ),
     );
