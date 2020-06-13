@@ -1,3 +1,4 @@
+import 'package:app_frontend/pages/profile/setting.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -18,7 +19,7 @@ import 'package:app_frontend/pages/profile/userProfile.dart';
 
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/profile',
+  initialRoute: '/profile/settings',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
@@ -34,7 +35,8 @@ void main() => runApp(MaterialApp(
     '/shippingMethod': (context) => ShippingMethod(),
     '/paymentMethod': (context) => PaymentMethod(),
     '/placeOrder': (context) => PlaceOrder(),
-    '/profile': (context) => UserProfile()
+    '/profile': (context) => UserProfile(),
+    '/profile/settings': (context) => ProfileSetting()
   },
 
 ));
