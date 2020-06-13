@@ -1,4 +1,3 @@
-import 'package:app_frontend/pages/profile/setting.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -16,10 +15,11 @@ import 'package:app_frontend/pages/checkout/shippingMethod.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/pages/checkout/placeOrder.dart';
 import 'package:app_frontend/pages/profile/userProfile.dart';
-
+import 'package:app_frontend/pages/profile/editProfile.dart';
+import 'package:app_frontend/pages/profile/setting.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/profile/settings',
+  initialRoute: '/profile/edit',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
@@ -36,7 +36,8 @@ void main() => runApp(MaterialApp(
     '/paymentMethod': (context) => PaymentMethod(),
     '/placeOrder': (context) => PlaceOrder(),
     '/profile': (context) => UserProfile(),
-    '/profile/settings': (context) => ProfileSetting()
+    '/profile/settings': (context) => ProfileSetting(),
+    '/profile/edit': (context) => EditProfile()
   },
 
 ));
