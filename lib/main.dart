@@ -14,9 +14,11 @@ import 'package:app_frontend/pages/checkout/shippingAddress.dart';
 import 'package:app_frontend/pages/checkout/shippingMethod.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/pages/checkout/placeOrder.dart';
+import 'package:app_frontend/pages/profile/userProfile.dart';
+
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/',
+  initialRoute: '/profile',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
@@ -31,7 +33,8 @@ void main() => runApp(MaterialApp(
     '/address': (context) => ShippingAddress(),
     '/shippingMethod': (context) => ShippingMethod(),
     '/paymentMethod': (context) => PaymentMethod(),
-    '/placeOrder': (context) => PlaceOrder()
+    '/placeOrder': (context) => PlaceOrder(),
+    '/profile': (context) => UserProfile()
   },
 
 ));

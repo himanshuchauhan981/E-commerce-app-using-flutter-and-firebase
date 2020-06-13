@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 
 class ShoppingBagExpandedList extends StatefulWidget {
