@@ -17,9 +17,10 @@ import 'package:app_frontend/pages/checkout/placeOrder.dart';
 import 'package:app_frontend/pages/profile/userProfile.dart';
 import 'package:app_frontend/pages/profile/editProfile.dart';
 import 'package:app_frontend/pages/profile/setting.dart';
+import 'package:app_frontend/pages/profile/contactUs.dart';
 
 void main() => runApp(MaterialApp(
-  initialRoute: '/profile/edit',
+  initialRoute: '/',
   routes: {
     '/': (context) => Start(),
     '/login': (context) => Login(),
@@ -37,7 +38,8 @@ void main() => runApp(MaterialApp(
     '/placeOrder': (context) => PlaceOrder(),
     '/profile': (context) => UserProfile(),
     '/profile/settings': (context) => ProfileSetting(),
-    '/profile/edit': (context) => EditProfile()
+    '/profile/edit': (context) => EditProfile(),
+    '/profile/contactUs': (context) => ContactUs()
   },
 
 ));
