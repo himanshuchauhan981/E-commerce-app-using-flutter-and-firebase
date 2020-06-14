@@ -13,7 +13,6 @@ capitalizeHeading(String text){
   }
 }
 
-
 Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon, BuildContext context){
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
 

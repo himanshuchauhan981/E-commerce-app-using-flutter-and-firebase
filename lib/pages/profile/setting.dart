@@ -1,5 +1,6 @@
-import 'package:app_frontend/components/header.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app_frontend/components/profileAppBar.dart';
 
 class ProfileSetting extends StatefulWidget {
   @override
@@ -8,13 +9,17 @@ class ProfileSetting extends StatefulWidget {
 
 class _ProfileSettingState extends State<ProfileSetting> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool showCartIcon = true;
+  Map<String,bool> settings = new Map();
+
+  saveUserSettings(String key, bool value){
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header('Settings', _scaffoldKey, showCartIcon, context),
+      appBar: ProfileAppBar('Settings'),
       body: Container(
         padding: EdgeInsets.only(top: 40.0,left: 10.0, right: 10.0),
         child: Column(
@@ -37,8 +42,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 ),
               ),
               trailing: Switch(
-                value: false,
-                onChanged: (value){},
+                value: true,
+                onChanged: (value){
+                  saveUserSettings('faceId',value);
+                },
                 activeColor: Colors.green,
               ),
             ),

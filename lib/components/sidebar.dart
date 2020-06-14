@@ -1,12 +1,15 @@
+import 'package:flutter/material.dart';
+
 import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
-import 'package:flutter/material.dart';
 
 Widget sidebar(context){
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
   UserService _userService = new UserService();
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
+  ProfileService _profileService = new ProfileService();
 
   return SafeArea(
     child: Drawer(
@@ -107,6 +110,14 @@ Widget sidebar(context){
                       letterSpacing: 1.0
                   ),
                 ),
+                onTap: () async{
+                  Loader.showLoadingScreen(context, keyLoader);
+                  Map userProfile = await _profileService.getUserProfile();
+                  Map<String, String> args = new Map();
+                  args['fullName'] = "${userProfile['firstName']} ${userProfile['lastName']}";
+                  Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.pushNamed(context, '/profile');
+                },
               ),
               ListTile(
                 leading: new Icon(Icons.exit_to_app),

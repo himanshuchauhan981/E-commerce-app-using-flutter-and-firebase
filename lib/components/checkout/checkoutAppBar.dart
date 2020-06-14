@@ -16,7 +16,6 @@ class CheckoutAppBar extends StatefulWidget with PreferredSizeWidget {
 
 class _CheckoutAppBarState extends State<CheckoutAppBar> {
 
-
   @override
   Widget build(BuildContext context) {
     return Container(

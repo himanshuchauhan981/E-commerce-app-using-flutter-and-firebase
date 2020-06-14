@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/services/profileService.dart';
+import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/header.dart';
 
 class UserProfile extends StatefulWidget {
@@ -8,6 +11,7 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  ProfileService _profileService = new ProfileService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool showCartIcon = true;
   @override
@@ -15,6 +19,7 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: header('Profile', _scaffoldKey,showCartIcon,context),
+      drawer: sidebar(context),
       body: Container(
         alignment: Alignment.center,
         padding: EdgeInsets.only(top: 20.0),
@@ -33,7 +38,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
             SizedBox(height: 10.0),
             Text(
-              'Will Kim',
+              'Sample Name',
               style: TextStyle(
                 fontSize: 25.0,
                 fontWeight: FontWeight.bold,
@@ -111,6 +116,10 @@ class _UserProfileState extends State<UserProfile> {
                 Icons.keyboard_arrow_right,
                 size: 35.0,
               ),
+              onTap: () async{
+                QuerySnapshot userSettings = await _profileService.getUserSettings();
+                Navigator.of(context).pushNamed('/profile/settings', arguments: userSettings.documents[0].data);
+              },
             ),
             ListTile(
               leading: Icon(
@@ -129,6 +138,9 @@ class _UserProfileState extends State<UserProfile> {
                 Icons.keyboard_arrow_right,
                 size: 35.0,
               ),
+              onTap: () async{
+//                Navigator.of(context).pushNamed('/profile/contactUs');
+              },
             ),
             SizedBox(height: 60.0),
             ButtonTheme(
