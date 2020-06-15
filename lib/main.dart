@@ -37,9 +37,9 @@ void main() => runApp(MaterialApp(
     '/paymentMethod': (context) => PaymentMethod(),
     '/placeOrder': (context) => PlaceOrder(),
     '/profile': (context) => UserProfile(),
-    '/profile/settings': (context) => ProfileSetting(),
-    '/profile/edit': (context) => EditProfile(),
-    '/profile/contactUs': (context) => ContactUs()
+//    '/profile/settings': (context) => ProfileSetting(),
+//    '/profile/edit': (context) => EditProfile(),
+//    '/profile/contactUs': (context) => ContactUs()
   },
 
 ));
