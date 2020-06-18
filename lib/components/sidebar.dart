@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
+import 'package:app_frontend/services/profileService.dart';
 
 Widget sidebar(BuildContext context){
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
   UserService _userService = new UserService();
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
+  ProfileService _profileService = new ProfileService();
 
   return SafeArea(
     child: Drawer(
@@ -62,7 +64,7 @@ Widget sidebar(BuildContext context){
                   List bagItems = await _shoppingBagService.listBagItems();
                   args['bagItems'] = bagItems;
                   Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.pushNamed(context, '/bag', arguments: args);
+                  Navigator.pushReplacementNamed(context, '/bag', arguments: args);
                 },
               ),
               ListTile(
@@ -108,7 +110,14 @@ Widget sidebar(BuildContext context){
                       letterSpacing: 1.0
                   ),
                 ),
-                onTap: () => Navigator.pushNamed(context, '/profile'),
+                onTap: () async{
+                  Loader.showLoadingScreen(context, keyLoader);
+                  Map userProfile = await _profileService.getUserProfile();
+                  Map<String, String> args = new Map();
+                  args['fullName'] = "${userProfile['firstName']} ${userProfile['lastName']}";
+                  Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.popAndPushNamed(context, '/profile',arguments: args);
+                },
               ),
               ListTile(
                 leading: new Icon(Icons.exit_to_app),
