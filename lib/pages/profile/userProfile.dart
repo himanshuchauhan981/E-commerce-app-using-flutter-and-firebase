@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/userService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -11,16 +12,18 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  String name;
   ProfileService _profileService = new ProfileService();
+  UserService _userService = new UserService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool showCartIcon = true;
+  String name;
+  String mobileNumber;
 
   void setProfileDetails(context) async {
-    Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
-    print(args);
+    dynamic args = ModalRoute.of(context).settings.arguments;
     setState(() {
-      name = args['fullName'];
+      name = "${args['firstName']} ${args['lastName']}";
+      mobileNumber = args['mobileNumber'];
     });
   }
 
@@ -74,6 +77,12 @@ class _UserProfileState extends State<UserProfile> {
                 Icons.keyboard_arrow_right,
                 size: 35.0,
               ),
+              onTap: () async{
+                dynamic args = ModalRoute.of(context).settings.arguments;
+                String email =await _userService.userEmail();
+                args['email'] = email;
+                Navigator.pushNamed(context, '/profile/edit',arguments: args);
+              },
             ),
             ListTile(
               leading: Icon(
@@ -150,7 +159,7 @@ class _UserProfileState extends State<UserProfile> {
                 size: 35.0,
               ),
               onTap: () async{
-//                Navigator.of(context).pushNamed('/profile/contactUs');
+                Navigator.of(context).pushNamed('/profile/contactUs');
               },
             ),
             SizedBox(height: 60.0),

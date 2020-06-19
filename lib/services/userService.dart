@@ -108,5 +108,10 @@ class UserService{
     name = name[0].toUpperCase()+ name.substring(1);
     return name;
   }
+
+  Future<String> userEmail() async {
+    var user = await _auth.currentUser();
+    return user.email;
+  }
 }
 

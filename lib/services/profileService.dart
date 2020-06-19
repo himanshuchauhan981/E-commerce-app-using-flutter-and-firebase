@@ -9,10 +9,10 @@ class ProfileService{
   Future<Map> getUserProfile() async{
     Map profileDetails = new Map();
     String uid = await _userService.getUserId();
-    
     QuerySnapshot profileData = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
     profileDetails['firstName'] = profileData.documents[0].data['firstName'];
     profileDetails['lastName'] = profileData.documents[0].data['lastName'];
+    profileDetails['mobileNumber'] = profileData.documents[0].data['mobileNumber'];
     return profileDetails;
   }
 

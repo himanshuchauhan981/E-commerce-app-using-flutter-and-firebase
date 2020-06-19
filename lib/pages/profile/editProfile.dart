@@ -9,9 +9,21 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool showCartIcon = true;
+  String firstName, lastName, mobileNumber, email;
+
+  setProfileDetails(){
+    dynamic args = ModalRoute.of(context).settings.arguments;
+    setState(() {
+      firstName = args['firstName'];
+      lastName = args['lastName'];
+      mobileNumber = args['mobileNumber'];
+      email = args['email'];
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
+    setProfileDetails();
     return Scaffold(
       key: _scaffoldKey,
       appBar: header('Edit Profile', _scaffoldKey, showCartIcon, context),
@@ -40,7 +52,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               trailing: Text(
-                'Your first name',
+                firstName,
                 style: TextStyle(
                     fontSize: 20.0
                 ),
@@ -56,7 +68,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               trailing: Text(
-                'Your last name',
+                lastName,
                 style: TextStyle(
                     fontSize: 20.0
                 ),
@@ -83,7 +95,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               trailing: Text(
-                'Your email',
+                email,
                 style: TextStyle(
                     fontSize: 20.0
                 ),
@@ -99,7 +111,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               trailing: Text(
-                'Your phone number',
+                mobileNumber,
                 style: TextStyle(
                     fontSize: 20.0
                 ),

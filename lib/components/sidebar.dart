@@ -113,10 +113,8 @@ Widget sidebar(BuildContext context){
                 onTap: () async{
                   Loader.showLoadingScreen(context, keyLoader);
                   Map userProfile = await _profileService.getUserProfile();
-                  Map<String, String> args = new Map();
-                  args['fullName'] = "${userProfile['firstName']} ${userProfile['lastName']}";
                   Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.popAndPushNamed(context, '/profile',arguments: args);
+                  Navigator.popAndPushNamed(context, '/profile',arguments: userProfile);
                 },
               ),
               ListTile(
