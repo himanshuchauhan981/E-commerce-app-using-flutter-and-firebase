@@ -1,5 +1,8 @@
-import 'package:app_frontend/components/header.dart';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+
+import 'package:app_frontend/components/header.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -21,103 +24,118 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
   
+  InputDecoration customFormField(text){
+    return InputDecoration(
+      filled: true,
+      fillColor: Colors.white,
+      hintText: text,
+      labelText: text,
+      border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(
+              width: 2.0,
+              color: Colors.black
+          )
+      ),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+          borderSide: BorderSide(
+              width: 2.0,
+              color: Colors.black
+          )
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     setProfileDetails();
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       key: _scaffoldKey,
       appBar: header('Edit Profile', _scaffoldKey, showCartIcon, context),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 40.0),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              padding: EdgeInsets.fromLTRB(10.0, 40.0, 10.0, 10.0),
               child: Text(
                 'PUBLIC PROFILE',
                 style: TextStyle(
-                  fontSize: 15.0,
-                  letterSpacing: 1.0
-                ),
-              ),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-              leading: Text(
-                'First Name',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-              trailing: Text(
-                firstName,
-                style: TextStyle(
-                    fontSize: 20.0
-                ),
-              ),
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-              leading: Text(
-                'Last Name',
-                style: TextStyle(
                     fontSize: 20.0,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              trailing: Text(
-                lastName,
-                style: TextStyle(
-                    fontSize: 20.0
-                ),
-              ),
-            ),
-            SizedBox(height: 40.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(
-                'PRIVATE PROFILE',
-                style: TextStyle(
-                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
                     letterSpacing: 1.0
                 ),
               ),
             ),
-            ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-              leading: Text(
-                'E-mail Address',
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 40.0),
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    decoration: customFormField('First name')
+                  ),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    decoration: customFormField('Last name')
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+              child: Text(
+                'PRIVATE PROFILE',
                 style: TextStyle(
                     fontSize: 20.0,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              trailing: Text(
-                email,
-                style: TextStyle(
-                    fontSize: 20.0
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0
                 ),
               ),
             ),
-            ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-              leading: Text(
-                'Phone number',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              trailing: Text(
-                mobileNumber,
-                style: TextStyle(
-                    fontSize: 20.0
-                ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    decoration: customFormField('E-mail address')
+                  ),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    decoration: customFormField('Phone number')
+                  ),
+                ],
               ),
             ),
           ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.grey[200],
+        elevation: 0,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+          child: ButtonTheme(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7.0)),
+              side: BorderSide(color: Colors.black,width: 2.0)
+            ),
+            minWidth: MediaQuery.of(context).size.width,
+            height: 50.0,
+            child: RaisedButton(
+              color: Colors.white,
+              onPressed: (){},
+              child: Text(
+                'UPDATE',
+                style: TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
