@@ -21,4 +21,16 @@ class ProfileService{
     QuerySnapshot profileData = await _firestore.collection('profileSetting').where('userId',isEqualTo: uid).getDocuments();
     return profileData;
   }
+
+  Future<void> updateUserSettings(String firstName, String lastName, String email, String mobileNumber) async{
+    String uid = await _userService.getUserId();
+    QuerySnapshot userData = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
+    String documentId = userData.documents[0].documentID;
+    await _firestore.collection('users').document(documentId).setData({
+      'firstName': firstName,
+      'lastName': lastName,
+      'mobileNumber': mobileNumber,
+      'userId': uid
+    });
+  }
 }
