@@ -57,7 +57,7 @@ class _EditProfileState extends State<EditProfile> {
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
       Loader.showLoadingScreen(context, _keyLoader);
-      await _profileService.updateUserSettings(firstName, lastName, email, mobileNumber);
+      await _profileService.updateAccountDetails(firstName, lastName, email, mobileNumber);
       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
       Navigator.of(context).pop();
     }

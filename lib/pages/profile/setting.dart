@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/profileAppBar.dart';
+import 'package:app_frontend/services/profileService.dart';
 
 class ProfileSetting extends StatefulWidget {
   @override
@@ -9,14 +10,30 @@ class ProfileSetting extends StatefulWidget {
 
 class _ProfileSettingState extends State<ProfileSetting> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  ProfileService _profileService = new ProfileService();
   Map<String,bool> settings = new Map();
 
-  saveUserSettings(String key, bool value){
+  saveUserSettings(String key, bool value) async{
+    settings[key] = value;
+    await _profileService.updateUserSettings(settings);
 
+  }
+
+  userSetting(){
+    Map args = ModalRoute.of(context).settings.arguments;
+    List<String> keys = args.keys.toList();
+    for(String key in keys){
+      if(key != 'userId') {
+        setState(() {
+          settings[key] = args[key];
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    userSetting();
     return Scaffold(
       key: _scaffoldKey,
       appBar: ProfileAppBar('Settings'),
@@ -42,10 +59,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 ),
               ),
               trailing: Switch(
-                value: true,
-                onChanged: (value){
-                  saveUserSettings('faceId',value);
-                },
+                value: settings['touchId'],
+                onChanged: (value) => saveUserSettings('touchId',value),
                 activeColor: Colors.green,
               ),
             ),
@@ -67,8 +82,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 ),
               ),
               trailing: Switch(
-                value: false,
-                onChanged: (value){},
+                value: settings['orderUpdates'],
+                onChanged: (value) => saveUserSettings('orderUpdates',value),
                 activeColor: Colors.green,
               ),
             ),
@@ -82,8 +97,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 ),
               ),
               trailing: Switch(
-                value: false,
-                onChanged: (value){},
+                value: settings['newArrivals'],
+                onChanged: (value) => saveUserSettings('newArrivals', value),
                 activeColor: Colors.green,
               ),
             ),
@@ -97,8 +112,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 ),
               ),
               trailing: Switch(
-                value: false,
-                onChanged: (value){},
+                value: settings['promotions'],
+                onChanged: (value) => saveUserSettings('promotions', value),
                 activeColor: Colors.green,
               ),
             ),
@@ -112,8 +127,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 ),
               ),
               trailing: Switch(
-                value: false,
-                onChanged: (value){},
+                value: settings['saleAlerts'],
+                onChanged: (value) => saveUserSettings('saleAlerts', value),
                 activeColor: Colors.green,
               ),
             ),

@@ -15,26 +15,26 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey<State> keyLoader = new GlobalKey<State>();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   HashMap userValues = new HashMap<String, String>();
   bool _autoValidate = false;
   double borderWidth = 2.0;
 
-  ValidateService validateService = ValidateService();
-  UserService userService = UserService();
+  ValidateService _validateService = ValidateService();
+  UserService _userService = UserService();
 
   login() async{
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
-      Loader.showLoadingScreen(context, keyLoader);
-      await userService.login(userValues);
-      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-      int statusCode = userService.statusCode;
+      Loader.showLoadingScreen(context, _keyLoader);
+      await _userService.login(userValues);
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+      int statusCode = _userService.statusCode;
       if(statusCode == 200){
         Navigator.pushNamed(context, '/home');
       }
       else{
-        AlertBox alertBox = AlertBox(userService.msg);
+        AlertBox alertBox = AlertBox(_userService.msg);
         return showDialog(
           context: context,
           builder: (BuildContext context){
@@ -112,7 +112,7 @@ class _LoginState extends State<Login> {
                     children: <Widget>[
                       TextFormField(
                         decoration: customFormField('E-mail or Mobile number'),
-                        validator: (value)=> validateService.isEmptyField(value),
+                        validator: (value)=> _validateService.isEmptyField(value),
                         onSaved: (String val){
                           userValues['email'] = val;
                         }
@@ -121,7 +121,7 @@ class _LoginState extends State<Login> {
                       TextFormField(
                         obscureText: true,
                         decoration: customFormField('Password'),
-                        validator: (value) => validateService.isEmptyField(value),
+                        validator: (value) => _validateService.isEmptyField(value),
                         onSaved: (String val){
                           userValues['password'] = val;
                         },

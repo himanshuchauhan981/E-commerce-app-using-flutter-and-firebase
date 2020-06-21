@@ -1,7 +1,8 @@
-import 'package:app_frontend/services/userService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/header.dart';
@@ -15,6 +16,7 @@ class _UserProfileState extends State<UserProfile> {
   ProfileService _profileService = new ProfileService();
   UserService _userService = new UserService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   bool showCartIcon = true;
   String name;
   String mobileNumber;
@@ -137,7 +139,9 @@ class _UserProfileState extends State<UserProfile> {
                 size: 35.0,
               ),
               onTap: () async{
+                Loader.showLoadingScreen(context, _keyLoader);
                 QuerySnapshot userSettings = await _profileService.getUserSettings();
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                 Navigator.of(context).pushNamed('/profile/settings', arguments: userSettings.documents[0].data);
               },
             ),

@@ -22,7 +22,7 @@ class ProfileService{
     return profileData;
   }
 
-  Future<void> updateUserSettings(String firstName, String lastName, String email, String mobileNumber) async{
+  Future<void> updateAccountDetails(String firstName, String lastName, String email, String mobileNumber) async{
     String uid = await _userService.getUserId();
     QuerySnapshot userData = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
     String documentId = userData.documents[0].documentID;
@@ -32,5 +32,20 @@ class ProfileService{
       'mobileNumber': mobileNumber,
       'userId': uid
     });
+  }
+
+  Future <void> updateUserSettings(Map settings) async{
+    String uid = await _userService.getUserId();
+    QuerySnapshot userSettings = await getUserSettings();
+    String documentId = userSettings.documents[0].documentID;
+    await _firestore.collection('profileSetting').document(documentId).setData({
+      'newArrivals': settings['newArrivals'],
+      'orderUpdates': settings['orderUpdates'],
+      'promotions': settings['promotions'],
+      'saleAlerts': settings['saleAlerts'],
+      'touchId': settings['touchId'],
+      'userId': uid
+    });
+
   }
 }

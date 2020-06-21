@@ -27,7 +27,7 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
           size: 30.0,
         ),
         title: Text(
-          'Contact Us',
+          widget.title,
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
