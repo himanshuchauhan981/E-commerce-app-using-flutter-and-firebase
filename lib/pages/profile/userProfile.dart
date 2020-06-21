@@ -171,7 +171,9 @@ class _UserProfileState extends State<UserProfile> {
                 minWidth: MediaQuery.of(context).size.width - 50.0,
                 height: 50.0,
                 child: FlatButton(
-                  onPressed: (){ },
+                  onPressed: (){
+                    _userService.logOut(context);
+                  },
                   color: Colors.white,
                   child: Text(
                     'Logout',

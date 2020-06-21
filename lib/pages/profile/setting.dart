@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/profileAppBar.dart';
@@ -11,6 +12,7 @@ class ProfileSetting extends StatefulWidget {
 class _ProfileSettingState extends State<ProfileSetting> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ProfileService _profileService = new ProfileService();
+  UserService _userService = new UserService();
   Map<String,bool> settings = new Map();
 
   saveUserSettings(String key, bool value) async{
@@ -158,6 +160,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
             Material(
               color: Colors.white,
               child: ListTile(
+                onTap: (){
+                  _userService.logOut(context);
+                },
                 title: Center(
                   child: Text(
                     'Log out',

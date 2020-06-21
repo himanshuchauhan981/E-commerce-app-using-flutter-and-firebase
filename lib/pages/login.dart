@@ -80,7 +80,7 @@ class _LoginState extends State<Login> {
         automaticallyImplyLeading: false,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context,false),
+          onPressed: () => Navigator.popAndPushNamed(context, '/')
         ),
         iconTheme: IconThemeData(
           color: Colors.black
@@ -113,6 +113,7 @@ class _LoginState extends State<Login> {
                       TextFormField(
                         decoration: customFormField('E-mail or Mobile number'),
                         validator: (value)=> _validateService.isEmptyField(value),
+                        keyboardType: TextInputType.emailAddress,
                         onSaved: (String val){
                           userValues['email'] = val;
                         }
