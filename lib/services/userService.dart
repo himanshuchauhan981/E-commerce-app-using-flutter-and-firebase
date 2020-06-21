@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
+import 'package:corsac_jwt/corsac_jwt.dart';
 
 class UserService{
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,30 +15,32 @@ class UserService{
   String msg;
 
   void createAndStoreJWTToken(String uid) async{
-    final claimSet = new JwtClaim(
-        maxAge: Duration(minutes: 3),
-        otherClaims: <String, String>{
-          'uid': uid
-        }
-    );
+    var builder = new JWTBuilder();
+    var token = builder
+    ..expiresAt = new DateTime.now().add(new Duration(seconds: 25))
+    ..setClaim('data', {'uid': uid})
+    ..getToken();
 
-    final token = issueJwtHS256(claimSet, sharedKey);
-    await storage.write(key: 'token', value: token);
+    var signer = new JWTHmacSha256Signer(sharedKey);
+    var signedToken = builder.getSignedToken(signer);
+    await storage.write(key: 'token', value: signedToken.toString());
   }
 
   String validateToken(String token){
-    try{
-      final decClaimSet = verifyJwtHS256Signature(token, sharedKey);
-
+    var signer = new JWTHmacSha256Signer(sharedKey);
+    var decodedToken = new JWT.parse(token);
+    if(decodedToken.verify(signer)){
       final parts = token.split('.');
       final payload = parts[1];
       final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
-
-      return jsonDecode(decoded)['uid'];
+      final int expiry = jsonDecode(decoded)['exp']* 1000;
+      final currentDate = DateTime.now().millisecondsSinceEpoch;
+      if(currentDate > expiry){
+        return null;
+      }
+      return jsonDecode(decoded)['data']['uid'];
     }
-    catch(e){
-      return null;
-    }
+    return null;
   }
 
   void logOut(context) async{
