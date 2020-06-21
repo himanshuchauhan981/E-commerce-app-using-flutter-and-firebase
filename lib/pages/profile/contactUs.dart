@@ -16,7 +16,7 @@ class _ContactUsState extends State<ContactUs> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       key: _scaffoldKey,
-      appBar: ProfileAppBar('Contact Us'),
+      appBar: ProfileAppBar('Contact Us', context),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

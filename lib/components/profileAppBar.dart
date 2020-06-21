@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class ProfileAppBar extends StatefulWidget with PreferredSizeWidget {
   final String title;
+  final BuildContext buildContext;
 
-  ProfileAppBar(this.title);
+  ProfileAppBar(this.title, this.buildContext);
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
@@ -21,10 +22,13 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        leading: Icon(
-          Icons.keyboard_arrow_left,
-          color: Colors.black,
-          size: 30.0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.keyboard_arrow_left,
+            color: Colors.black,
+            size: 30.0,
+          ),
+          onPressed: () => Navigator.pop(widget.buildContext),
         ),
         title: Text(
           widget.title,

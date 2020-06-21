@@ -36,7 +36,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
     userSetting();
     return Scaffold(
       key: _scaffoldKey,
-      appBar: ProfileAppBar('Settings'),
+      appBar: ProfileAppBar('Settings',context),
       body: Container(
         padding: EdgeInsets.only(top: 40.0,left: 10.0, right: 10.0),
         child: Column(

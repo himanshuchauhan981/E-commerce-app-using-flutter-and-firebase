@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/profileService.dart';
@@ -75,6 +76,7 @@ class _EditProfileState extends State<EditProfile> {
       backgroundColor: Colors.grey[200],
       key: _scaffoldKey,
       appBar: header('Edit Profile', _scaffoldKey, showCartIcon, context),
+      drawer: sidebar(context),
       body: Container(
         child: Form(
           key: _formKey,
