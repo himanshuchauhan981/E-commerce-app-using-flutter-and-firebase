@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/productService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'customTransition.dart';
@@ -11,6 +12,7 @@ class CustomProductImage extends StatefulWidget {
   final List sizes;
   final String selectedSize;
   final bool editProduct;
+  final String productId;
   final void Function(String size) setSizeOptions;
 
   CustomProductImage(
@@ -19,6 +21,7 @@ class CustomProductImage extends StatefulWidget {
       this.sizes,
       this.selectedSize,
       this.editProduct,
+      this.productId,
       this.setSizeOptions
   );
   @override
@@ -28,6 +31,7 @@ class CustomProductImage extends StatefulWidget {
 class _CustomProductImageState extends State<CustomProductImage> {
   Map<String, bool> sizeMap;
   List<bool> sizeBoolList;
+  ProductService _productService = new ProductService();
 
   selectSize(index) {
     setState(() {
@@ -62,6 +66,10 @@ class _CustomProductImageState extends State<CustomProductImage> {
     setState(() {
       sizeMap = setSizeList(widget.sizes);
     });
+  }
+
+  addItemToWishlist() async{
+    await _productService.addItemToWishlist(widget.productId);
   }
 
   @override
@@ -130,7 +138,9 @@ class _CustomProductImageState extends State<CustomProductImage> {
               textBaseline: TextBaseline.ideographic,
               children: <Widget>[
                 RawMaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    addItemToWishlist();
+                  },
                   elevation: 2.0,
                   fillColor: Colors.white,
                   child: Icon(

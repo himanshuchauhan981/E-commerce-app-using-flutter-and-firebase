@@ -175,6 +175,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       size,
                       sizeValue,
                       editProduct,
+                      productId,
                       setSizeOptions
                     ),
                   ),
