@@ -18,6 +18,7 @@ import 'package:app_frontend/pages/profile/userProfile.dart';
 import 'package:app_frontend/pages/profile/editProfile.dart';
 import 'package:app_frontend/pages/profile/setting.dart';
 import 'package:app_frontend/pages/profile/contactUs.dart';
+import 'package:app_frontend/pages/products/wishlist.dart';
 
 void main() => runApp(MaterialApp(
   initialRoute: '/',
@@ -31,11 +32,12 @@ void main() => runApp(MaterialApp(
     '/items': (context) => Items(),
     '/particularItem': (context) => ParticularItem(),
     '/bag': (context) => ShoppingBag(),
-    '/addCreditCard': (context) => AddCreditCard(),
-    '/address': (context) => ShippingAddress(),
-    '/shippingMethod': (context) => ShippingMethod(),
-    '/paymentMethod': (context) => PaymentMethod(),
-    '/placeOrder': (context) => PlaceOrder(),
+    '/wishlist': (context) => WishList(),
+    '/checkout/addCreditCard': (context) => AddCreditCard(),
+    '/checkout/address': (context) => ShippingAddress(),
+    '/checkout/shippingMethod': (context) => ShippingMethod(),
+    '/checkout/paymentMethod': (context) => PaymentMethod(),
+    '/checkout/placeOrder': (context) => PlaceOrder(),
     '/profile': (context) => UserProfile(),
     '/profile/settings': (context) => ProfileSetting(),
     '/profile/edit': (context) => EditProfile(),

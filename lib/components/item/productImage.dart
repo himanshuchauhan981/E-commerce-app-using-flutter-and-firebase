@@ -14,6 +14,7 @@ class CustomProductImage extends StatefulWidget {
   final bool editProduct;
   final String productId;
   final void Function(String size) setSizeOptions;
+  final void Function (String msg, Color color) showInSnackBar;
 
   CustomProductImage(
       this.image,
@@ -22,7 +23,8 @@ class CustomProductImage extends StatefulWidget {
       this.selectedSize,
       this.editProduct,
       this.productId,
-      this.setSizeOptions
+      this.setSizeOptions,
+      this.showInSnackBar
   );
   @override
   _CustomProductImageState createState() => _CustomProductImageState();
@@ -70,6 +72,7 @@ class _CustomProductImageState extends State<CustomProductImage> {
 
   addItemToWishlist() async{
     await _productService.addItemToWishlist(widget.productId);
+    widget.showInSnackBar('Product added to wishlist',Colors.black);
   }
 
   @override

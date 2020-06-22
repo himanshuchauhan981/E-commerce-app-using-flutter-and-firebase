@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:corsac_jwt/corsac_jwt.dart';
 
+
 class UserService{
   FirebaseAuth _auth = FirebaseAuth.instance;
   Firestore _firestore = Firestore.instance;
@@ -17,7 +18,7 @@ class UserService{
   void createAndStoreJWTToken(String uid) async{
     var builder = new JWTBuilder();
     var token = builder
-    ..expiresAt = new DateTime.now().add(new Duration(seconds: 25))
+    ..expiresAt = new DateTime.now().add(new Duration(hours: 3))
     ..setClaim('data', {'uid': uid})
     ..getToken();
 
@@ -115,6 +116,22 @@ class UserService{
   Future<String> userEmail() async {
     var user = await _auth.currentUser();
     return user.email;
+  }
+
+  Future<List> userWishlist() async{
+    String uid = await getUserId();
+    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
+    List <dynamic> wishlist = userRef.documents[0].data['wishlist'];
+    List userList = new List();
+    for(String item in wishlist){
+      Map<String, dynamic> temp = new Map();
+      DocumentSnapshot productRef = await _firestore.collection('products').document(item).get();
+      temp['productName'] = productRef.data['name'];
+      temp['price'] = productRef.data['price'];
+      temp['image'] = productRef.data['image'];
+      userList.add(temp);
+    }
+    return userList;
   }
 }
 

@@ -99,6 +99,12 @@ Widget sidebar(BuildContext context){
                       letterSpacing: 1.0
                   ),
                 ),
+                onTap: () async{
+                  Loader.showLoadingScreen(context, keyLoader);
+                  List userList = await _userService.userWishlist();
+                  Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.popAndPushNamed(context, '/wishlist',arguments: {'userList':userList});
+                },
               ),
               ListTile(
                 leading: Icon(Icons.person),
