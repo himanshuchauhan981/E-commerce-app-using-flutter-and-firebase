@@ -6,7 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jaguar_jwt/jaguar_jwt.dart';
 import 'package:corsac_jwt/corsac_jwt.dart';
 
-
 class UserService{
   FirebaseAuth _auth = FirebaseAuth.instance;
   Firestore _firestore = Firestore.instance;
@@ -129,9 +128,22 @@ class UserService{
       temp['productName'] = productRef.data['name'];
       temp['price'] = productRef.data['price'];
       temp['image'] = productRef.data['image'];
+      temp['productId'] = productRef.documentID;
       userList.add(temp);
     }
     return userList;
+  }
+
+  Future<void> deleteUserWishlistItems(String productId) async{
+    String uid = await getUserId();
+    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
+    String documentId = userRef.documents[0].documentID;
+    Map<String,dynamic> wishlist = userRef.documents[0].data;
+    wishlist['wishlist'].remove(productId);
+
+    await _firestore.collection('users').document(documentId).updateData({
+      'wishlist':wishlist['wishlist']
+    });
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/sidebar.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class WishList extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class WishList extends StatefulWidget {
 
 class _WishListState extends State<WishList> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  UserService _userService = new UserService();
   bool showCartIcon = true;
   List userList;
 
@@ -17,6 +19,31 @@ class _WishListState extends State<WishList> {
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
     setState(() {
       userList = args['userList'];
+    });
+  }
+
+  void showInSnackBar(String msg, Color color) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        backgroundColor: color,
+        content: new Text(msg),
+        action: SnackBarAction(
+          label:'Close',
+          textColor: Colors.white,
+          onPressed: (){
+            _scaffoldKey.currentState.removeCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+  delete(int index){
+    String productId = userList[index]['productId'];
+    _userService.deleteUserWishlistItems(productId);
+    setState(() {
+      userList.removeAt(index);
+      showInSnackBar('Item removed from wishlist', Colors.black);
     });
   }
 
@@ -36,7 +63,8 @@ class _WishListState extends State<WishList> {
             return Container(
               child: Card(
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
                       height: 120.0,
@@ -50,6 +78,7 @@ class _WishListState extends State<WishList> {
                       child: Padding(
                         padding: EdgeInsets.only(top: 10.0, left: 10.0),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
@@ -73,7 +102,9 @@ class _WishListState extends State<WishList> {
                     ),
                     IconButton(
                       icon: Icon(Icons.delete_outline),
-                      onPressed: (){},
+                      onPressed: (){
+                        delete(index);
+                      },
                     )
                   ],
                 ),

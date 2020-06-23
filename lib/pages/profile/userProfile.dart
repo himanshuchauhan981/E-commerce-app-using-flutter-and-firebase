@@ -103,6 +103,12 @@ class _UserProfileState extends State<UserProfile> {
                 Icons.keyboard_arrow_right,
                 size: 35.0,
               ),
+              onTap: () async{
+                Loader.showLoadingScreen(context, _keyLoader);
+                List userList = await _userService.userWishlist();
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                Navigator.pushNamed(context, '/wishlist',arguments: {'userList':userList});
+              },
             ),
             ListTile(
               leading: Icon(
