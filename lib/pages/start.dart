@@ -35,10 +35,12 @@ class Start extends StatelessWidget{
                 Image.asset('assets/sIcon.png', height: 180.0),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 0.0),
-                  child: Text('Welcome to Shop Mart',
+                  child: Text(
+                      'Welcome to Shop Mart',
                       style: TextStyle(
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.bold
+                        fontSize: 35.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NovaSquare',
                       )
                   ),
                 ),

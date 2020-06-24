@@ -38,7 +38,7 @@ class UserService{
       if(currentDate > expiry){
         return null;
       }
-      return jsonDecode(decoded)['data']['uid'];
+      return  jsonDecode(decoded)['data']['uid'];
     }
     return null;
   }

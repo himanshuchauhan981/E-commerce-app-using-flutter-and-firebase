@@ -62,7 +62,7 @@ class _SignupState extends State<Signup> {
         contentPadding: EdgeInsets.all(20.0),
         errorBorder: this.setBorder(1.0, Colors.red),
         focusedErrorBorder: this.setBorder(1.0, Colors.red),
-        focusedBorder: this.setBorder(1.0, Colors.black),
+        focusedBorder: this.setBorder(2.0, Colors.blue),
         enabledBorder: this.setBorder(1.0, Colors.black)
     );
   }
@@ -95,8 +95,9 @@ class _SignupState extends State<Signup> {
                 Text(
                   'Create new account',
                   style: TextStyle(
-                      fontSize: 40.0,
-                      fontWeight: FontWeight.bold
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'NovaSquare'
                   ),
                 ),
                 SizedBox(height: 50.0),
@@ -110,6 +111,9 @@ class _SignupState extends State<Signup> {
                         onSaved: (String val){
                           userValues['firstName'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: 17.0
+                        ),
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -118,6 +122,9 @@ class _SignupState extends State<Signup> {
                         onSaved: (String val){
                           userValues['lastName'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: 17.0
+                        ),
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -127,6 +134,9 @@ class _SignupState extends State<Signup> {
                         onSaved: (String val){
                           userValues['mobileNumber'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: 17.0
+                        ),
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -136,6 +146,9 @@ class _SignupState extends State<Signup> {
                         onSaved: (String val){
                           userValues['email'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: 17.0
+                        ),
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -145,6 +158,9 @@ class _SignupState extends State<Signup> {
                         onSaved: (String val){
                           userValues['password'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: 17.0
+                        ),
                       ),
                       SizedBox(height: 50.0),
                       ButtonTheme(

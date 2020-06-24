@@ -67,7 +67,7 @@ class _LoginState extends State<Login> {
         border: InputBorder.none,
         errorBorder: this.setBorder(borderWidth, Colors.red),
         focusedErrorBorder: this.setBorder(borderWidth, Colors.red),
-        focusedBorder: this.setBorder(borderWidth, Colors.black),
+        focusedBorder: this.setBorder(borderWidth, Colors.blue),
         enabledBorder: this.setBorder(borderWidth, Colors.black)
     );
   }
@@ -102,7 +102,8 @@ class _LoginState extends State<Login> {
                   'Sign In',
                   style: TextStyle(
                     fontSize: 40.0,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'NovaSquare'
                   ),
                 ),
                 SizedBox(height: 50.0),
@@ -116,7 +117,10 @@ class _LoginState extends State<Login> {
                         keyboardType: TextInputType.emailAddress,
                         onSaved: (String val){
                           userValues['email'] = val;
-                        }
+                        },
+                        style: TextStyle(
+                          fontSize: 17.0
+                        ),
                       ),
                       SizedBox(height: 30.0),
                       TextFormField(
@@ -126,6 +130,9 @@ class _LoginState extends State<Login> {
                         onSaved: (String val){
                           userValues['password'] = val;
                         },
+                        style: TextStyle(
+                          fontSize: 17.0
+                        ),
                       ),
                       SizedBox(height: 30.0),
                       Center(
@@ -153,23 +160,23 @@ class _LoginState extends State<Login> {
                                 },
                               ),
                             ),
-                            SizedBox(height: 60.0),
+                            SizedBox(height: 20.0),
                             Text(
                                 'OR',
                               style: TextStyle(
                                 fontSize: 20.0
                               ),
                             ),
-                            SizedBox(height: 40.0),
+                            SizedBox(height: 20.0),
                             ButtonTheme(
                               minWidth: 250.0,
                               child: FlatButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(36),
-                                    side: BorderSide(color: Colors.black)
+                                    side: BorderSide(color: Colors.red)
                                 ),
                                 padding: EdgeInsets.symmetric(vertical: 20.0),
-                                color: Colors.blue[800],
+                                color: Colors.redAccent,
                                 textColor: Colors.white,
                                 child: Text(
                                   'Google Log in',

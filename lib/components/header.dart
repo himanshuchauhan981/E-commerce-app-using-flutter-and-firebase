@@ -24,7 +24,8 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.bold,
-        fontSize: 22.0
+        fontSize: 22.0,
+        fontFamily: 'NovaSquare'
       ),
     ),
     backgroundColor: Colors.white,

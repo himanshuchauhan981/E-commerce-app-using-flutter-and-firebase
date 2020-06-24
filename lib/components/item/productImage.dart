@@ -71,8 +71,8 @@ class _CustomProductImageState extends State<CustomProductImage> {
   }
 
   addItemToWishlist() async{
-    await _productService.addItemToWishlist(widget.productId);
-    widget.showInSnackBar('Product added to wishlist',Colors.black);
+    String msg = await _productService.addItemToWishlist(widget.productId);
+    widget.showInSnackBar(msg,Colors.black);
   }
 
   @override

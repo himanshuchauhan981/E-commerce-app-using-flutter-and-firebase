@@ -50,10 +50,11 @@ class _GridItemListState extends State<GridItemList> {
   }
 
   Widget build(BuildContext context){
-    var size = MediaQuery.of(context).size;
+    Size size = MediaQuery.of(context).size;
 
-    final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
-    final double itemWidth = size.width / 2;
+    double itemHeight = (size.height - kToolbarHeight - 24) / 2;
+    double itemWidth = size.width / 2;
+
     return SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           childAspectRatio: (itemWidth / itemHeight),

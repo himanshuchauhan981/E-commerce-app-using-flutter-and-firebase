@@ -45,18 +45,18 @@ class _HorizontalListState extends State<CategoryCarousal> {
     name = name.toLowerCase();
     Map<String,dynamic> args = new Map();
 
-    var subCategory = _productService.listSubCategories(name);
-
-    subCategory.listen((QuerySnapshot data) {
-      List<DocumentSnapshot> subCategoryData = data.documents;
-      var subCategoryList = subCategoryData.map((DocumentSnapshot doc){
-        return doc.data;
-      }).toList();
-
-      args['heading'] = name;
-      args['list'] = subCategoryList;
-      Navigator.pushNamed(context, '/subCategory', arguments: args);
-    });
+//    var subCategory = _productService.listSubCategories(name);
+//
+//    subCategory.listen((QuerySnapshot data) {
+//      List<DocumentSnapshot> subCategoryData = data.documents;
+//      var subCategoryList = subCategoryData.map((DocumentSnapshot doc){
+//        return doc.data;
+//      }).toList();
+//
+//      args['heading'] = name;
+//      args['list'] = subCategoryList;
+//      Navigator.pushNamed(context, '/subCategory', arguments: args);
+//    });
   }
 
   @override
@@ -95,7 +95,8 @@ class _HorizontalListState extends State<CategoryCarousal> {
                       fontWeight: FontWeight.w600,
                       fontSize: 20.0,
                       color: Colors.white,
-                      letterSpacing: 1.0
+                      letterSpacing: 1.0,
+                      fontFamily: 'NovaSquare'
                     ),
                   ),
                 ),

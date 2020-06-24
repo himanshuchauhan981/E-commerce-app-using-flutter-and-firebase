@@ -5,6 +5,7 @@ import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/home/gridItemList.dart';
 import 'package:app_frontend/components/home/snapEffectCarousel.dart';
 import 'package:app_frontend/components/sidebar.dart';
+import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -16,7 +17,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     bool showCartIcon  = true;
-
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     return WillPopScope(
       onWillPop: () async{
         return(
@@ -75,9 +79,10 @@ class _HomeState extends State<Home> {
                         child: Text(
                           'New Arrivals',
                           style: TextStyle(
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                            fontFamily: 'NovaSquare'
                           ),
                         ),
                       ),
@@ -92,9 +97,10 @@ class _HomeState extends State<Home> {
                         child: Text(
                           'Featured',
                           style: TextStyle(
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                            fontFamily: 'NovaSquare'
                           ),
                         ),
                       ),

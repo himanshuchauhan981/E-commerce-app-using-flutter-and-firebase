@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/components/header.dart';
+import 'package:app_frontend/components/sidebar.dart';
 
 class Items extends StatefulWidget {
   @override
@@ -19,9 +20,10 @@ class _ItemsState extends State<Items> {
 
   setItems(){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+    print(args);
     this.setState(() {
       heading = args['heading'];
-      itemList = args['list'];
+      itemList = args['items'];
     });
   }
 
@@ -67,7 +69,7 @@ class _ItemsState extends State<Items> {
                 },
                 child: GridTile(
                   child: Image.network(
-                    item['image'][0],
+                    item['image'],
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -120,7 +122,6 @@ class _ItemsState extends State<Items> {
           ),
           delegate: SliverChildBuilderDelegate((BuildContext context, int index){
             var item = itemList[index];
-
             return itemsCard(item);
           },
               childCount: childCount
@@ -167,6 +168,7 @@ class _ItemsState extends State<Items> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: header(heading, _scaffoldKey, showIcon,context),
+      drawer: sidebar(context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20.0),
         child: setCustomScrollView(),

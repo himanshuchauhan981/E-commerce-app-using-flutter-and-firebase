@@ -4,12 +4,14 @@ import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/profileService.dart';
+import 'package:app_frontend/services/productService.dart';
 
 Widget sidebar(BuildContext context){
-  final GlobalKey<State> keyLoader = new GlobalKey<State>();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   UserService _userService = new UserService();
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
   ProfileService _profileService = new ProfileService();
+  ProductService _productService = new ProductService();
 
   return SafeArea(
     child: Drawer(
@@ -31,7 +33,7 @@ Widget sidebar(BuildContext context){
                   ),
                 ),
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, '/home');
+                  Navigator.popAndPushNamed(context, '/home');
                 },
               ),
               ListTile(
@@ -44,8 +46,13 @@ Widget sidebar(BuildContext context){
                       letterSpacing: 1.0
                   ),
                 ),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/shop');
+                onTap: () async{
+                  Map<String,dynamic> args = new Map();
+                  Loader.showLoadingScreen(context, _keyLoader);
+                  List<Map<String,String>> categoryList = await _productService.listCategories();
+                  args['category'] = categoryList;
+                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.pushReplacementNamed(context, '/shop',arguments: args);
                 },
               ),
               ListTile(
@@ -60,10 +67,10 @@ Widget sidebar(BuildContext context){
                 ),
                 onTap: () async{
                   Map<String,dynamic> args = new Map();
-                  Loader.showLoadingScreen(context, keyLoader);
+                  Loader.showLoadingScreen(context, _keyLoader);
                   List bagItems = await _shoppingBagService.listBagItems();
                   args['bagItems'] = bagItems;
-                  Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                   Navigator.pushReplacementNamed(context, '/bag', arguments: args);
                 },
               ),
@@ -100,9 +107,9 @@ Widget sidebar(BuildContext context){
                   ),
                 ),
                 onTap: () async{
-                  Loader.showLoadingScreen(context, keyLoader);
+                  Loader.showLoadingScreen(context, _keyLoader);
                   List userList = await _userService.userWishlist();
-                  Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                   Navigator.popAndPushNamed(context, '/wishlist',arguments: {'userList':userList});
                 },
               ),
@@ -117,9 +124,9 @@ Widget sidebar(BuildContext context){
                   ),
                 ),
                 onTap: () async{
-                  Loader.showLoadingScreen(context, keyLoader);
+                  Loader.showLoadingScreen(context, _keyLoader);
                   Map userProfile = await _profileService.getUserProfile();
-                  Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                   Navigator.popAndPushNamed(context, '/profile',arguments: userProfile);
                 },
               ),

@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/components/loader.dart';
 
 class SubCategory extends StatefulWidget {
   @override
@@ -11,34 +11,28 @@ class SubCategory extends StatefulWidget {
 }
 
 class _SubCategoryState extends State<SubCategory> {
-
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   ProductService _productService = new ProductService();
   String heading;
   bool showIcon = false;
-  List subCategoryList = new List();
+  List<String> subCategoryList = new List();
+  List <String> imageList = new List();
 
   setSubCategory(context){
-    Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+    Map<dynamic,dynamic> args = ModalRoute.of(context).settings.arguments;
     this.setState(() {
-      heading = args['heading'];
-      subCategoryList = args['list'][0]['subCategory'];
+      heading = args['category'];
+      subCategoryList = args['subCategory'].keys.toList();
+      imageList = args['subCategory'].values.toList();
     });
   }
 
-  listSubCategoryItems(String name){
-    name = name.toLowerCase();
-    Map<String,dynamic> args = new Map();
-    var items = _productService.listSubCategoryItems(name);
-
-    items.listen((data){
-      List<DocumentSnapshot> arrivalData = data.documents;
-      var itemsList = arrivalData.map((DocumentSnapshot doc){
-        return doc;
-      }).toList();
-      args['heading'] = name;
-      args['list'] = itemsList;
-      Navigator.pushNamed(context, '/items', arguments: args);
-    });
+  listSubCategoryItems(String subCategory, BuildContext context) async{
+    subCategory = subCategory.toLowerCase();
+    Loader.showLoadingScreen(context, _keyLoader);
+    List <Map<String,String>> items = await _productService.listSubCategoryItems(subCategory);
+    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+    Navigator.pushNamed(context, '/items', arguments: {'items': items, 'heading': subCategory});
   }
 
   @override
@@ -56,9 +50,9 @@ class _SubCategoryState extends State<SubCategory> {
           crossAxisCount: 2
         ),
         itemBuilder: (BuildContext context, int index){
-          String name = subCategoryList[index]['subCategoryName'];
+          String name = subCategoryList[index];
           name = name[0].toUpperCase()+name.substring(1);
-          String imagePath = subCategoryList[index]['image'];
+          String imagePath = imageList[index];
           return Padding(
             padding: EdgeInsets.all(5.0),
             child: Card(
@@ -74,7 +68,7 @@ class _SubCategoryState extends State<SubCategory> {
                     child: Material(
                       child: InkWell(
                         onTap: (){
-                          listSubCategoryItems(name);
+                          listSubCategoryItems(name,context);
                         },
                         child: GridTile(
                           footer: Container(
@@ -83,6 +77,7 @@ class _SubCategoryState extends State<SubCategory> {
                               leading: Text(
                                 name,
                                 style: TextStyle(
+                                  fontFamily: 'NovaSquare',
                                   fontWeight: FontWeight.bold,
                                   fontSize: 22.0
                                 ),
