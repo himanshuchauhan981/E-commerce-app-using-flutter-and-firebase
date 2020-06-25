@@ -1,15 +1,41 @@
-# app_frontend
+# E-commerce app using Flutter and Firebase
 A new Flutter application.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+It is an complete e-commerce mobile app which is designed using flutter. It uses firebase as a backend for CRUD operations. 
 
-A few resources to get you started if this is your first Flutter project:
+## Features of this flutter app
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Home
+  * Main Products Carousel
+  * Featured products carousel
+  * Products Grid view
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Products
+  * Products List view
+  * Products Details view
+  * Color picker
+  * Size picker (optional)
+  * Share to Messenger, Whatsapp, Wechat, Twitter, E-mail, Copy Link, etc.
+  * Wishlist
+
+- Shopping Cart
+  * Add to Cart functionality
+  * Remove from Cart
+  * Edit Shopping Cart
+  * Order History (Left to achieve)
+  * Reorder functionality (Left to achieve)
+
+- Checkout Experience
+  * Shopping Cart
+  * Shipping Address
+  * Shipping Methods
+  * Payment Methods
+  * Add New Card
+  * Place Order
+
+- Backend
+  * Database system with Firebase Firestore
+  * User management with Firebase Authentication
+  
