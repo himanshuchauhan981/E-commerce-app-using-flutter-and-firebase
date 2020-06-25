@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:app_frontend/services/checkoutService.dart';
-import 'package:flutter/material.dart';
 
 class PaymentMethod extends StatefulWidget {
   @override
@@ -12,18 +13,19 @@ class _PaymentMethodState extends State<PaymentMethod> {
   List<String> cardNumberList = new List<String>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String selectedPaymentCard;
+  bool visibleInput = false;
 
   checkoutPaymentMethod(){
     if(selectedPaymentCard != null){
       Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
       args['selectedCard'] = selectedPaymentCard;
-      Navigator.pushNamed(context, '/placeOrder',arguments: args);
+      Navigator.pushNamed(context, '/checkout/placeOrder',arguments: args);
     }
     else{
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
           backgroundColor: Colors.black,
-          content: new Text('Select any address'),
+          content: new Text('Select any card'),
           action: SnackBarAction(
             label:'Close',
             textColor: Colors.white,
@@ -70,13 +72,19 @@ class _PaymentMethodState extends State<PaymentMethod> {
     );
   }
 
+  setVisibileInput(){
+    setState(() {
+      visibleInput = !visibleInput;
+    });
+  }
+
   animatePaymentContainers(){
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 1000),
       transitionBuilder: (Widget child, Animation<double> animation){
         return ScaleTransition(child: child, scale: animation);
       },
-      child: cardNumberList.length != 0 ? showSavedCreditCard(): Text('No carf found')
+      child: cardNumberList.length != 0 ? showSavedCreditCard(): Text('No card found')
     );
   }
 
@@ -89,6 +97,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: CheckoutAppBar('Cancel','Next',this.checkoutPaymentMethod),
       body: Container(
         child: Padding(
@@ -99,9 +108,10 @@ class _PaymentMethodState extends State<PaymentMethod> {
               Text(
                 'Payment Method',
                 style: TextStyle(
-                    fontSize: 35.0,
-                    letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold
+                  fontFamily: 'NovaSquare',
+                  fontSize: 35.0,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.bold
                 ),
               ),
               Padding(
@@ -117,7 +127,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
               SizedBox(height: 20.0),
               GestureDetector(
                 onTap: (){
-                  Navigator.pushNamed(context, '/addCreditCard');
+                  Navigator.pushNamed(context, '/checkout/addCreditCard');
                 },
                 child: ListTile(
                   leading: Icon(Icons.add),

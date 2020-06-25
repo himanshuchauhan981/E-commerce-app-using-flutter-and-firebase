@@ -6,6 +6,10 @@ class CheckoutService {
   Firestore _firestore = Firestore.instance;
   UserService _userService = new UserService();
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
+  CollectionReference _shippingAddressReference = Firestore.instance.collection('shippingAddress');
+  CollectionReference _creditCardReference = Firestore.instance.collection('creditCard');
+  CollectionReference _shoppingBagReference = Firestore.instance.collection('bags');
+  CollectionReference _orderReference = Firestore.instance.collection('orders');
 
   Map mapAddressValues(Map values){
     Map addressValues = new Map();
@@ -20,20 +24,16 @@ class CheckoutService {
     return addressValues;
   }
 
-  updateAddressData(QuerySnapshot addressData, Map newAddress) async{
-    addressData.documents.forEach((DocumentSnapshot doc) async{
-      List addressList = doc.data['address'];
-      addressList.add(newAddress);
-      await _firestore.collection('shippingAddress').document(doc.documentID).setData({'address':addressList},merge: true);
-    });
+  Future<void>updateAddressData(QuerySnapshot addressData, Map newAddress) async{
+    String documentId = addressData.documents[0].documentID;
+    List savedAddress = addressData.documents[0].data['address'];
+    savedAddress.add(newAddress);
+    await _shippingAddressReference.document(documentId).updateData({'address': savedAddress});
   }
-
 
   Future<void> newShippingAddress(Map address) async{
     String uid = await  _userService.getUserId();
-
-    QuerySnapshot data = await _firestore.collection('shippingAddress').where("userId", isEqualTo: uid).getDocuments();
-
+    QuerySnapshot data = await _shippingAddressReference.where("userId", isEqualTo: uid).getDocuments();
     if(data.documents.length == 0){
       await _firestore.collection('shippingAddress').add({
         'userId': uid,
@@ -47,18 +47,22 @@ class CheckoutService {
 
   Future<List> listShippingAddress() async{
     String uid = await _userService.getUserId();
+    List addressList = new List();
 
-    QuerySnapshot docRef = await _firestore.collection('shippingAddress').where('userId',isEqualTo: uid).getDocuments();
-    return docRef.documents[0].data['address'];
+    QuerySnapshot docRef = await _shippingAddressReference.where('userId',isEqualTo: uid).getDocuments();
+    if(docRef.documents.length != 0){
+      addressList = docRef.documents[0].data['address'];
+    }
+    return addressList;
+
   }
 
   Future<void> newCreditCardDetails(String cardNumber, String expiryDate, String cardHolderName) async{
     String uid = await _userService.getUserId();
-    QuerySnapshot creditCardData = await _firestore.collection('creditCard').where("cardNumber", isEqualTo: cardNumber).getDocuments();
+    QuerySnapshot creditCardData = await _creditCardReference.where("cardNumber", isEqualTo: cardNumber).getDocuments();
 
-    print(creditCardData.documents.length);
     if(creditCardData.documents.length == 0){
-      await _firestore.collection('creditCard').add({
+      await _creditCardReference.add({
         'cardNumber': cardNumber,
         'expiryDate': expiryDate,
         'cardHolderName': cardHolderName,
@@ -70,7 +74,7 @@ class CheckoutService {
   Future<List> listCreditCardDetails() async{
     String uid = await _userService.getUserId();
     List<String> cardNumberList = new List<String>();
-    QuerySnapshot cardData = await _firestore.collection('creditCard').where('userId',isEqualTo: uid).getDocuments();
+    QuerySnapshot cardData = await _creditCardReference.where('userId',isEqualTo: uid).getDocuments();
     String cardNumber;
     cardData.documents.forEach((docRef){
       cardNumber = docRef.data['cardNumber'].toString().replaceAll(new RegExp(r"\s+\b|\b\s"),'');
@@ -81,17 +85,18 @@ class CheckoutService {
 
   Future<void> placeNewOrder(Map orderDetails) async{
     String uid = await _userService.getUserId();
-    QuerySnapshot items = await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments();
-    String itemsId = items.documents[0].documentID;
-    await _firestore.collection('orders').add({
+    QuerySnapshot items = await _shoppingBagReference.where('userId',isEqualTo: uid).getDocuments();
+
+    await _orderReference.add({
       'userId': uid,
-      'items': itemsId,
+      'items': items.documents[0].data['products'],
       'shippingAddress': orderDetails['shippingAddress'],
       'shippingMethod': orderDetails['shippingMethod'],
       'price': int.parse(orderDetails['price']),
       'paymentCard': orderDetails['selectedCard']
     });
     
-    await _shoppingBagService.deleteShoppingBag();
+    await _shoppingBagService.delete();
   }
+
 }

@@ -68,8 +68,9 @@ Widget sidebar(BuildContext context){
                 onTap: () async{
                   Map<String,dynamic> args = new Map();
                   Loader.showLoadingScreen(context, _keyLoader);
-                  List bagItems = await _shoppingBagService.listBagItems();
+                  List bagItems = await _shoppingBagService.list();
                   args['bagItems'] = bagItems;
+                  args['route'] = '/home';
                   Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                   Navigator.pushReplacementNamed(context, '/bag', arguments: args);
                 },

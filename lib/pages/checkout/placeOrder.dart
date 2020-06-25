@@ -22,7 +22,7 @@ class _PlaceOrderState extends State<PlaceOrder> {
 
   placeNewOrder() async{
     await _checkoutService.placeNewOrder(orderDetails);
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override

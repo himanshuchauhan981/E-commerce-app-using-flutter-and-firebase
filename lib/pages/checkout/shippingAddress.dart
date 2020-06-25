@@ -21,27 +21,58 @@ class _ShippingAddressState extends State<ShippingAddress> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   checkoutAddress(){
+
     if(selectedAddress == null){
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.black,
-          content: new Text('Select any address'),
-          action: SnackBarAction(
-            label:'Close',
-            textColor: Colors.white,
-            onPressed: (){
-              _scaffoldKey.currentState.removeCurrentSnackBar();
-            },
-          ),
-        ),
-      );
+      String msg = 'Select any address';
+      showInSnackBar(msg, Colors.red);
     }
     else{
       Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
 
       args['shippingAddress'] = shippingAddress[selectedAddress];
-      Navigator.of(context).pushNamed('/shippingMethod', arguments: args);
+      Navigator.of(context).pushNamed('/checkout/shippingMethod', arguments: args);
     }
+  }
+
+  void showInSnackBar(String msg, Color color) {
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        backgroundColor: color,
+        content: new Text(msg),
+        action: SnackBarAction(
+          label:'Close',
+          textColor: Colors.white,
+          onPressed: (){
+            _scaffoldKey.currentState.removeCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+  validateInput() async{
+    if(_formKey.currentState.validate()){
+      _formKey.currentState.save();
+      await _checkoutService.newShippingAddress(addressValues);
+      String msg = 'Address is saved';
+      showInSnackBar(msg, Colors.black);
+      setState(() {
+        visibleInput = !visibleInput;
+        shippingAddress.add(addressValues);
+      });
+    }
+    else{
+      setState(() {
+        autoValidate = true;
+      });
+    }
+  }
+
+  listShippingAddress() async{
+    List data = await _checkoutService.listShippingAddress();
+    setState(() {
+      shippingAddress = data;
+    });
   }
 
   saveNewAddress(){
@@ -119,13 +150,13 @@ class _ShippingAddressState extends State<ShippingAddress> {
                             ),
                           ),
                           Text(
-                            "${item['area']}, ${item['city']} ${item['pinCode']}",
+                            "${item['area']}, ${item['city']}",
                             style: TextStyle(
                                 fontSize: 15.0
                             ),
                           ),
                           Text(
-                            item['state'],
+                            "${item['state']} ${item['pinCode']}",
                             style: TextStyle(
                                 fontSize: 15.0
                             ),
@@ -162,9 +193,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
               child: Text(
                 'Add new',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold
+                  color: Colors.black,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold
                 ),
               ),
               borderSide: BorderSide(color: Colors.black,width: 1.8),
@@ -186,25 +217,6 @@ class _ShippingAddressState extends State<ShippingAddress> {
     );
   }
 
-  validateInput() async{
-    if(_formKey.currentState.validate()){
-      _formKey.currentState.save();
-      await _checkoutService.newShippingAddress(addressValues);
-    }
-    else{
-      setState(() {
-        autoValidate = true;
-      });
-    }
-  }
-
-  listShippingAddress() async{
-    List data = await _checkoutService.listShippingAddress();
-    setState(() {
-      shippingAddress = data;
-    });
-  }
-
   @override
   void initState() {
     // TODO: implement initState
@@ -216,7 +228,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: CheckoutAppBar('Cancel','Next',this.checkoutAddress),
+      appBar: CheckoutAppBar('Back','Next',this.checkoutAddress),
       body: Container(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
@@ -230,9 +242,10 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   Text(
                     'Shipping',
                     style: TextStyle(
-                        fontSize: 35.0,
-                        letterSpacing: 1.0,
-                        fontWeight: FontWeight.bold
+                      fontFamily: 'NovaSquare',
+                      fontSize: 35.0,
+                      letterSpacing: 1.0,
+                      fontWeight: FontWeight.bold
                     ),
                   ),
                   SizedBox(height: 25.0),
@@ -245,7 +258,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   Text(
                     'Shipping Address',
                     style: TextStyle(
-                      fontSize: 25.0,
+                      fontFamily: 'NovaSquare',
+                      fontSize: 28.0,
                       fontWeight: FontWeight.bold
                     ),
                   ),

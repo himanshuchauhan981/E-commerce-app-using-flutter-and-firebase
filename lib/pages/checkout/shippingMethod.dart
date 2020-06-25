@@ -14,13 +14,13 @@ class _ShippingMethodState extends State<ShippingMethod> {
   checkoutShippingMethod(){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
     args['shippingMethod'] = selectedShippingMethod;
-    Navigator.of(context).pushNamed('/paymentMethod', arguments: args);
+    Navigator.of(context).pushNamed('/checkout/paymentMethod', arguments: args);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CheckoutAppBar('Shopping Bag', 'Done', checkoutShippingMethod),
+      appBar: CheckoutAppBar('Back', 'Done', checkoutShippingMethod),
       body: Container(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
@@ -30,9 +30,10 @@ class _ShippingMethodState extends State<ShippingMethod> {
               Text(
                 'Shipping',
                 style: TextStyle(
-                    fontSize: 35.0,
-                    letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold
+                  fontFamily: 'NovaSquare',
+                  fontSize: 40.0,
+                  letterSpacing: 1.0,
+                  fontWeight: FontWeight.bold
                 ),
               ),
               Padding(

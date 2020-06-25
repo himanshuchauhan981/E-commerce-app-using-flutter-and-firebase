@@ -48,7 +48,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
               decoration: customBorder('Full Name',Icons.person),
               keyboardType: TextInputType.text,
               validator: (value) => _validateService.isEmptyField(value),
-              onSaved: (String val) => widget.addressValues['fullName'] = val
+              onSaved: (String val) => widget.addressValues['name'] = val
             ),
             data: Theme.of(context).copyWith(primaryColor: Colors.black),
           ),

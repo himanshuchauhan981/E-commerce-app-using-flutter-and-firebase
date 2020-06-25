@@ -1,4 +1,3 @@
-import 'package:app_frontend/services/productService.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/services/productService.dart';
 
 class ShoppingBag extends StatefulWidget {
   @override
@@ -24,12 +24,16 @@ class _ShoppingBagState extends State<ShoppingBag> {
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
   ProductService _productService = new ProductService();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  String route;
 
   void listBagItems(context) async {
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
     setState(() {
       bagItemList = args['bagItems'];
       totalPrice = setTotalPrice(args['bagItems']);
+      if(args.containsKey('route')){
+        route = args['route'];
+      }
     });
   }
 
@@ -51,7 +55,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
 
   void removeItem(item,context) async{
     bagItemList.removeWhere((items) => items['id'] == item['id']);
-    await _shoppingBagService.removeBagItems(item['id']);
+    await _shoppingBagService.remove(item['id']);
     setState(() {
       bagItemList = bagItemList;
     });
@@ -270,18 +274,18 @@ class _ShoppingBagState extends State<ShoppingBag> {
     );
   }
 
-  _onWillPop(BuildContext context){
-    print(context);
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     bool showCartIcon = false;
     listBagItems(context);
-    return WillPopScope(
-      onWillPop: _onWillPop(context),
+    return WillPopScope (
+      onWillPop: () async{
+        if(this.route != null){
+          Navigator.pushReplacementNamed(context, route);
+        }
+        return true;
+      },
       child: Scaffold(
         backgroundColor: Colors.grey[200],
         key: _scaffoldKey,
@@ -329,7 +333,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                           if(bagItemList.length != 0){
                             Map<String,dynamic> args = new Map<String, dynamic>();
                             args['price'] = totalPrice;
-                            Navigator.of(context).pushNamed('/address',arguments: args);
+                            Navigator.of(context).pushNamed('/checkout/address',arguments: args);
                           }
                         },
                         child: Text(

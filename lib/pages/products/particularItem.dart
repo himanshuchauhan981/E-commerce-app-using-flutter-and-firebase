@@ -29,7 +29,6 @@ class _ParticularItemState extends State<ParticularItem> {
   String image,name;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   void showInSnackBar(String msg, Color color) {
     _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -93,7 +92,7 @@ class _ParticularItemState extends State<ParticularItem> {
     else{
       Loader.showLoadingScreen(context, keyLoader);
       ShoppingBagService _shoppingBagService = new ShoppingBagService();
-      String msg = await _shoppingBagService.addToShoppingBag(itemDetails['productId'],sizeValue,colorValue,quantity);
+      String msg = await _shoppingBagService.add(itemDetails['productId'],sizeValue,colorValue,quantity);
       Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
       showInSnackBar(msg,Colors.black);
     }

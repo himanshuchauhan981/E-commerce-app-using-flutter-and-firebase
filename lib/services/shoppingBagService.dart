@@ -6,7 +6,7 @@ class ShoppingBagService{
   UserService userService = new UserService();
   Firestore _firestore = Firestore.instance;
 
-  Future<String> updateBagItems(String productId, String size, String color, int quantity, QuerySnapshot bagItems) async{
+  Future<String> update(String productId, String size, String color, int quantity, QuerySnapshot bagItems) async{
     String documentId;
     String msg;
     List productItems = bagItems.documents.map((doc){
@@ -32,7 +32,7 @@ class ShoppingBagService{
     return msg;
   }
 
-  Future<String> addToShoppingBag(String productId,String size,String color,int quantity) async{
+  Future<String> add(String productId,String size,String color,int quantity) async{
     String uid = await userService.getUserId();
     String msg;
     QuerySnapshot data = await _firestore.collection('bags').where("userId", isEqualTo: uid).getDocuments();
@@ -49,12 +49,12 @@ class ShoppingBagService{
       msg =  "Product added to shopping bag";
     }
     else{
-      msg = await updateBagItems(productId, size, color, quantity, data);
+      msg = await update(productId, size, color, quantity, data);
     }
     return msg;
   }
 
-  Future<List> listBagItems() async{
+  Future<List> list() async{
     List bagItemsList = new List();
     List itemDetails ;
     List productIdList =  new List(0);
@@ -86,7 +86,7 @@ class ShoppingBagService{
     return bagItemsList;
   }
 
-  Future<void> removeBagItems(String id) async{
+  Future<void> remove(String id) async{
     String uid = await userService.getUserId();
 
     await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments().then((QuerySnapshot doc){
@@ -103,7 +103,7 @@ class ShoppingBagService{
     });
   }
 
-  Future<void> deleteShoppingBag() async{
+  Future<void> delete() async{
     String uid = await userService.getUserId();
 
     QuerySnapshot bagItems = await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments();

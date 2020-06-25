@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/services/userService.dart';
+import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/services/productService.dart';
 
 class WishList extends StatefulWidget {
   @override
@@ -11,6 +13,8 @@ class WishList extends StatefulWidget {
 
 class _WishListState extends State<WishList> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  ProductService _productService = new ProductService();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   UserService _userService = new UserService();
   bool showCartIcon = true;
   List userList;
@@ -47,6 +51,66 @@ class _WishListState extends State<WishList> {
     });
   }
 
+  emptyWishlist(){
+    return Container(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'It seems nothing is here',
+              style: TextStyle(
+                fontSize: 25.0,
+                fontFamily: 'NovaSquare',
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Text(
+              'Make a wish!',
+              style: TextStyle(
+                fontSize: 25.0,
+                fontFamily: 'NovaSquare',
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Image.asset(
+              'assets/emptyShoppingBag.png',
+              height: 150.0,
+              width: 150.0,
+            ),
+            SizedBox(height: 20.0),
+            ButtonTheme(
+              height: 45.0,
+              minWidth: 100.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(7.0))
+              ),
+              child: RaisedButton(
+                color: Color(0xff313134),
+                onPressed: () async{
+                  Map<String,dynamic> args = new Map();
+                  Loader.showLoadingScreen(context, _keyLoader);
+                  List<Map<String,String>> categoryList = await _productService.listCategories();
+                  args['category'] = categoryList;
+                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.pushReplacementNamed(context, '/shop',arguments: args);
+                },
+                child: Text(
+                  'Shop',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     setWishlistItems();
@@ -56,7 +120,7 @@ class _WishListState extends State<WishList> {
       drawer: sidebar(context),
       body: Padding(
         padding: EdgeInsets.all(10.0),
-        child: ListView.separated(
+        child: userList.length != 0 ? ListView.separated(
           itemCount: userList.length,
           itemBuilder: (BuildContext context, int index){
             var item = userList[index];
@@ -112,7 +176,7 @@ class _WishListState extends State<WishList> {
             );
           },
           separatorBuilder: (BuildContext context, int index) => SizedBox(height: 10.0),
-        ),
+        ): emptyWishlist(),
       ),
     );
   }

@@ -34,7 +34,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
     final FormState form = _formKey.currentState;
     if(form.validate()){
       await _checkoutService.newCreditCardDetails(cardNumber, expiryDate, cardHolderName);
-      Navigator.of(context).pushNamed('/paymentMethod');
+      Navigator.of(context).pushNamed('/checkout/paymentMethod');
     }
     else{
       setState(() {
