@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/item/customTransition.dart';
@@ -12,8 +11,7 @@ class SnapEffectCarousel extends StatefulWidget {
 
 class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
   int _index = 0;
-
-  List newArrival = new List(0);
+  List newArrivals = new List();
   ProductService _productService = new ProductService();
 
   _SnapEffectCarouselState(){
@@ -21,43 +19,37 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
   }
 
   void listNewArrivals() async{
-    var newArrivals = _productService.newItemArrivals();
-    newArrivals.listen((data){
-      List<DocumentSnapshot> arrivalData = data.documents;
-      var newArrivalList = arrivalData.map((DocumentSnapshot doc){
-        return doc;
-      }).toList();
-      setState(() {
-        newArrival = newArrivalList;
-      });
+    List<Map<String,String>> newArrivalList = await _productService.newItemArrivals();
+    setState(() {
+      newArrivals = newArrivalList;
     });
   }
 
-  void showParticularItem(item){
-    Map<String,dynamic> args = new Map();
-    args['itemDetails'] = item;
+  void showParticularItem(Map item) async{
+    String productId = item['productId'];
+    Map itemDetails = await _productService.particularItem(productId);
     Navigator.push(
-        context,
-        CustomTransition(
-            type: CustomTransitionType.downToUp,
-            child: ParticularItem(
-              itemDetails: args,
-              edit: false,
-            )
+      context,
+      CustomTransition(
+        type: CustomTransitionType.downToUp,
+        child: ParticularItem(
+          itemDetails: itemDetails,
+          edit: false,
         )
+      )
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
-      itemCount: newArrival.length,
+      itemCount: newArrivals.length,
       controller: PageController(
         viewportFraction: 0.7
       ),
       onPageChanged: (int index) => setState(()=> _index = index),
       itemBuilder: (context,index){
-        var item = newArrival[index];
+        var item = newArrivals[index];
         return Transform.scale(
           scale: index == _index ? 1 : 0.8,
           child: Column(
@@ -79,7 +71,7 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
                         decoration: BoxDecoration(
                           borderRadius:  BorderRadius.all(Radius.circular(8.0)),
                           image: DecorationImage(
-                              image: NetworkImage(item['image'][0]),
+                              image: NetworkImage(item['image']),
                               fit: BoxFit.cover
                           ),
                         ),

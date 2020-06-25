@@ -22,11 +22,11 @@ class _ParticularItemState extends State<ParticularItem> {
   var itemDetails;
   List<dynamic> size;
   List<dynamic> colors;
-  String productId;
   String sizeValue = "";
   String colorValue = "";
   int quantity = 1;
   bool editProduct;
+  String image,name;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -48,12 +48,11 @@ class _ParticularItemState extends State<ParticularItem> {
 
   editItemDetails(){
     Map<String,dynamic> args = widget.itemDetails;
-
+    print(args);
     setState(() {
       editProduct = true;
       sizeValue = args['itemDetails']['selectedSize'];
       colorValue = args['itemDetails']['selectedColor'];
-      productId = args['itemDetails']['id'];
       itemDetails = args['itemDetails'];
       size = args['itemDetails']['size'];
       colors = setColorList(args['itemDetails']['color']);
@@ -72,10 +71,9 @@ class _ParticularItemState extends State<ParticularItem> {
     setState(() {
       if(!widget.edit){
         editProduct = false;
-        productId = args['itemDetails'].documentID;
-        itemDetails = args['itemDetails'];
-        size = args['itemDetails']['size'];
-        colors = setColorList(args['itemDetails']['color']);
+        itemDetails = args;
+        size = args['size'];
+        colors = setColorList(args['color']);
       }
       else{
         editItemDetails();
@@ -95,7 +93,7 @@ class _ParticularItemState extends State<ParticularItem> {
     else{
       Loader.showLoadingScreen(context, keyLoader);
       ShoppingBagService _shoppingBagService = new ShoppingBagService();
-      String msg = await _shoppingBagService.addToShoppingBag(productId,sizeValue,colorValue,quantity);
+      String msg = await _shoppingBagService.addToShoppingBag(itemDetails['productId'],sizeValue,colorValue,quantity);
       Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
       showInSnackBar(msg,Colors.black);
     }
@@ -163,19 +161,21 @@ class _ParticularItemState extends State<ParticularItem> {
         child: Container(
           child: SingleChildScrollView(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height + 22.0),
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height - 29
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Expanded(
                     flex: 6,
                     child: CustomProductImage(
-                      itemDetails['image'][0],
+                      itemDetails['image'],
                       buildContext,
                       size,
                       sizeValue,
                       editProduct,
-                      productId,
+                      itemDetails['productId'],
                       setSizeOptions,
                       showInSnackBar
                     ),
@@ -192,12 +192,12 @@ class _ParticularItemState extends State<ParticularItem> {
                             style: TextStyle(
                               fontSize: 22.0,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1
+                              letterSpacing: 1.1,
                             ),
                           ),
                           SizedBox(height: 7.0),
                           Text(
-                            "\$${itemDetails['price'].toString()}.00",
+                            "\$ ${itemDetails['price']}.00",
                             style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -211,7 +211,8 @@ class _ParticularItemState extends State<ParticularItem> {
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0
+                                letterSpacing: 1.0,
+                                fontFamily: 'NovaSquare'
                               ),
                             ),
                           ),
@@ -224,7 +225,8 @@ class _ParticularItemState extends State<ParticularItem> {
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0
+                                letterSpacing: 1.0,
+                                fontFamily: 'NovaSquare'
                               ),
                             ),
                           ),

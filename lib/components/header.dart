@@ -59,6 +59,7 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
             Map<String,dynamic> args = new Map();
             Loader.showLoadingScreen(context, keyLoader);
             List bagItems = await _shoppingBagService.listBagItems();
+            print(bagItems);
             args['bagItems'] = bagItems;
             Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
             Navigator.pushNamed(context, '/bag', arguments: args);

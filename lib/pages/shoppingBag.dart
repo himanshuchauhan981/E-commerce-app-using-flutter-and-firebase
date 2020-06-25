@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/productService.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
+import 'package:app_frontend/components/loader.dart';
 
 class ShoppingBag extends StatefulWidget {
   @override
@@ -18,11 +20,10 @@ class ShoppingBag extends StatefulWidget {
 
 class _ShoppingBagState extends State<ShoppingBag> {
   List <dynamic>bagItemList = new List<dynamic>();
-
-  String selectedSize;
-  String selectedColor;
-  String totalPrice;
+  String selectedSize, selectedColor, totalPrice;
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
+  ProductService _productService = new ProductService();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   void listBagItems(context) async {
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
@@ -63,7 +64,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
       builder: (BuildContext context){
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0))
+            borderRadius: BorderRadius.circular(24.0)
           ),
           title: Text(
             'Remove from cart',
@@ -124,7 +125,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
     );
   }
 
-  openParticularItem(item){
+  openParticularItem(Map item) async{
     Map<String,dynamic> args = new Map();
     args['itemDetails'] = item;
     Navigator.pushReplacement(
@@ -161,8 +162,13 @@ class _ShoppingBagState extends State<ShoppingBag> {
               ),
               child: RaisedButton(
                 color: Color(0xff313134),
-                onPressed: (){
-                  Navigator.of(context).pushReplacementNamed('/shop');
+                onPressed: () async{
+                  Map<String,dynamic> args = new Map();
+                  Loader.showLoadingScreen(context, _keyLoader);
+                  List<Map<String,String>> categoryList = await _productService.listCategories();
+                  args['category'] = categoryList;
+                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.pushReplacementNamed(context, '/shop',arguments: args);
                 },
                 child: Text(
                   'Shop',
@@ -206,7 +212,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                               children: [
                                 Image(
                                   image: NetworkImage(
-                                    item['image'][0],
+                                    item['image'],
                                   ),
                                   height: 100.0,
                                   width: 120.0,
@@ -264,78 +270,86 @@ class _ShoppingBagState extends State<ShoppingBag> {
     );
   }
 
+  _onWillPop(BuildContext context){
+    print(context);
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     bool showCartIcon = false;
     listBagItems(context);
-    return Scaffold(
-      backgroundColor: Colors.grey[200],
-      key: _scaffoldKey,
-      appBar: header('Shopping Bag', _scaffoldKey, showCartIcon, context),
-      drawer: sidebar(context),
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20.0, 3.0, 20.0, 0.0),
-          child: Container(
-            height: 100.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 4.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Total',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w600
-                          ),
-                        ),
-                        Text(
-                            '\$ $totalPrice.00',
-                          style: TextStyle(
+    return WillPopScope(
+      onWillPop: _onWillPop(context),
+      child: Scaffold(
+        backgroundColor: Colors.grey[200],
+        key: _scaffoldKey,
+        appBar: header('Shopping Bag', _scaffoldKey, showCartIcon, context),
+        drawer: sidebar(context),
+        bottomNavigationBar: BottomAppBar(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 3.0, 20.0, 0.0),
+            child: Container(
+              height: 100.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Total',
+                            style: TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.w600
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  ButtonTheme(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(7.0))
-                    ),
-                    minWidth: MediaQuery.of(context).size.width,
-                    height: 50.0,
-                    child: RaisedButton(
-                      color: Color(0xff313134),
-                      onPressed: (){
-                        if(bagItemList.length != 0){
-                          Map<String,dynamic> args = new Map<String, dynamic>();
-                          args['price'] = totalPrice;
-                          Navigator.of(context).pushNamed('/address',arguments: args);
-                        }
-                      },
-                      child: Text(
-                        'CONTINUE',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                        ),
+                          Text(
+                              '\$ $totalPrice.00',
+                            style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.w600
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  )
-                ],
+                    ButtonTheme(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(7.0))
+                      ),
+                      minWidth: MediaQuery.of(context).size.width,
+                      height: 50.0,
+                      child: RaisedButton(
+                        color: Color(0xff313134),
+                        onPressed: (){
+                          if(bagItemList.length != 0){
+                            Map<String,dynamic> args = new Map<String, dynamic>();
+                            args['price'] = totalPrice;
+                            Navigator.of(context).pushNamed('/address',arguments: args);
+                          }
+                        },
+                        child: Text(
+                          'CONTINUE',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+              ),
             ),
           ),
         ),
-      ),
-      body: Container(
-        child: bagItemList.length == 0 ? nonExistingBagItems() : expandedListBuilder()
+        body: Container(
+          child: bagItemList.length == 0 ? nonExistingBagItems() : expandedListBuilder()
+        ),
       ),
     );
   }

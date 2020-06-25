@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,27 +21,21 @@ class _GridItemListState extends State<GridItemList> {
   List featuredItems  = new List(0);
 
   void listFeaturedItems() async{
-    var items = _productService.featuredItems();
-    items.listen((data){
-      List<DocumentSnapshot> featuredItemsData = data.documents;
-      List featuredItemList = featuredItemsData.map((DocumentSnapshot doc){
-        return doc;
-      }).toList();
-      setState(() {
-        featuredItems = featuredItemList;
-      });
+    List<Map<String,String>> featuredItemList = await _productService.featuredItems();
+    setState(() {
+      featuredItems = featuredItemList;
     });
   }
 
-  void showParticularItem(item){
-    Map<String,dynamic> args = new Map();
-    args['itemDetails'] = item;
+  void showParticularItem(Map item) async{
+    String productId = item['productId'];
+    Map itemDetails = await _productService.particularItem(productId);
     Navigator.push(
         context,
         CustomTransition(
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
-              itemDetails: args,
+              itemDetails: itemDetails,
               edit: false,
             )
         )
@@ -91,7 +84,7 @@ class _GridItemListState extends State<GridItemList> {
                 },
                 child: GridTile(
                   child: Image.network(
-                    item['image'][0],
+                    item['image'],
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -104,7 +97,7 @@ class _GridItemListState extends State<GridItemList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "\$${item['price'].toString()}.00",
+                  "\$${item['price']}.00",
                   style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold

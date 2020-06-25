@@ -1,6 +1,7 @@
 import 'dart:math';
-import 'package:app_frontend/services/userService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:app_frontend/services/userService.dart';
 
 class ProductService{
   Firestore _firestore = Firestore.instance;
@@ -18,14 +19,33 @@ class ProductService{
     return subCategory;
   }
 
-  Stream<QuerySnapshot> newItemArrivals(){
+  Future<List> newItemArrivals() async{
     Random rdn = new Random();
+    List<Map<String,String>> itemList = new List();
     int randomNumber = 1 + rdn.nextInt(20);
-    return _firestore.collection('products').orderBy('name').startAt([randomNumber]).limit(5).snapshots();
+    QuerySnapshot itemsRef = await _productReference.orderBy('name').startAt([randomNumber]).limit(5).getDocuments();
+    for(DocumentSnapshot docRef in itemsRef.documents){
+      Map<String,String> items = new Map();
+      items['image'] = docRef.data['image'][0];
+      items['name'] = docRef.data['name'];
+      items['productId'] = docRef.documentID;
+      itemList.add(items);
+    }
+    return itemList;
   }
   
-  Stream <QuerySnapshot> featuredItems(){
-    return _firestore.collection("products").limit(15).snapshots();
+  Future <List> featuredItems() async{
+    List<Map<String,String>> itemList = new List();
+    QuerySnapshot itemsRef = await _productReference.limit(15).getDocuments();
+    for(DocumentSnapshot docRef in itemsRef.documents){
+      Map<String,String> items = new Map();
+      items['image'] = docRef.data['image'][0];
+      items['name'] = docRef.data['name'];
+      items['price'] = docRef.data['price'].toString();
+      items['productId'] = docRef.documentID;
+      itemList.add(items);
+    }
+    return itemList;
   }
   
   Future <List> listSubCategoryItems(String subCategory) async{
@@ -37,6 +57,7 @@ class ProductService{
       items['image'] = docRef.data['image'][0];
       items['name'] = docRef.data['name'];
       items['price'] = docRef.data['price'].toString();
+      items['productId'] = docRef.documentID;
       itemsList.add(items);
     }
     return itemsList;
@@ -79,7 +100,20 @@ class ProductService{
       'wishlist': wishlist
     }).then((value){
       msg = 'Product added to wishlist';
+      return msg;
     });
+  }
+
+  Future<Map> particularItem(String productId) async{
+    DocumentSnapshot prodRef = await _productReference.document(productId).get();
+    Map<String, dynamic> itemDetail = new Map();
+    itemDetail['image'] = prodRef.data['image'][0];
+    itemDetail['color'] = prodRef.data['color'];
+    itemDetail['size'] = prodRef.data['size'];
+    itemDetail['price'] = prodRef.data['price'];
+    itemDetail['name'] = prodRef.data['name'];
+    itemDetail['productId'] = productId;
+    return itemDetail;
   }
 }
 

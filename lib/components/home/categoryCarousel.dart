@@ -28,10 +28,6 @@ class _HorizontalListState extends State<CategoryCarousal> {
         url: 'assets/shop/accessories.png'
     ),
     Category(
-        name: 'MOBILE PHONES',
-        url: 'assets/shop/mobilephones.jpg'
-    ),
-    Category(
       name: 'SHOES',
       url: 'assets/shop/shoes.jpg'
     ),
@@ -41,22 +37,11 @@ class _HorizontalListState extends State<CategoryCarousal> {
     )
   ];
 
-  listCategoryItems(String name){
-    name = name.toLowerCase();
-    Map<String,dynamic> args = new Map();
-
-//    var subCategory = _productService.listSubCategories(name);
-//
-//    subCategory.listen((QuerySnapshot data) {
-//      List<DocumentSnapshot> subCategoryData = data.documents;
-//      var subCategoryList = subCategoryData.map((DocumentSnapshot doc){
-//        return doc.data;
-//      }).toList();
-//
-//      args['heading'] = name;
-//      args['list'] = subCategoryList;
-//      Navigator.pushNamed(context, '/subCategory', arguments: args);
-//    });
+  void listSubCategories(String category) async{
+    category = category.toLowerCase();
+    Map subCategory = await _productService.listSubCategories(category);
+    Map args = {'subCategory': subCategory, 'category': category};
+    Navigator.pushNamed(context, '/subCategory', arguments: args);
   }
 
   @override
@@ -72,7 +57,7 @@ class _HorizontalListState extends State<CategoryCarousal> {
           width: 200.0,
           child: GestureDetector(
             onTap: (){
-              this.listCategoryItems(item.name);
+              listSubCategories(item.name);
             },
             child: Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,

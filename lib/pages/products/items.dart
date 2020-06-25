@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/productService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/item/customTransition.dart';
@@ -11,6 +12,7 @@ class Items extends StatefulWidget {
 }
 
 class _ItemsState extends State<Items> {
+  ProductService _productService = new ProductService();
   String heading;
 
   bool showIcon = true;
@@ -20,7 +22,6 @@ class _ItemsState extends State<Items> {
 
   setItems(){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
-    print(args);
     this.setState(() {
       heading = args['heading'];
       itemList = args['items'];
@@ -34,16 +35,15 @@ class _ItemsState extends State<Items> {
     });
   }
 
-  openParticularItem(item){
-    Map<String,dynamic> args = new Map();
-
-    args['itemDetails'] = item;
+  openParticularItem(item) async{
+    String productId = item['productId'];
+    Map itemDetails = await _productService.particularItem(productId);
     Navigator.push(
         context,
         CustomTransition(
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
-              itemDetails: args,
+              itemDetails: itemDetails,
               edit: false,
             )
         )

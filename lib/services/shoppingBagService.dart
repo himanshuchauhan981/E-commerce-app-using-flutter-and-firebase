@@ -74,7 +74,7 @@ class ShoppingBagService{
       DocumentSnapshot productRef = await _firestore.collection('products').document(productIdList[i]).get();
       mapProduct['id'] = productRef.documentID;
       mapProduct['name'] = productRef.data['name'];
-      mapProduct['image'] = productRef.data['image'].cast<String>().toList();
+      mapProduct['image'] = productRef.data['image'][0];
       mapProduct['price']  = productRef.data['price'].toString();
       mapProduct['color'] = productRef.data['color'].cast<String>().toList();
       mapProduct['size'] = productRef.data['size'].cast<String>().toList();
