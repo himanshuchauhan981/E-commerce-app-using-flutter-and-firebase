@@ -3,7 +3,11 @@ A new Flutter application.
 
 ## Getting Started
 
-It is an complete e-commerce mobile app which is designed using flutter. It uses firebase as a backend for CRUD operations. 
+It is an complete e-commerce mobile app which is designed using flutter. It uses firebase as a backend for CRUD operations.
+
+## Tool Used
+- Flutter
+- Firebase
 
 ## Features of this flutter app
 
