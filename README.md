@@ -1,5 +1,5 @@
 # E-commerce app using Flutter and Firebase
-A new Flutter application.
+Flutter app for client's ecommerce bussiness.
 
 ## Getting Started
 
