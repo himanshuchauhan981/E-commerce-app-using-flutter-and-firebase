@@ -9,6 +9,13 @@ It is an complete e-commerce mobile app which is designed using flutter. It uses
 - Flutter
 - Firebase
 
+## Steps to reproduce the project in your environment
+- Download and setup the flutter SDK
+- Install flutter plugin in your editor(preferably Android Studio).
+- Run flutter get/ pub get for getting dependencies.
+- Press run button in Android studio to install the apk
+- The project will now be running in your device.
+
 ## Features of this flutter app
 
 - Home
