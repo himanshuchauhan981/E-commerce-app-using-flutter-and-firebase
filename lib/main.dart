@@ -19,6 +19,7 @@ import 'package:app_frontend/pages/profile/editProfile.dart';
 import 'package:app_frontend/pages/profile/setting.dart';
 import 'package:app_frontend/pages/profile/contactUs.dart';
 import 'package:app_frontend/pages/products/wishlist.dart';
+import 'package:app_frontend/components/orders/orderHistory.dart';
 
 void main() => runApp(MaterialApp(
   initialRoute: '/',
@@ -41,7 +42,8 @@ void main() => runApp(MaterialApp(
     '/profile': (context) => UserProfile(),
     '/profile/settings': (context) => ProfileSetting(),
     '/profile/edit': (context) => EditProfile(),
-    '/profile/contactUs': (context) => ContactUs()
+    '/profile/contactUs': (context) => ContactUs(),
+    '/placedOrder': (context) => OrderHistory()
   },
 
 ));

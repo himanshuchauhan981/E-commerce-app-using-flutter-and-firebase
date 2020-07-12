@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CheckoutService {
   Firestore _firestore = Firestore.instance;
@@ -10,6 +11,7 @@ class CheckoutService {
   CollectionReference _creditCardReference = Firestore.instance.collection('creditCard');
   CollectionReference _shoppingBagReference = Firestore.instance.collection('bags');
   CollectionReference _orderReference = Firestore.instance.collection('orders');
+  CollectionReference _productReference = Firestore.instance.collection('products');
 
   Map mapAddressValues(Map values){
     Map addressValues = new Map();
@@ -93,10 +95,34 @@ class CheckoutService {
       'shippingAddress': orderDetails['shippingAddress'],
       'shippingMethod': orderDetails['shippingMethod'],
       'price': int.parse(orderDetails['price']),
-      'paymentCard': orderDetails['selectedCard']
+      'paymentCard': orderDetails['selectedCard'],
+      'placedDate': DateTime.now()
     });
     
     await _shoppingBagService.delete();
+  }
+  
+  Future<List> listPlacedOrder() async {
+    List orderList = new List();
+    String uid = await _userService.getUserId();
+    QuerySnapshot orders = await _orderReference.where('userId', isEqualTo: uid).getDocuments();
+    for(DocumentSnapshot order in orders.documents) {
+      Map orderMap = new Map();
+      orderMap['orderDate'] = order.data['placedDate'];
+      List orderData = new List();
+      for (int i = 0; i < order.data['items'].length; i++) {
+        Map tempOrderData = new Map();
+        tempOrderData['quantity'] = order.data['items'][i]['quantity'];
+        DocumentSnapshot docRef = await _productReference.document(
+            order.data['items'][i]['id']).get();
+        tempOrderData['productImage'] = docRef.data['image'][0];
+        tempOrderData['productName'] = docRef.data['name'];
+        orderData.add(tempOrderData);
+      }
+      orderMap['orderDetails'] = orderData;
+      orderList.add(orderMap);
+    }
+    return orderList;
   }
 
 }

@@ -1,3 +1,4 @@
+import 'package:app_frontend/services/checkoutService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/loader.dart';
@@ -12,6 +13,7 @@ Widget sidebar(BuildContext context){
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
   ProfileService _profileService = new ProfileService();
   ProductService _productService = new ProductService();
+  CheckoutService _checkoutService = new CheckoutService();
 
   return SafeArea(
     child: Drawer(
@@ -96,6 +98,12 @@ Widget sidebar(BuildContext context){
                       letterSpacing: 1.0
                   ),
                 ),
+                onTap: () async {
+                  Loader.showLoadingScreen(context, _keyLoader);
+                  List orderData = await _checkoutService.listPlacedOrder();
+                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                  Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
+                },
               ),
               ListTile(
                 leading: Icon(Icons.favorite_border),
