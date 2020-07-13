@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -45,8 +44,7 @@ class _OrderHistoryState extends State<OrderHistory> {
             itemBuilder: (BuildContext context, int index){
               List item = itemList[index]['orderDetails'];
               String totalPrice = itemList[index]['totalPrice'];
-              Timestamp orderedDate = itemList[index]['orderDate'];
-              print(timeago.format(orderedDate.toDate(),locale: 'en_short'));
+              String orderedDate = timeago.format(itemList[index]['orderDate'].toDate(),locale: 'fr');
               return Padding(
                 padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
                 child: Card(
@@ -59,7 +57,7 @@ class _OrderHistoryState extends State<OrderHistory> {
                         ),
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(item[index]['productImage']),
+                            image: NetworkImage(item[0]['productImage']),
                             fit: BoxFit.fill,
                             colorFilter: ColorFilter.mode(
                               Color.fromRGBO(90,90,90, 0.8),
@@ -69,10 +67,18 @@ class _OrderHistoryState extends State<OrderHistory> {
                         ),
                         child: Stack(
                           children: <Widget>[
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                '${orderedDate}'
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(
+                                  'Ordered $orderedDate',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    color: Colors.white,
+                                    letterSpacing: 1.0
+                                  ),
+                                ),
                               ),
                             ),
                             Center(

@@ -1,8 +1,9 @@
-import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/profileAppBar.dart';
 import 'package:app_frontend/services/profileService.dart';
+import 'package:app_frontend/services/userService.dart';
+
 
 class ProfileSetting extends StatefulWidget {
   @override
@@ -18,7 +19,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
   saveUserSettings(String key, bool value) async{
     settings[key] = value;
     await _profileService.updateUserSettings(settings);
-
   }
 
   userSetting(){

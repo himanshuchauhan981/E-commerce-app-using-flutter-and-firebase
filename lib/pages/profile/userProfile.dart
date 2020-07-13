@@ -6,6 +6,7 @@ import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/header.dart';
+import 'package:app_frontend/services/checkoutService.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   ProfileService _profileService = new ProfileService();
+  CheckoutService _checkoutService = new CheckoutService();
   UserService _userService = new UserService();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
@@ -126,6 +128,12 @@ class _UserProfileState extends State<UserProfile> {
                 Icons.keyboard_arrow_right,
                 size: 35.0,
               ),
+              onTap: () async{
+                Loader.showLoadingScreen(context, _keyLoader);
+                List orderData = await _checkoutService.listPlacedOrder();
+                Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
+              },
             ),
             ListTile(
               leading: Icon(
