@@ -113,10 +113,10 @@ class CheckoutService {
       for (int i = 0; i < order.data['items'].length; i++) {
         Map tempOrderData = new Map();
         tempOrderData['quantity'] = order.data['items'][i]['quantity'];
-        DocumentSnapshot docRef = await _productReference.document(
-            order.data['items'][i]['id']).get();
+        DocumentSnapshot docRef = await _productReference.document(order.data['items'][i]['id']).get();
         tempOrderData['productImage'] = docRef.data['image'][0];
         tempOrderData['productName'] = docRef.data['name'];
+        tempOrderData['price'] = docRef.data['price'];
         orderData.add(tempOrderData);
       }
       orderMap['orderDetails'] = orderData;
