@@ -21,7 +21,7 @@ import 'package:app_frontend/pages/profile/setting.dart';
 import 'package:app_frontend/pages/profile/contactUs.dart';
 import 'package:app_frontend/pages/products/wishlist.dart';
 import 'package:app_frontend/components/orders/orderHistory.dart';
-import 'file:///D:/Github/E-commerce-app-using-flutter-and-firebase/lib/pages/onBoardingScreen/onboardingScreen.dart';
+import 'package:app_frontend/pages/onBoardingScreen/onboardingScreen.dart';
 
 bool firstTime;
 
