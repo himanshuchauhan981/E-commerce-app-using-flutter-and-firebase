@@ -35,8 +35,8 @@ It is an complete e-commerce mobile app which is designed using flutter. It uses
   * Add to Cart functionality
   * Remove from Cart
   * Edit Shopping Cart
-  * Order History (Left to achieve)
-  * Reorder functionality (Left to achieve)
+  * Order History
+  * Reorder functionality
 
 - Checkout Experience
   * Shopping Cart
@@ -45,6 +45,19 @@ It is an complete e-commerce mobile app which is designed using flutter. It uses
   * Payment Methods
   * Add New Card
   * Place Order
+
+- Customer Profile
+  * Account details
+  * Edit Profile Details
+  * Setting
+  * Contact us
+
+ - Customer Management
+   * Registration with Email & Password
+   * Login with E-mail & Password
+   * Google Sign In (Left to achieve)
+   * Logout
+
 
 - Backend
   * Database system with Firebase Firestore
