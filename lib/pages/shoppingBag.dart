@@ -332,7 +332,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                         onPressed: (){
                           if(bagItemList.length != 0){
                             Map<String,dynamic> args = new Map<String, dynamic>();
-                            args['price'] = totalPrice;
+                            args['price'] = totalPrice.toString();
                             Navigator.of(context).pushNamed('/checkout/address',arguments: args);
                           }
                         },

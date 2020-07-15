@@ -98,6 +98,20 @@ class _ParticularItemState extends State<ParticularItem> {
     }
   }
 
+  checkoutProduct(){
+    if(sizeValue == '' && size.length != 0) showInSnackBar('Select size',Colors.red);
+    else if(colorValue == '' && colors.length != 0) showInSnackBar('Select color', Colors.red);
+    else{
+      Map<String,dynamic> args = new Map<String, dynamic>();
+      args['price'] = itemDetails['price'];
+      args['productId'] = itemDetails['productId'];
+      args['quantity'] = quantity;
+      args['size'] = sizeValue;
+      args['color'] = colorValue;
+      Navigator.of(context).pushNamed('/checkout/address',arguments: args);
+    }
+  }
+
   setQuantity(String type){
     setState(() {
       if(type == 'inc'){
@@ -310,7 +324,9 @@ class _ParticularItemState extends State<ParticularItem> {
                                         color: Colors.black
                                     ),
                                   ),
-                                  onPressed: (){ },
+                                  onPressed: (){
+                                    checkoutProduct();
+                                  },
                                 ),
                               )
                             ],

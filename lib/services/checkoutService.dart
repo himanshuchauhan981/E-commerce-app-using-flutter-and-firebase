@@ -89,12 +89,13 @@ class CheckoutService {
     String uid = await _userService.getUserId();
     QuerySnapshot items = await _shoppingBagReference.where('userId',isEqualTo: uid).getDocuments();
 
+
     await _orderReference.add({
       'userId': uid,
       'items': items.documents[0].data['products'],
       'shippingAddress': orderDetails['shippingAddress'],
       'shippingMethod': orderDetails['shippingMethod'],
-      'price': int.parse(orderDetails['price']),
+      'price': int.parse("${orderDetails['price']}"),
       'paymentCard': orderDetails['selectedCard'],
       'placedDate': DateTime.now()
     });
