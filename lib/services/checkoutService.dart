@@ -89,7 +89,6 @@ class CheckoutService {
     String uid = await _userService.getUserId();
     QuerySnapshot items = await _shoppingBagReference.where('userId',isEqualTo: uid).getDocuments();
 
-
     await _orderReference.add({
       'userId': uid,
       'items': items.documents[0].data['products'],
@@ -106,7 +105,7 @@ class CheckoutService {
   Future<List> listPlacedOrder() async {
     List orderList = new List();
     String uid = await _userService.getUserId();
-    QuerySnapshot orders = await _orderReference.where('userId', isEqualTo: uid).getDocuments();
+    QuerySnapshot orders = await _orderReference.orderBy('placedDate',descending: true).where('userId', isEqualTo: uid).getDocuments();
     for(DocumentSnapshot order in orders.documents) {
       Map orderMap = new Map();
       orderMap['orderDate'] = order.data['placedDate'];

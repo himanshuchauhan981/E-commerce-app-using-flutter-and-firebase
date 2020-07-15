@@ -99,9 +99,9 @@ Widget sidebar(BuildContext context){
                   ),
                 ),
                 onTap: () async {
-                  Loader.showLoadingScreen(context, _keyLoader);
+//                  Loader.showLoadingScreen(context, _keyLoader);
                   List orderData = await _checkoutService.listPlacedOrder();
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+//                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                   Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
                 },
               ),
