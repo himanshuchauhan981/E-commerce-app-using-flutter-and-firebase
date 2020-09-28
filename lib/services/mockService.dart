@@ -2,8 +2,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'dart:async' show Future;
-import 'package:flutter/services.dart' show PlatformException, rootBundle;
-import 'package:image_downloader/image_downloader.dart';
+import 'package:flutter/services.dart' show  rootBundle;
 
 class GenerateMock{
   Firestore _firestore = Firestore.instance;
