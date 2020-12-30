@@ -6,12 +6,12 @@ import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
 
 
-class Signup extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
-  _SignupState createState() => _SignupState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _SignupState extends State<Signup> {
+class _SignUpState extends State<SignUp> {
 
   bool _autoValidate = false;
   double borderWidth = 1.0;
@@ -23,15 +23,15 @@ class _SignupState extends State<Signup> {
 
   setBorder(double width, Color color){
     return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(30.0),
+        borderRadius: BorderRadius.circular(10.0),
         borderSide: BorderSide(
             width: width,
             color: color
-        )
+        ),
     );
   }
 
-  signup() async {
+  signUpUser() async {
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
       await userService.signup(userValues);
@@ -58,18 +58,25 @@ class _SignupState extends State<Signup> {
 
   InputDecoration customFormField(String hintText){
     return InputDecoration(
-        hintText: hintText,
-        contentPadding: EdgeInsets.all(20.0),
-        errorBorder: this.setBorder(1.0, Colors.red),
-        focusedErrorBorder: this.setBorder(1.0, Colors.red),
-        focusedBorder: this.setBorder(2.0, Colors.blue),
-        enabledBorder: this.setBorder(1.0, Colors.black)
+      hintText: hintText,
+      contentPadding: EdgeInsets.all(20.0),
+      errorBorder: this.setBorder(1.0, Colors.red),
+      focusedErrorBorder: this.setBorder(1.0, Colors.red),
+      focusedBorder: this.setBorder(2.0, Colors.blue),
+      enabledBorder: this.setBorder(1.0, Colors.black),
+      fillColor: Colors.white,
+      filled: true,
+      errorStyle: TextStyle(
+        fontSize: 14,
+        height: 0.6
+      )
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -84,25 +91,40 @@ class _SignupState extends State<Signup> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 15.0),
+          padding: EdgeInsets.symmetric(vertical: 30.0,horizontal: 20.0),
           child: Form(
             key: _formKey,
             autovalidate: _autoValidate,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  'Create new account',
-                  style: TextStyle(
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NovaSquare'
+                FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    'Create new account',
+                    style: TextStyle(
+                      fontFamily: 'NovaSquare',
+                      fontSize: 40.0
+                    ),
                   ),
                 ),
-                SizedBox(height: 50.0),
+                SizedBox(height: 5),
+                FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    'Sign up to get started',
+                    style: TextStyle(
+                      fontFamily: 'NovaSquare',
+                      fontSize: 22.0,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 50.0,
+                ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
                   child: Column(
                     children: <Widget>[
                       TextFormField(
@@ -112,10 +134,10 @@ class _SignupState extends State<Signup> {
                           userValues['firstName'] = val;
                         },
                         style: TextStyle(
-                            fontSize: 17.0
+                          fontSize: 18.0,
                         ),
                       ),
-                      SizedBox(height: 30.0),
+                      SizedBox(height: 15.0),
                       TextFormField(
                         decoration: customFormField('Last name'),
                         validator: (value) => validateService.isEmptyField(value),
@@ -123,10 +145,10 @@ class _SignupState extends State<Signup> {
                           userValues['lastName'] = val;
                         },
                         style: TextStyle(
-                            fontSize: 17.0
+                            fontSize: 18.0
                         ),
                       ),
-                      SizedBox(height: 30.0),
+                      SizedBox(height: 15.0),
                       TextFormField(
                         decoration: customFormField('Phone number'),
                         keyboardType: TextInputType.phone,
@@ -135,10 +157,10 @@ class _SignupState extends State<Signup> {
                           userValues['mobileNumber'] = val;
                         },
                         style: TextStyle(
-                            fontSize: 17.0
+                            fontSize: 18.0
                         ),
                       ),
-                      SizedBox(height: 30.0),
+                      SizedBox(height: 15.0),
                       TextFormField(
                         decoration: customFormField('E-mail Address'),
                         keyboardType: TextInputType.emailAddress,
@@ -147,10 +169,10 @@ class _SignupState extends State<Signup> {
                           userValues['email'] = val;
                         },
                         style: TextStyle(
-                            fontSize: 17.0
+                            fontSize: 18.0
                         ),
                       ),
-                      SizedBox(height: 30.0),
+                      SizedBox(height: 15.0),
                       TextFormField(
                         obscureText: true,
                         decoration: customFormField('Password'),
@@ -159,7 +181,7 @@ class _SignupState extends State<Signup> {
                           userValues['password'] = val;
                         },
                         style: TextStyle(
-                            fontSize: 17.0
+                            fontSize: 18.0
                         ),
                       ),
                       SizedBox(height: 50.0),
@@ -181,7 +203,7 @@ class _SignupState extends State<Signup> {
                             ),
                           ),
                           onPressed: () {
-                            this.signup();
+                            this.signUpUser();
                           },
                         ),
                       )
@@ -192,7 +214,7 @@ class _SignupState extends State<Signup> {
             ),
           ),
         ),
-      ),
+      )
     );
   }
 }
