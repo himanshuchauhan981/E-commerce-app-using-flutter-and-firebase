@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:device_preview/device_preview.dart';
 
 import 'package:app_frontend/pages/signup.dart';
 import 'package:app_frontend/pages/login.dart';
@@ -34,10 +33,7 @@ Future<void> main() async{
     prefs.setBool('initScreen', true);
   }
   runApp(
-    DevicePreview(
-      enabled: true,
-      builder: (context) => Main(),
-    )
+    Main()
   );
 }
 
