@@ -78,8 +78,7 @@ class UserService{
     await _auth.createUserWithEmailAndPassword(email: email, password: password).then((dynamic user){
       String uid = user.user.uid;
       _firestore.collection('users').add({
-        'firstName': capitalizeName(userValues['firstName']),
-        'lastName': capitalizeName(userValues['lastName']),
+        'fullName': userValues['fullName'],
         'mobileNumber': userValues['mobileNumber'],
         'userId': uid
       });
