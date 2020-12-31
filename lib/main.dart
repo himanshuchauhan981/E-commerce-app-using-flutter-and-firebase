@@ -45,7 +45,7 @@ class Main extends StatelessWidget {
       routes: {
         '/': (context) => Start(),
         '/login': (context) => Login(),
-        '/signup': (context) => Signup(),
+        '/signup': (context) => SignUp(),
         '/home': (context) => Home(),
         '/shop': (context) => Shop(),
         '/subCategory': (context) => SubCategory(),

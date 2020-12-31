@@ -5,6 +5,7 @@ import 'package:app_frontend/components/alertBox.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
 
+import '../sizeConfig.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -12,195 +13,175 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-
   bool _autoValidate = false;
   double borderWidth = 1.0;
-  final _formKey = GlobalKey<FormState>();
-  HashMap userValues = new HashMap<String,String>();
+  final _signUpFormKey = GlobalKey<FormState>();
+  HashMap userValues = new HashMap<String, String>();
+  double fieldPadding;
 
   ValidateService validateService = ValidateService();
   UserService userService = UserService();
 
-  setBorder(double width, Color color){
+  setBorder(double width, Color color) {
     return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10.0),
-        borderSide: BorderSide(
-            width: width,
-            color: color
-        ),
+      borderRadius: BorderRadius.circular(30.0),
+      borderSide: BorderSide(width: width, color: color),
     );
   }
 
   signUpUser() async {
-    if(this._formKey.currentState.validate()){
-      _formKey.currentState.save();
+    if (this._signUpFormKey.currentState.validate()) {
+      _signUpFormKey.currentState.save();
       await userService.signup(userValues);
       int statusCode = userService.statusCode;
-      if(statusCode == 400){
+      if (statusCode == 400) {
         AlertBox alertBox = AlertBox(userService.msg);
         return showDialog(
-          context: context,
-          builder: (BuildContext context){
-            return alertBox.build(context);
-          }
-        );
-      }
-      else{
+            context: context,
+            builder: (BuildContext context) {
+              return alertBox.build(context);
+            });
+      } else {
         Navigator.pushReplacementNamed(context, '/');
       }
-    }
-    else{
+    } else {
       setState(() {
         _autoValidate = true;
       });
     }
   }
 
-  InputDecoration customFormField(String hintText){
+  InputDecoration customFormField(String text) {
     return InputDecoration(
-      hintText: hintText,
-      contentPadding: EdgeInsets.all(20.0),
-      errorBorder: this.setBorder(1.0, Colors.red),
-      focusedErrorBorder: this.setBorder(1.0, Colors.red),
+      hintText: text,
+      labelText: text,
+      prefixIcon: Icon(Icons.person),
+      contentPadding: EdgeInsets.all(fieldPadding),
+      errorBorder: this.setBorder(1.8, Colors.red),
+      focusedErrorBorder: this.setBorder(1.2, Colors.red),
       focusedBorder: this.setBorder(2.0, Colors.blue),
-      enabledBorder: this.setBorder(1.0, Colors.black),
+      enabledBorder: this.setBorder(1.0, Colors.white),
       fillColor: Colors.white,
       filled: true,
-      errorStyle: TextStyle(
-        fontSize: 14,
-        height: 0.6
-      )
     );
+  }
+
+  setUpFieldPadding(screen) {
+    if (screen == 'smallMobile') {
+      this.setState(() {
+        fieldPadding = 10;
+      });
+    } else if (screen == 'largeMobile') {
+      this.setState(() {
+        fieldPadding = 20;
+      });
+    } else if (screen == 'tablet') {
+      this.setState(() {
+        fieldPadding = 26;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    setUpFieldPadding(SizeConfig.screenSize);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context,false),
+          icon: Icon(Icons.chevron_left),
+          onPressed: () => Navigator.pop(context, false),
         ),
-        iconTheme: IconThemeData(
-            color: Colors.black
-        ),
-        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: Colors.grey[200],
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 30.0,horizontal: 20.0),
+          padding: EdgeInsets.symmetric(
+              vertical: SizeConfig.safeBlockVertical / 2,
+              horizontal: SizeConfig.safeBlockHorizontal * 10),
           child: Form(
-            key: _formKey,
+            key: _signUpFormKey,
             autovalidate: _autoValidate,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                    'Create new account',
-                    style: TextStyle(
+                Text(
+                  "Let's Get Started",
+                  style: TextStyle(
                       fontFamily: 'NovaSquare',
-                      fontSize: 40.0
-                    ),
-                  ),
+                      fontSize: SizeConfig.safeBlockHorizontal * 8.0),
                 ),
-                SizedBox(height: 5),
-                FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                    'Sign up to get started',
-                    style: TextStyle(
-                      fontFamily: 'NovaSquare',
-                      fontSize: 22.0,
-                      color: Colors.grey[800],
-                    ),
+                Text(
+                  'Create an account to get all features',
+                  style: TextStyle(
+                    fontFamily: 'NovaSquare',
+                    fontSize: SizeConfig.safeBlockHorizontal * 3.8,
+                    color: Colors.grey[800],
                   ),
-                ),
-                SizedBox(
-                  height: 50.0,
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
+                  padding:
+                      EdgeInsets.only(top: SizeConfig.safeAreaVertical * 0.8),
                   child: Column(
                     children: <Widget>[
                       TextFormField(
-                        decoration: customFormField('First name'),
-                        validator: (value) => validateService.isEmptyField(value),
-                        onSaved: (String val){
-                          userValues['firstName'] = val;
+                        decoration: this.customFormField('Full name'),
+                        validator: (value) =>
+                            validateService.isEmptyField(value),
+                        onSaved: (String val) {
+                          userValues['fullName'] = val;
                         },
-                        style: TextStyle(
-                          fontSize: 18.0,
-                        ),
                       ),
-                      SizedBox(height: 15.0),
+                      SizedBox(height: 13),
                       TextFormField(
-                        decoration: customFormField('Last name'),
-                        validator: (value) => validateService.isEmptyField(value),
-                        onSaved: (String val){
-                          userValues['lastName'] = val;
-                        },
-                        style: TextStyle(
-                            fontSize: 18.0
-                        ),
-                      ),
-                      SizedBox(height: 15.0),
-                      TextFormField(
-                        decoration: customFormField('Phone number'),
+                        decoration: this.customFormField('Mobile number'),
                         keyboardType: TextInputType.phone,
-                        validator: (value) => validateService.validatePhoneNumber(value),
-                        onSaved: (String val){
+                        validator: (value) =>
+                            validateService.validatePhoneNumber(value),
+                        onSaved: (String val) {
                           userValues['mobileNumber'] = val;
                         },
-                        style: TextStyle(
-                            fontSize: 18.0
-                        ),
                       ),
-                      SizedBox(height: 15.0),
+                      SizedBox(height: 13),
                       TextFormField(
-                        decoration: customFormField('E-mail Address'),
+                        decoration: this.customFormField('Email'),
                         keyboardType: TextInputType.emailAddress,
-                        validator: (value) => validateService.validateEmail(value),
-                        onSaved: (String val){
+                        validator: (value) =>
+                            validateService.validateEmail(value),
+                        onSaved: (String val) {
                           userValues['email'] = val;
                         },
-                        style: TextStyle(
-                            fontSize: 18.0
-                        ),
                       ),
-                      SizedBox(height: 15.0),
+                      SizedBox(height: 13),
                       TextFormField(
+                        decoration: this.customFormField('Password'),
                         obscureText: true,
-                        decoration: customFormField('Password'),
-                        validator: (value) => validateService.validatePassword(value),
-                        onSaved: (String val){
+                        validator: (value) =>
+                            validateService.validatePassword(value),
+                        onSaved: (String val) {
                           userValues['password'] = val;
                         },
-                        style: TextStyle(
-                            fontSize: 18.0
-                        ),
                       ),
-                      SizedBox(height: 50.0),
+                      SizedBox(height: 13),
                       ButtonTheme(
-                        minWidth: 250.0,
-                        child: FlatButton(
+                        minWidth: SizeConfig.screenWidth - 140,
+                        child: RaisedButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(36),
-                              side: BorderSide(color: Colors.black)
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 20.0),
-                          color: Colors.blue[800],
+                              side: BorderSide(color: Colors.black)),
+                          padding: EdgeInsets.symmetric(vertical: 12.0),
+                          color: Colors.black87,
                           textColor: Colors.white,
                           child: Text(
                             'Sign Up',
                             style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontFamily: 'NovaSquare',
+                                fontSize: SizeConfig.safeBlockHorizontal * 6.0,
+                                fontWeight: FontWeight.bold),
                           ),
                           onPressed: () {
                             this.signUpUser();
@@ -209,12 +190,12 @@ class _SignUpState extends State<SignUp> {
                       )
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }
