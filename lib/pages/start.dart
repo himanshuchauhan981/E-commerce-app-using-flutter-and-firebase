@@ -1,3 +1,4 @@
+import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -25,52 +26,62 @@ class Start extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
           child: Center(
             child: Column(
               children: <Widget>[
-                SizedBox(height: 100.0),
-                Image.asset('assets/sIcon.png', height: 180.0),
+                SizedBox(height: SizeConfig.safeBlockVertical * 8),
+                Image.asset('assets/sIcon.png', height: SizeConfig.safeBlockVertical * 20),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 40.0, 0.0, 0.0),
-                  child: Text(
-                      'Welcome to Shop Mart',
-                      style: TextStyle(
-                        fontSize: 35.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'NovaSquare',
-                      )
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(48.0, 35.0, 48.0, 0.0),
-                  child: Text(
-                    'Shop & get updates on new Products and sales with our mobile app',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 19.0,
-                        letterSpacing: 1.0
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Text(
+                        'Welcome to Shop Mart',
+                        style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 8,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'NovaSquare',
+                        )
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+                  padding: EdgeInsets.symmetric(
+                    vertical: SizeConfig.safeBlockVertical * 3,
+                    horizontal: SizeConfig.safeBlockHorizontal * 12.5,
+                  ),
+                  child: Text(
+                    'Shop & get updates on new Products and sales with our mobile app',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'NovaSquare',
+                      fontSize: SizeConfig.safeBlockHorizontal * 4.6,
+                      letterSpacing: 1.0
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 5),
                   child: ButtonTheme(
-                    minWidth: 220.0,
+                    minWidth: SizeConfig.screenWidth - 180,
                     child: FlatButton(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(36)
+                          borderRadius: BorderRadius.circular(40)
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 3),
                       color: Colors.black,
                       textColor: Colors.white,
                       child: Text(
                         'Login',
                         style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold
+                          fontFamily: 'NovaSquare',
+                          fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
                         ),
                       ),
                       onPressed: () {
@@ -80,22 +91,24 @@ class Start extends StatelessWidget{
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+                  padding: EdgeInsets.only(top: SizeConfig.safeBlockVertical * 3.0),
                   child: ButtonTheme(
-                    minWidth: 220.0,
+                    minWidth: SizeConfig.screenWidth - 180,
                     child: FlatButton(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(36),
-                        side: BorderSide(color: Colors.black)
+                        borderRadius: BorderRadius.circular(40),
+                        side: BorderSide(color: Colors.black,width: 2.6)
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 3),
                       color: Colors.white,
                       textColor: Colors.black,
                       child: Text(
                         'Sign Up',
                         style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold
+                          fontFamily: 'NovaSquare',
+                          fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0
                         ),
                       ),
                       onPressed: () {
