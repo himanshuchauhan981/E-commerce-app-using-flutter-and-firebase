@@ -20,11 +20,11 @@ class SizeConfig{
     safeBlockHorizontal = (screenWidth - safeAreaHorizontal) / 100;
     safeBlockVertical = (screenHeight - safeAreaVertical) / 100;
 
-    if(screenWidth >= 400){
-      screenSize = 'largeMobile';
-    }
-    else if(screenWidth >= 600){
+    if(screenWidth >= 600){
       screenSize = 'tablet';
+    }
+    else if(screenWidth >= 400){
+      screenSize = 'largeMobile';
     }
     else{
       screenSize = 'smallMobile';

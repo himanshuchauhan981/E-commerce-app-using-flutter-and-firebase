@@ -17,6 +17,7 @@ class _SignUpState extends State<SignUp> {
   double borderWidth = 1.0;
   final _signUpFormKey = GlobalKey<FormState>();
   HashMap userValues = new HashMap<String, String>();
+  Map customWidth = new Map<String,double>();
   double fieldPadding;
 
   ValidateService validateService = ValidateService();
@@ -24,7 +25,7 @@ class _SignUpState extends State<SignUp> {
 
   setBorder(double width, Color color) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(30.0),
+      borderRadius: BorderRadius.circular(36.0),
       borderSide: BorderSide(width: width, color: color),
     );
   }
@@ -55,31 +56,69 @@ class _SignUpState extends State<SignUp> {
     return InputDecoration(
       hintText: text,
       labelText: text,
-      prefixIcon: Icon(Icons.person),
-      contentPadding: EdgeInsets.all(fieldPadding),
+      prefixIcon: setFormIcons(text),
+      contentPadding: EdgeInsets.all(customWidth['fieldPadding']),
       errorBorder: this.setBorder(1.8, Colors.red),
       focusedErrorBorder: this.setBorder(1.2, Colors.red),
       focusedBorder: this.setBorder(2.0, Colors.blue),
       enabledBorder: this.setBorder(1.0, Colors.white),
       fillColor: Colors.white,
       filled: true,
+      errorStyle: TextStyle(
+        fontSize: SizeConfig.safeBlockHorizontal * 3
+      )
     );
   }
 
   setUpFieldPadding(screen) {
-    if (screen == 'smallMobile') {
-      this.setState(() {
-        fieldPadding = 10;
-      });
-    } else if (screen == 'largeMobile') {
-      this.setState(() {
-        fieldPadding = 20;
-      });
-    } else if (screen == 'tablet') {
-      this.setState(() {
-        fieldPadding = 26;
-      });
+    switch(screen) {
+      case 'smallMobile':
+        {
+          customWidth['fieldPadding'] = 10.00;
+          customWidth['formFieldSpacing'] = SizeConfig.safeBlockVertical * 2.4;
+          customWidth['fieldTextSize'] = SizeConfig.safeBlockVertical * 2.6;
+          break;
+        }
+      case 'largeMobile':
+        {
+          customWidth['fieldPadding'] = 20.00;
+          customWidth['formFieldSpacing'] = SizeConfig.safeBlockVertical * 2.6;
+          customWidth['fieldTextSize'] = SizeConfig.safeBlockVertical * 2.2;
+          break;
+        }
+      case 'tablet':
+        {
+          customWidth['fieldPadding'] = 26.00;
+          customWidth['formFieldSpacing'] = SizeConfig.safeBlockVertical * 5;
+          customWidth['fieldTextSize'] = SizeConfig.safeBlockVertical * 2.4;
+          break;
+        }
+      default:
+        break;
     }
+  }
+
+  Icon setFormIcons(String label){
+    Icon icon;
+    switch(label){
+      case 'Full name':{
+        icon = Icon(Icons.person);
+        break;
+      }
+      case 'Email':{
+        icon = Icon(Icons.email);
+        break;
+      }
+      case 'Mobile number':{
+        icon = Icon(Icons.call);
+        break;
+      }
+      case 'Password':{
+        icon = Icon(Icons.lock);
+        break;
+      }
+    }
+    return icon;
   }
 
   @override
@@ -135,8 +174,11 @@ class _SignUpState extends State<SignUp> {
                         onSaved: (String val) {
                           userValues['fullName'] = val;
                         },
+                        style: TextStyle(
+                          fontSize: customWidth['fieldTextSize']
+                        ),
                       ),
-                      SizedBox(height: 13),
+                      SizedBox(height: customWidth['formFieldSpacing']),
                       TextFormField(
                         decoration: this.customFormField('Mobile number'),
                         keyboardType: TextInputType.phone,
@@ -145,8 +187,11 @@ class _SignUpState extends State<SignUp> {
                         onSaved: (String val) {
                           userValues['mobileNumber'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: customWidth['fieldTextSize']
+                        ),
                       ),
-                      SizedBox(height: 13),
+                      SizedBox(height: customWidth['formFieldSpacing']),
                       TextFormField(
                         decoration: this.customFormField('Email'),
                         keyboardType: TextInputType.emailAddress,
@@ -155,8 +200,11 @@ class _SignUpState extends State<SignUp> {
                         onSaved: (String val) {
                           userValues['email'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: customWidth['fieldTextSize']
+                        ),
                       ),
-                      SizedBox(height: 13),
+                      SizedBox(height: customWidth['formFieldSpacing']),
                       TextFormField(
                         decoration: this.customFormField('Password'),
                         obscureText: true,
@@ -165,8 +213,11 @@ class _SignUpState extends State<SignUp> {
                         onSaved: (String val) {
                           userValues['password'] = val;
                         },
+                        style: TextStyle(
+                            fontSize: customWidth['fieldTextSize']
+                        ),
                       ),
-                      SizedBox(height: 13),
+                      SizedBox(height: customWidth['formFieldSpacing']),
                       ButtonTheme(
                         minWidth: SizeConfig.screenWidth - 140,
                         child: RaisedButton(
@@ -180,7 +231,7 @@ class _SignUpState extends State<SignUp> {
                             'Sign Up',
                             style: TextStyle(
                                 fontFamily: 'NovaSquare',
-                                fontSize: SizeConfig.safeBlockHorizontal * 6.0,
+                                fontSize: SizeConfig.safeBlockHorizontal * 5.2,
                                 fontWeight: FontWeight.bold),
                           ),
                           onPressed: () {
