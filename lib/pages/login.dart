@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/loader.dart';
@@ -17,6 +18,8 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   HashMap userValues = new HashMap<String, String>();
+  Map customWidth = new Map<String,double>();
+
   bool _autoValidate = false;
   double borderWidth = 2.0;
 
@@ -50,7 +53,7 @@ class _LoginState extends State<Login> {
     }
   }
 
-  setBorder(double width, Color color){
+  OutlineInputBorder setBorder(double width, Color color){
     return OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(30.0)),
         borderSide: BorderSide(
@@ -60,37 +63,75 @@ class _LoginState extends State<Login> {
     );
   }
 
-  InputDecoration customFormField(String hintText){
+  InputDecoration customFormField(String text){
     return InputDecoration(
-        hintText: hintText,
-        contentPadding: EdgeInsets.all(20.0),
-        border: InputBorder.none,
-        errorBorder: this.setBorder(borderWidth, Colors.red),
-        focusedErrorBorder: this.setBorder(borderWidth, Colors.red),
-        focusedBorder: this.setBorder(borderWidth, Colors.blue),
-        enabledBorder: this.setBorder(borderWidth, Colors.black)
+        hintText: text,
+        labelText: text,
+        prefixIcon: Icon(text == 'Password'? Icons.lock : Icons.email),
+        contentPadding: EdgeInsets.all(customWidth['fieldPadding']),
+        errorBorder: this.setBorder(1.8, Colors.red),
+        focusedErrorBorder: this.setBorder(1.2, Colors.red),
+        focusedBorder: this.setBorder(2.0, Colors.blue),
+        enabledBorder: this.setBorder(1.0, Colors.white),
+        fillColor: Colors.white,
+        filled: true,
+        errorStyle: TextStyle(
+            fontSize: SizeConfig.safeBlockHorizontal * 3
+        )
     );
+  }
+
+  customScreenWidth(String screen){
+    print(screen);
+    switch(screen){
+      case 'smallMobile':{
+        customWidth['fieldPadding'] = 15.0;
+        customWidth['formFieldSpacing'] = 16.0;
+        customWidth['formTextSize'] = 14.0;
+        customWidth['buttonWidth'] =160.0;
+        break;
+      }
+      case 'largeMobile':{
+        customWidth['fieldPadding'] = 24.0;
+        customWidth['formFieldSpacing'] = 22.0;
+        customWidth['formTextSize'] = 19.0;
+        customWidth['buttonWidth'] =180.0;
+        break;
+      }
+      case 'tablet':{
+        customWidth['fieldPadding'] = 20.0;
+        customWidth['formFieldSpacing'] = 29.0;
+        customWidth['formTextSize'] = 25.0;
+        customWidth['buttonWidth'] = 300.0;
+        break;
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
+    SizeConfig().init(context);
+    customScreenWidth(SizeConfig.screenSize);
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: Icon(Icons.chevron_left),
           onPressed: () => Navigator.popAndPushNamed(context, '/')
         ),
         iconTheme: IconThemeData(
           color: Colors.black
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[200],
         elevation: 0.0,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 15.0),
+          padding: EdgeInsets.symmetric(
+              vertical: SizeConfig.safeBlockVertical,
+              horizontal: SizeConfig.safeBlockHorizontal * 6
+          ),
           child: Form(
             key: _formKey,
             autovalidate: _autoValidate,
@@ -101,28 +142,30 @@ class _LoginState extends State<Login> {
                 Text(
                   'Sign In',
                   style: TextStyle(
-                    fontSize: 40.0,
+                    fontSize: SizeConfig.safeBlockHorizontal * 10.5,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'NovaSquare'
                   ),
                 ),
-                SizedBox(height: 50.0),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.safeBlockVertical * 3,
+                      horizontal: SizeConfig.safeBlockHorizontal * 4.8
+                  ),
                   child: Column(
                     children: <Widget>[
                       TextFormField(
-                        decoration: customFormField('E-mail or Mobile number'),
+                        decoration: customFormField('E-mail'),
                         validator: (value)=> _validateService.isEmptyField(value),
                         keyboardType: TextInputType.emailAddress,
                         onSaved: (String val){
                           userValues['email'] = val;
                         },
                         style: TextStyle(
-                          fontSize: 17.0
+                          fontSize: customWidth['formTextSize']
                         ),
                       ),
-                      SizedBox(height: 30.0),
+                      SizedBox(height: customWidth['formFieldSpacing']),
                       TextFormField(
                         obscureText: true,
                         decoration: customFormField('Password'),
@@ -131,7 +174,7 @@ class _LoginState extends State<Login> {
                           userValues['password'] = val;
                         },
                         style: TextStyle(
-                          fontSize: 17.0
+                            fontSize: customWidth['formTextSize']
                         ),
                       ),
                       SizedBox(height: 30.0),
@@ -139,20 +182,24 @@ class _LoginState extends State<Login> {
                         child: Column(
                           children: <Widget>[
                             ButtonTheme(
-                              minWidth: 250.0,
+                              minWidth: SizeConfig.screenWidth - customWidth['buttonWidth'],
                               child: FlatButton(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(36),
+                                    borderRadius: BorderRadius.circular(50),
                                     side: BorderSide(color: Colors.black)
                                 ),
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SizeConfig.safeBlockVertical * 2.2
+                                ),
                                 color: Colors.black,
                                 textColor: Colors.white,
                                 child: Text(
                                   'Log in',
                                   style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold
+                                    fontFamily: 'NovaSquare',
+                                    fontSize: SizeConfig.safeBlockHorizontal * 5.2,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.0
                                   ),
                                 ),
                                 onPressed: () {
@@ -160,29 +207,31 @@ class _LoginState extends State<Login> {
                                 },
                               ),
                             ),
-                            SizedBox(height: 20.0),
+                            SizedBox(height: SizeConfig.safeBlockVertical * 2.5),
                             Text(
                                 'OR',
                               style: TextStyle(
-                                fontSize: 20.0
+                                fontSize: SizeConfig.safeBlockVertical * 3.6
                               ),
                             ),
-                            SizedBox(height: 20.0),
+                            SizedBox(height: SizeConfig.safeBlockVertical * 2.5),
                             ButtonTheme(
-                              minWidth: 250.0,
+                              minWidth:  SizeConfig.screenWidth - customWidth['buttonWidth'],
                               child: FlatButton(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(36),
+                                    borderRadius: BorderRadius.circular(50),
                                     side: BorderSide(color: Colors.red)
                                 ),
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 2.2),
                                 color: Colors.redAccent,
                                 textColor: Colors.white,
                                 child: Text(
                                   'Google Log in',
                                   style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold
+                                    fontFamily: 'NovaSquare',
+                                    fontSize: SizeConfig.safeBlockHorizontal * 5.2,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
                                   ),
                                 ),
                                 onPressed: () {},
