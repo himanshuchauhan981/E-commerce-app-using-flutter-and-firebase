@@ -219,12 +219,12 @@ class _SignUpState extends State<SignUp> {
                       ),
                       SizedBox(height: customWidth['formFieldSpacing']),
                       ButtonTheme(
-                        minWidth: SizeConfig.screenWidth - 140,
+                        minWidth: SizeConfig.screenWidth - 200,
                         child: RaisedButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(36),
                               side: BorderSide(color: Colors.black)),
-                          padding: EdgeInsets.symmetric(vertical: 12.0),
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
                           color: Colors.black87,
                           textColor: Colors.white,
                           child: Text(
