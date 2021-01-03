@@ -1,15 +1,15 @@
-category,subCategory,image
-clothing,shirt,https://4.imimg.com/data4/XQ/KP/MY-517220/cotton-woven-shirt-250x250.jpg
-clothing,tshirt,https://media.gettyimages.com/photos/top-view-of-color-tshirt-on-black-background-picture-id679975546?b=1&k=6&m=679975546&s=612x612&w=0&h=YamcCcO7f0C9eJPqwR5LGclHw2K5mChLjr-sJCSfUNQ=
-clothing,zeans,https://cdn-images.farfetch-contents.com/calvin-klein-jeans-est-1978-bull-landscape-straight-leg-jeans_13216885_16534964_400.jpg?c=2
-accessories,watches,https://cdn.gearpatrol.com/wp-content/uploads/2019/06/50-Best-Watches-For-Men-Gear-Patrol-lead-full-v2.jpg
-accessories,Bags,https://i.pinimg.com/originals/93/c0/53/93c053df13aec68c6dd6f4a4af26a84b.jpg
-accessories,Wallets,https://www.dhresource.com/0x0/f2/albu/g5/M00/1B/D3/rBVaJFm88wKAc-FUAAFO_eLeb58903.jpg
-accessories,Sunglasses,https://sunglassescarts.com/wp-content/uploads/2019/12/6_CCSPACE-STEAMPUNK-Metal-Round-Sunglasses-Men-Women-Retro-CIRCLE-SUN-GLASSES-Brand-Designer-Fashion-Eyewear-Shades-300x300.jpg
-mobile phones,mobile cover,https://pinkphonecase.com/wp-content/uploads/2018/10/Marble-Mobile-Cover.jpg
-mobile phones,Power banks,https://www.powerbankexpert.com/wp-content/uploads/2016/12/what-is-a-power-bank.jpg
-mobile phones,tablets,https://cdn.mos.cms.futurecdn.net/DVgdvxbLT2HDCX7drM38ST.jpg
-mobile phones,mobile accessories,https://asset20.ckassets.com/blog/wp-content/uploads/sites/5/2019/11/Best-mobile-accessories-brands-on-Amazon.jpg
-shoes,sports shoes,https://img1.cfcdn.club/1f/4c/1fe120f7b3d3ec16fd510de62bd8914c_350x350.jpg
-shoes,formal shoes,https://billaberry.com/wp-content/uploads/2018/06/2Q4A0707-min.jpg
-shoes,casual shoes,https://ae01.alicdn.com/kf/H39f2f8dfcb9940ecb722063d0fa5b441P/Men-Casual-Shoes-2019-Summer-Canvas-Shoes-Men-Breathable-Casual-Canvas-Men-Shoes-Walking-Men-Shoes.jpg
+id,category,subCategory
+5ff0b509fc13ae631b000000,Clothing,Shirt
+5ff0b509fc13ae631b000001,Clothing,T-Shirt
+5ff0b509fc13ae631b000002,Clothing,Zeans
+5ff0b509fc13ae631b000003,Accessories,Watches
+5ff0b509fc13ae631b000004,Accessories,Bags
+5ff0b509fc13ae631b000005,Accessories,Wallets
+5ff0b509fc13ae631b000006,Accessories,Sunglasses
+5ff0b509fc13ae631b000007,Mobile phones,Mobile cover
+5ff0b509fc13ae631b000008,Mobile phones,Power banks
+5ff0b509fc13ae631b000009,Mobile phones,Tablets
+5ff0b509fc13ae631b00000a,Mobile phones,Mobile accessories
+5ff0b509fc13ae631b00000b,Shoes,Sports shoes
+5ff0b509fc13ae631b00000c,Shoes,Formal shoes
+5ff0b509fc13ae631b00000d,Shoes,Casual shoes
