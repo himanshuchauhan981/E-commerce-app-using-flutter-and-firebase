@@ -2,33 +2,47 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:app_frontend/services/userService.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProductService{
-  Firestore _firestore = Firestore.instance;
-  CollectionReference _productReference = Firestore.instance.collection('products');
-  CollectionReference _categoryReference = Firestore.instance.collection('category');
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  CollectionReference _productReference = FirebaseFirestore.instance.collection('products');
+  CollectionReference _categoryReference = FirebaseFirestore.instance.collection('category');
+  CollectionReference _subCategoryReference = FirebaseFirestore.instance.collection('subCategory');
   UserService _userService = new UserService();
   List subCategoryList = List();
 
-  Future<Map> listSubCategories(String category) async {
-    QuerySnapshot categoryRef = await _categoryReference.where('categoryName',isEqualTo: category).getDocuments();
-    Map<String,String> subCategory = new Map();
-    for(Map ref in categoryRef.documents[0].data['subCategory']){
-      subCategory[ref['subCategoryName']] = ref['image'];
-    }
-    return subCategory;
+  Future<List> listSubCategories(String categoryId) async {
+    QuerySnapshot subCategoryRef = await _subCategoryReference.where('categoryId',isEqualTo: categoryId).get();
+    List subCategoryList = new List();
+    subCategoryRef.docs.forEach((subCategory) async {
+      String imageId = await getProductsImage(subCategory.data()['imageId']);
+      subCategoryList.add({
+        'imageId': imageId,
+        'name': subCategory.data()['name']
+      });
+    });
+    return subCategoryList;
+  }
+
+  Future<String> getProductsImage(String imageId) async{
+    final ref = FirebaseStorage.instance.ref().child('$imageId.jpg');
+    String url = await ref.getDownloadURL();
+    return url;
   }
 
   Future<List> newItemArrivals() async{
     Random rdn = new Random();
     List<Map<String,String>> itemList = new List();
+
     int randomNumber = 1 + rdn.nextInt(20);
-    QuerySnapshot itemsRef = await _productReference.orderBy('name').startAt([randomNumber]).limit(5).getDocuments();
-    for(DocumentSnapshot docRef in itemsRef.documents){
+    QuerySnapshot itemsRef = await _productReference.orderBy('name').startAt([randomNumber]).limit(5).get();
+    for(QueryDocumentSnapshot docRef in itemsRef.docs){
       Map<String,String> items = new Map();
-      items['image'] = docRef.data['image'][0];
-      items['name'] = docRef.data['name'];
-      items['productId'] = docRef.documentID;
+      String image = await getProductsImage(docRef.data()['imageId'][0]);
+      items['image'] = image;
+      items['name'] = docRef.data()['name'];
+      items['productId'] = docRef.id;
       itemList.add(items);
     }
     return itemList;
@@ -36,40 +50,43 @@ class ProductService{
   
   Future <List> featuredItems() async{
     List<Map<String,String>> itemList = new List();
-    QuerySnapshot itemsRef = await _productReference.limit(15).getDocuments();
-    for(DocumentSnapshot docRef in itemsRef.documents){
+    QuerySnapshot itemsRef = await _productReference.limit(15).get();
+    for(DocumentSnapshot docRef in itemsRef.docs){
       Map<String,String> items = new Map();
-      items['image'] = docRef.data['image'][0];
-      items['name'] = docRef.data['name'];
-      items['price'] = docRef.data['price'].toString();
-      items['productId'] = docRef.documentID;
+      String image = await getProductsImage(docRef.data()['imageId'][0]);
+      items['image'] = image;
+      items['name'] = docRef.data()['name'];
+      items['price'] = docRef.data()['price'].toString();
+      items['productId'] = docRef.id;
       itemList.add(items);
     }
     return itemList;
   }
   
-  Future <List> listSubCategoryItems(String subCategory) async{
-
+  Future <List> listSubCategoryItems(String subCategoryId) async{
     List<Map<String,String>> itemsList = new List();
-    QuerySnapshot productRef = await _productReference.where("subCategory",isEqualTo: subCategory).getDocuments();
-    for(DocumentSnapshot docRef in productRef.documents){
+    QuerySnapshot productRef = await _productReference.where("subCategory",isEqualTo: subCategoryId).get();
+
+    for(DocumentSnapshot docRef in productRef.docs){
       Map<String,String> items  = new Map();
-      items['image'] = docRef.data['image'][0];
-      items['name'] = docRef.data['name'];
-      items['price'] = docRef.data['price'].toString();
-      items['productId'] = docRef.documentID;
+      items['image'] = await getProductsImage(docRef.data()['imageId'][0]);
+      items['name'] = docRef.data()['name'];
+      items['price'] = docRef.data()['price'].toString();
+      items['productId'] = docRef.id;
       itemsList.add(items);
     }
     return itemsList;
   }
   
   Future <List> listCategories() async{
-    QuerySnapshot _categoryRef = await _categoryReference.getDocuments();
+    QuerySnapshot _categoryRef = await _categoryReference.get();
+
     List <Map<String,String>> categoryList = new List();
-    for(DocumentSnapshot dataRef in _categoryRef.documents){
+    for(DocumentSnapshot dataRef in _categoryRef.docs){
       Map<String,String> category = new Map();
-      category['categoryName'] = dataRef.data['categoryName'];
-      category['categoryImage'] = dataRef.data['categoryImage'];
+      category['name'] = dataRef.data()['name'];
+      category['image'] = dataRef.data()['image'];
+      category['id'] = dataRef.id;
       categoryList.add(category);
     }
     return categoryList;
@@ -80,9 +97,9 @@ class ProductService{
     String msg;
     String uid = await _userService.getUserId();
     List<dynamic> wishlist = new List<dynamic>();
-    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
-    Map userData = userRef.documents[0].data;
-    String documentId = userRef.documents[0].documentID;
+    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).get();
+    Map userData = userRef.docs[0].data();
+    String documentId = userRef.docs[0].id;
     if(userData.containsKey('wishlist')){
       wishlist = userData['wishlist'];
       if(wishlist.indexOf(productId) == -1){
@@ -96,7 +113,7 @@ class ProductService{
     else{
       wishlist.add(productId);
     }
-    await _firestore.collection('users').document(documentId).updateData({
+    await _firestore.collection('users').doc(documentId).update({
       'wishlist': wishlist
     }).then((value){
       msg = 'Product added to wishlist';
@@ -105,13 +122,13 @@ class ProductService{
   }
 
   Future<Map> particularItem(String productId) async{
-    DocumentSnapshot prodRef = await _productReference.document(productId).get();
+    DocumentSnapshot prodRef = await _productReference.doc(productId).get();
     Map<String, dynamic> itemDetail = new Map();
-    itemDetail['image'] = prodRef.data['image'][0];
-    itemDetail['color'] = prodRef.data['color'];
-    itemDetail['size'] = prodRef.data['size'];
-    itemDetail['price'] = prodRef.data['price'];
-    itemDetail['name'] = prodRef.data['name'];
+    itemDetail['image'] = await getProductsImage(prodRef.data()['imageId'][0]);
+    itemDetail['color'] = prodRef.data()['color'];
+    itemDetail['size'] = prodRef.data()['size'];
+    itemDetail['price'] = prodRef.data()['price'];
+    itemDetail['name'] = prodRef.data()['name'];
     itemDetail['productId'] = productId;
     return itemDetail;
   }

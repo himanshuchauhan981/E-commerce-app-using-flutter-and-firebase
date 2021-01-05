@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/components/loader.dart';
 
 class Shop extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class Shop extends StatefulWidget {
 class _ShopState extends State<Shop> {
   ProductService _productService = new ProductService();
   List<Map<String,String>> categoryList  = new List();
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   void listCategories(){
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
@@ -21,9 +23,16 @@ class _ShopState extends State<Shop> {
     });
   }
 
-  void listSubCategories(category) async{
-    Map subCategory = await _productService.listSubCategories(category);
-    Map args = {'subCategory': subCategory, 'category': category};
+  void listSubCategories(String categoryId, String categoryName) async{
+    Loader.showLoadingScreen(context, _keyLoader);
+
+    List subCategory = await _productService.listSubCategories(categoryId);
+    Map args = {
+      'subCategory': subCategory,
+      'categoryId': categoryId,
+      'categoryName':categoryName
+    };
+    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
     Navigator.pushNamed(context, '/subCategory', arguments: args);
   }
 
@@ -56,7 +65,7 @@ class _ShopState extends State<Shop> {
                 var item = categoryList[index];
                 return GestureDetector(
                   onTap: (){
-                    listSubCategories(item['categoryName']);
+                    listSubCategories(item['id'],item['name']);
                   },
                   child: Container(
                     constraints: new BoxConstraints.expand(
@@ -65,16 +74,16 @@ class _ShopState extends State<Shop> {
                     alignment: Alignment.bottomLeft,
                     padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        image: DecorationImage(
-                          image: AssetImage(item['categoryImage']),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
-                        )
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      image: DecorationImage(
+                        image: AssetImage(item['image']),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
+                      )
                     ),
                     child: Center(
                       child: Text(
-                        item['categoryName'].toString().toUpperCase(),
+                        item['name'].toString().toUpperCase(),
                         style: TextStyle(
                           fontFamily: 'NovaSquare',
                           fontWeight: FontWeight.w600,

@@ -15,24 +15,22 @@ class _SubCategoryState extends State<SubCategory> {
   ProductService _productService = new ProductService();
   String heading;
   bool showIcon = false;
-  List<String> subCategoryList = new List();
+  List subCategoryList = new List();
   List <String> imageList = new List();
 
   setSubCategory(context){
     Map<dynamic,dynamic> args = ModalRoute.of(context).settings.arguments;
     this.setState(() {
-      heading = args['category'];
-      subCategoryList = args['subCategory'].keys.toList();
-      imageList = args['subCategory'].values.toList();
+      heading = args['categoryName'];
+      subCategoryList = args['subCategory'];
     });
   }
 
-  listSubCategoryItems(String subCategory, BuildContext context) async{
-    subCategory = subCategory.toLowerCase();
+  listSubCategoryItems(String subCategoryId, String subCategoryName, BuildContext context) async{
     Loader.showLoadingScreen(context, _keyLoader);
-    List <Map<String,String>> items = await _productService.listSubCategoryItems(subCategory);
+    List <Map<String,String>> items = await _productService.listSubCategoryItems(subCategoryId);
     Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-    Navigator.pushNamed(context, '/items', arguments: {'items': items, 'heading': subCategory});
+    Navigator.pushNamed(context, '/items', arguments: {'items': items, 'heading': subCategoryName});
   }
 
   @override
@@ -50,9 +48,9 @@ class _SubCategoryState extends State<SubCategory> {
           crossAxisCount: 2
         ),
         itemBuilder: (BuildContext context, int index){
-          String name = subCategoryList[index];
-          name = name[0].toUpperCase()+name.substring(1);
-          String imagePath = imageList[index];
+          String subCategoryId = subCategoryList[index]['id'];
+          String name = subCategoryList[index]['name'];
+          String imagePath = subCategoryList[index]['imageId'];
           return Padding(
             padding: EdgeInsets.all(5.0),
             child: Card(
@@ -68,7 +66,7 @@ class _SubCategoryState extends State<SubCategory> {
                     child: Material(
                       child: InkWell(
                         onTap: (){
-                          listSubCategoryItems(name,context);
+                          listSubCategoryItems(subCategoryId,name,context);
                         },
                         child: GridTile(
                           footer: Container(

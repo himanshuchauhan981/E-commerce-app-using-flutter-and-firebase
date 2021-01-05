@@ -38,7 +38,7 @@ class _HorizontalListState extends State<CategoryCarousal> {
 
   void listSubCategories(String category) async{
     category = category.toLowerCase();
-    Map subCategory = await _productService.listSubCategories(category);
+    List subCategory = await _productService.listSubCategories(category);
     Map args = {'subCategory': subCategory, 'category': category};
     Navigator.pushNamed(context, '/subCategory', arguments: args);
   }
