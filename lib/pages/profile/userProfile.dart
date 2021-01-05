@@ -26,7 +26,7 @@ class _UserProfileState extends State<UserProfile> {
   void setProfileDetails(context) async {
     dynamic args = ModalRoute.of(context).settings.arguments;
     setState(() {
-      name = "${args['firstName']} ${args['lastName']}";
+      name = args['fullName'];
       mobileNumber = args['mobileNumber'];
     });
   }
@@ -83,7 +83,8 @@ class _UserProfileState extends State<UserProfile> {
               ),
               onTap: () async{
                 dynamic args = ModalRoute.of(context).settings.arguments;
-                String email =await _userService.userEmail();
+                String email = _userService.userEmail();
+                print(email);
                 args['email'] = email;
                 Navigator.pushNamed(context, '/profile/edit',arguments: args);
               },

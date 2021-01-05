@@ -1,4 +1,3 @@
-import 'package:app_frontend/services/checkoutService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/loader.dart';
@@ -6,6 +5,7 @@ import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/services/checkoutService.dart';
 
 Widget sidebar(BuildContext context){
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
@@ -99,9 +99,9 @@ Widget sidebar(BuildContext context){
                   ),
                 ),
                 onTap: () async {
-//                  Loader.showLoadingScreen(context, _keyLoader);
+                 Loader.showLoadingScreen(context, _keyLoader);
                   List orderData = await _checkoutService.listPlacedOrder();
-//                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                 Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
                   Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
                 },
               ),

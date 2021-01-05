@@ -8,7 +8,7 @@ import 'package:corsac_jwt/corsac_jwt.dart';
 
 class UserService{
   FirebaseAuth _auth = FirebaseAuth.instance;
-  Firestore _firestore = Firestore.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final storage = new FlutterSecureStorage();
   final String sharedKey = 'sharedKey';
   int statusCode;
@@ -53,10 +53,10 @@ class UserService{
     String password = userValues['password'];
 
     await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user) async{
-      final FirebaseUser currentUser = await _auth.currentUser();
-      final uid = currentUser.uid;
+      // final FirebaseUser currentUser = await _auth.currentUser();
+      // final uid = currentUser.uid;
 
-      createAndStoreJWTToken(uid);
+      // createAndStoreJWTToken(uid);
 
       statusCode = 200;
 
@@ -111,25 +111,25 @@ class UserService{
     return name;
   }
 
-  Future<String> userEmail() async {
-    var user = await _auth.currentUser();
+  String userEmail(){
+    var user = _auth.currentUser;
     return user.email;
   }
 
   Future<List> userWishlist() async{
     String uid = await getUserId();
     QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
-    List <dynamic> wishlist = userRef.documents[0].data['wishlist'];
+    // List <dynamic> wishlist = userRef.documents[0].data['wishlist'];
     List userList = new List();
-    for(String item in wishlist){
-      Map<String, dynamic> temp = new Map();
-      DocumentSnapshot productRef = await _firestore.collection('products').document(item).get();
-      temp['productName'] = productRef.data['name'];
-      temp['price'] = productRef.data['price'];
-      temp['image'] = productRef.data['image'];
-      temp['productId'] = productRef.documentID;
-      userList.add(temp);
-    }
+    // for(String item in wishlist){
+    //   Map<String, dynamic> temp = new Map();
+    //   DocumentSnapshot productRef = await _firestore.collection('products').document(item).get();
+    //   // temp['productName'] = productRef.data['name'];
+    //   // temp['price'] = productRef.data['price'];
+    //   // temp['image'] = productRef.data['image'];
+    //   temp['productId'] = productRef.documentID;
+    //   userList.add(temp);
+    // }
     return userList;
   }
 
@@ -137,12 +137,12 @@ class UserService{
     String uid = await getUserId();
     QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
     String documentId = userRef.documents[0].documentID;
-    Map<String,dynamic> wishlist = userRef.documents[0].data;
-    wishlist['wishlist'].remove(productId);
+    // Map<String,dynamic> wishlist = userRef.documents[0].data;
+    // wishlist['wishlist'].remove(productId);
 
-    await _firestore.collection('users').document(documentId).updateData({
-      'wishlist':wishlist['wishlist']
-    });
+    // await _firestore.collection('users').document(documentId).updateData({
+    //   'wishlist':wishlist['wishlist']
+    // });
   }
 }
 
