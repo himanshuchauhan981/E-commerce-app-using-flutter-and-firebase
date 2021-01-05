@@ -1,15 +1,15 @@
-id,category,subCategory
-5ff0b509fc13ae631b000000,Clothing,Shirt
-5ff0b509fc13ae631b000001,Clothing,T-Shirt
-5ff0b509fc13ae631b000002,Clothing,Zeans
-5ff0b509fc13ae631b000003,Accessories,Watches
-5ff0b509fc13ae631b000004,Accessories,Bags
-5ff0b509fc13ae631b000005,Accessories,Wallets
-5ff0b509fc13ae631b000006,Accessories,Sunglasses
-5ff0b509fc13ae631b000007,Mobile phones,Mobile cover
-5ff0b509fc13ae631b000008,Mobile phones,Power banks
-5ff0b509fc13ae631b000009,Mobile phones,Tablets
-5ff0b509fc13ae631b00000a,Mobile phones,Mobile accessories
-5ff0b509fc13ae631b00000b,Shoes,Sports shoes
-5ff0b509fc13ae631b00000c,Shoes,Formal shoes
-5ff0b509fc13ae631b00000d,Shoes,Casual shoes
+id,category,subCategory,images
+5ff0b509fc13ae631b000000,Clothing,Shirt,assets/shop/clothing.jpg
+5ff0b509fc13ae631b000001,Clothing,T-Shirt,assets/shop/clothing.jpg
+5ff0b509fc13ae631b000002,Clothing,Zeans,assets/shop/clothing.jpg
+5ff0b509fc13ae631b000003,Accessories,Watches,assets/shop/accessories.png
+5ff0b509fc13ae631b000004,Accessories,Bags,assets/shop/accessories.png
+5ff0b509fc13ae631b000005,Accessories,Wallets,assets/shop/accessories.png
+5ff0b509fc13ae631b000006,Accessories,Sunglasses,assets/shop/accessories.png
+5ff0b509fc13ae631b000007,Mobile phones,Mobile cover,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b000008,Mobile phones,Power banks,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b000009,Mobile phones,Tablets,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b00000a,Mobile phones,Mobile accessories,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b00000b,Shoes,Sports shoes,assets/shop/shoes.jpg
+5ff0b509fc13ae631b00000c,Shoes,Formal shoes,assets/shop/shoes.jpg
+5ff0b509fc13ae631b00000d,Shoes,Casual shoes,assets/shop/shoes.jpg
