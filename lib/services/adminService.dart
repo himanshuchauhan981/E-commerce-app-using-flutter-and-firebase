@@ -3,10 +3,10 @@ import 'package:csv/csv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class AdminService {
-  Firestore _firestore = Firestore.instance;
-  CollectionReference _categoryReference = Firestore.instance.collection('category');
-  CollectionReference _subCategoryReference = Firestore.instance.collection('subCategory');
-  CollectionReference _productsReference = Firestore.instance.collection('products');
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  CollectionReference _categoryReference = FirebaseFirestore.instance.collection('category');
+  CollectionReference _subCategoryReference = FirebaseFirestore.instance.collection('subCategory');
+  CollectionReference _productsReference = FirebaseFirestore.instance.collection('products');
 
   Future<String> loadAsset(String path) async {
     return await rootBundle.loadString(path);
@@ -26,9 +26,9 @@ class AdminService {
       for(String key in tempCategoryData.keys){
         _firestore.collection('category').add({
           'name':key,
-          'imageId':'',
+          'image': tempCategoryData[key][0][3],
         }).then((response) async{
-          String categoryId = response.documentID;
+          String categoryId = response.id;
           for(int i=0;i<tempCategoryData[key].length;i++){
             await _firestore.collection('subCategory').add({
               'categoryId': categoryId,
@@ -45,15 +45,15 @@ class AdminService {
 
         for(int i=1;i<tempProductData.length;i++){
           if(tempProductData[i][2] != 'Accessories' && tempProductData[i][2] != 'Mobile phones'){
-            QuerySnapshot categorySnapshot = await _categoryReference.where('name',isEqualTo: tempProductData[i][2]).getDocuments();
-            String categoryId = categorySnapshot.documents[0].documentID;
+            QuerySnapshot categorySnapshot = await _categoryReference.where('name',isEqualTo: tempProductData[i][2]).get();
+            String categoryId = categorySnapshot.docs[0].id;
 
-            subCategorySnapshot = await _subCategoryReference.where('name',isEqualTo: tempProductData[i][3]).getDocuments();
-            if(subCategorySnapshot.documents.length == 0){
+            subCategorySnapshot = await _subCategoryReference.where('name',isEqualTo: tempProductData[i][3]).get();
+            if(subCategorySnapshot.docs.length == 0){
               print(tempProductData[i][2]);
               print(tempProductData[i][3]);
             }
-            String subCategoryId = subCategorySnapshot.documents[0].documentID;
+            String subCategoryId = subCategorySnapshot.docs[0].id;
 
             List<String> image = new List<String>();
             for(int j =0;j<3;j++){
@@ -66,7 +66,7 @@ class AdminService {
               'availableQuantity':tempProductData[i][4],
               'orderedQuantity': tempProductData[i][5],
               'price': tempProductData[i][6],
-              'image':image,
+              'imageId':image,
               'size':['S','M','L','XL','2XL'],
               'color':['0xFF0000ff','0xFF000000','0xFF8b4513']
             });

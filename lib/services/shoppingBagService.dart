@@ -4,13 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ShoppingBagService{
   UserService userService = new UserService();
-  Firestore _firestore = Firestore.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<String> update(String productId, String size, String color, int quantity, QuerySnapshot bagItems) async{
     String documentId;
     String msg;
-    List productItems = bagItems.documents.map((doc){
-      documentId = doc.documentID;
+    List productItems = bagItems.docs.map((doc){
+      documentId = doc.id;
       return doc['products'];
     }).toList()[0];
     List product = productItems.where((test)=> test['id'] == productId).toList();
@@ -28,15 +28,15 @@ class ShoppingBagService{
       productItems.add({'id':productId,'size':size,'color':color,'quantity':quantity});
       msg = 'Product added to shopping bag';
     }
-    await _firestore.collection('bags').document(documentId).setData({'products':productItems},merge: true);
+    await _firestore.collection('bags').doc(documentId).set({'products':productItems});
     return msg;
   }
 
   Future<String> add(String productId,String size,String color,int quantity) async{
     String uid = await userService.getUserId();
     String msg;
-    QuerySnapshot data = await _firestore.collection('bags').where("userId", isEqualTo: uid).getDocuments();
-    if(data.documents.length == 0){
+    QuerySnapshot data = await _firestore.collection('bags').where("userId", isEqualTo: uid).get();
+    if(data.docs.length == 0){
       await _firestore.collection('bags').add({
         'userId': uid,
         'products':[{
@@ -61,23 +61,23 @@ class ShoppingBagService{
     String uid = await userService.getUserId();
 
     QuerySnapshot docRef = await _firestore.collection('bags').where("userId",isEqualTo: uid).getDocuments();
-    int itemLength = docRef.documents.length;
+    int itemLength = docRef.docs.length;
     if(itemLength != 0){
-      itemDetails = docRef.documents.map((doc){
-        return doc.data['products'];
+      itemDetails = docRef.docs.map((doc){
+        return doc.data()['products'];
       }).toList()[0];
       productIdList = itemDetails.map((value) => value['id']).toList();
     }
 
     for(int i=0;i< productIdList.length;i++){
       Map mapProduct = new Map();
-      DocumentSnapshot productRef = await _firestore.collection('products').document(productIdList[i]).get();
-      mapProduct['id'] = productRef.documentID;
-      mapProduct['name'] = productRef.data['name'];
-      mapProduct['image'] = productRef.data['image'][0];
-      mapProduct['price']  = productRef.data['price'].toString();
-      mapProduct['color'] = productRef.data['color'].cast<String>().toList();
-      mapProduct['size'] = productRef.data['size'].cast<String>().toList();
+      DocumentSnapshot productRef = await _firestore.collection('products').doc(productIdList[i]).get();
+      mapProduct['id'] = productRef.id;
+      mapProduct['name'] = productRef.data()['name'];
+      mapProduct['image'] = productRef.data()['image'][0];
+      mapProduct['price']  = productRef.data()['price'].toString();
+      mapProduct['color'] = productRef.data()['color'].cast<String>().toList();
+      mapProduct['size'] = productRef.data()['size'].cast<String>().toList();
       mapProduct['selectedSize'] = itemDetails[i]['size'];
       mapProduct['selectedColor'] = itemDetails[i]['color'];
       mapProduct['quantity'] = itemDetails[i]['quantity'];
@@ -89,15 +89,15 @@ class ShoppingBagService{
   Future<void> remove(String id) async{
     String uid = await userService.getUserId();
 
-    await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments().then((QuerySnapshot doc){
-      doc.documents.forEach((docRef) async{
+    await _firestore.collection('bags').where('userId',isEqualTo: uid).get().then((QuerySnapshot doc){
+      doc.docs.forEach((docRef) async{
         List products = docRef['products'];
         if(products.length == 1){
-          await _firestore.collection('bags').document(docRef.documentID).delete();
+          await _firestore.collection('bags').doc(docRef.id).delete();
         }
         else{
           products.removeWhere((productData) => productData['id'] == id);
-          await _firestore.collection('bags').document(docRef.documentID).setData({'products':products},merge:true);
+          await _firestore.collection('bags').doc(docRef.id).set({'products':products});
         }
       });
     });
@@ -107,11 +107,11 @@ class ShoppingBagService{
     String uid = await userService.getUserId();
 
     QuerySnapshot bagItems = await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments();
-    String shoppingBagItemId = bagItems.documents[0].documentID;
+    String shoppingBagItemId = bagItems.docs[0].id;
 
     final TransactionHandler deleteTransaction = (Transaction tx) async{
-      final DocumentSnapshot ds = await tx.get(_firestore.collection('bags').document(shoppingBagItemId));
-      await tx.delete(ds.reference);
+      final DocumentSnapshot ds = await tx.get(_firestore.collection('bags').doc(shoppingBagItemId));
+      tx.delete(ds.reference);
     };
 
     await _firestore.runTransaction(deleteTransaction);

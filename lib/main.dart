@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -22,6 +23,7 @@ import 'package:app_frontend/pages/profile/contactUs.dart';
 import 'package:app_frontend/pages/products/wishlist.dart';
 import 'package:app_frontend/components/orders/orderHistory.dart';
 import 'package:app_frontend/pages/onBoardingScreen/onboardingScreen.dart';
+import 'package:app_frontend/pages/adminPanel.dart';
 
 bool firstTime;
 
@@ -32,6 +34,8 @@ Future<void> main() async{
   if(!firstTime){
     prefs.setBool('initScreen', true);
   }
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     Main()
   );
@@ -63,7 +67,8 @@ class Main extends StatelessWidget {
         '/profile/edit': (context) => EditProfile(),
         '/profile/contactUs': (context) => ContactUs(),
         '/placedOrder': (context) => OrderHistory(),
-        "/onBoarding": (context) => OnBoardingScreen()
+        "/onBoarding": (context) => OnBoardingScreen(),
+        "/admin": (context) => AdminPanel()
       },
       theme: ThemeData(
         bottomSheetTheme: BottomSheetThemeData(
