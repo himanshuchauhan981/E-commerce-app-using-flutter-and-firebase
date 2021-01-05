@@ -1,3 +1,4 @@
+import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 
 class SlideTile extends StatelessWidget {
@@ -7,18 +8,22 @@ class SlideTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: SizeConfig.safeBlockHorizontal * 2.4,
+        vertical: SizeConfig.safeBlockVertical * 4,
+      ),
       alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Image.asset(
             imagePath,
-            height: 200.0,
+            height: SizeConfig.safeBlockVertical * 20,
           ),
           SizedBox(
-            height: 40.0,
+            height: SizeConfig.safeBlockVertical * 2,
           ),
           Text(
             title,
@@ -26,12 +31,12 @@ class SlideTile extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'NovaSquare',
               fontWeight: FontWeight.bold,
-              fontSize: 45.0,
+              fontSize: SizeConfig.safeBlockVertical * 6,
               letterSpacing: 1.0
             ),
           ),
           SizedBox(
-            height: 20.0,
+            height: SizeConfig.safeBlockVertical * 5,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -39,8 +44,9 @@ class SlideTile extends StatelessWidget {
               desc,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18.0
+                fontFamily: 'NovaSquare',
+                fontWeight: FontWeight.w500,
+                fontSize: SizeConfig.safeBlockVertical * 3
               ),
             ),
           )
