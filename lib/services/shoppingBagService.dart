@@ -60,7 +60,7 @@ class ShoppingBagService{
     List productIdList =  new List(0);
     String uid = await userService.getUserId();
 
-    QuerySnapshot docRef = await _firestore.collection('bags').where("userId",isEqualTo: uid).getDocuments();
+    QuerySnapshot docRef = await _firestore.collection('bags').where("userId",isEqualTo: uid).get();
     int itemLength = docRef.docs.length;
     if(itemLength != 0){
       itemDetails = docRef.docs.map((doc){
@@ -106,7 +106,7 @@ class ShoppingBagService{
   Future<void> delete() async{
     String uid = await userService.getUserId();
 
-    QuerySnapshot bagItems = await _firestore.collection('bags').where('userId',isEqualTo: uid).getDocuments();
+    QuerySnapshot bagItems = await _firestore.collection('bags').where('userId',isEqualTo: uid).get();
     String shoppingBagItemId = bagItems.docs[0].id;
 
     final TransactionHandler deleteTransaction = (Transaction tx) async{

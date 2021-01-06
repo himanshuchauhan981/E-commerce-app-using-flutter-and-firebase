@@ -30,7 +30,7 @@ class CheckoutService {
     String documentId = addressData.docs[0].id;
     List savedAddress = addressData.docs[0].data()['address'];
     savedAddress.add(newAddress);
-    await _shippingAddressReference.document(documentId).updateData({'address': savedAddress});
+    await _shippingAddressReference.doc(documentId).update({'address': savedAddress});
   }
 
   Future<void> newShippingAddress(Map address) async{
@@ -51,7 +51,7 @@ class CheckoutService {
     String uid = await _userService.getUserId();
     List addressList = new List();
 
-    QuerySnapshot docRef = await _shippingAddressReference.where('userId',isEqualTo: uid).getDocuments();
+    QuerySnapshot docRef = await _shippingAddressReference.where('userId',isEqualTo: uid).get();
     if(docRef.docs.length != 0){
       addressList = docRef.docs[0].data()['address'];
     }
@@ -76,7 +76,7 @@ class CheckoutService {
   Future<List> listCreditCardDetails() async{
     String uid = await _userService.getUserId();
     List<String> cardNumberList = new List<String>();
-    QuerySnapshot cardData = await _creditCardReference.where('userId',isEqualTo: uid).getDocuments();
+    QuerySnapshot cardData = await _creditCardReference.where('userId',isEqualTo: uid).get();
     String cardNumber;
     cardData.docs.forEach((docRef){
       cardNumber = docRef.data()['cardNumber'].toString().replaceAll(new RegExp(r"\s+\b|\b\s"),'');
@@ -87,7 +87,7 @@ class CheckoutService {
 
   Future<void> placeNewOrder(Map orderDetails) async{
     String uid = await _userService.getUserId();
-    QuerySnapshot items = await _shoppingBagReference.where('userId',isEqualTo: uid).getDocuments();
+    QuerySnapshot items = await _shoppingBagReference.where('userId',isEqualTo: uid).get();
 
     await _orderReference.add({
       'userId': uid,

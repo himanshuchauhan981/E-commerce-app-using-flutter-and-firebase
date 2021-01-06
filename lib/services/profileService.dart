@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:app_frontend/services/userService.dart';
 
 class ProfileService{
   UserService _userService = new UserService();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Future<Map> getUserProfile() async{
     Map profileDetails = new Map();

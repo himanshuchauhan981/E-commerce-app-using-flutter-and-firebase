@@ -166,7 +166,7 @@ class _UserProfileState extends State<UserProfile> {
                   Loader.showLoadingScreen(context, _keyLoader);
                   QuerySnapshot userSettings = await _profileService.getUserSettings();
                   Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.of(context).pushNamed('/profile/settings', arguments: userSettings.documents[0].data);
+                  Navigator.of(context).pushNamed('/profile/settings', arguments: userSettings.docs[0].data);
                 },
               ),
               ListTile(

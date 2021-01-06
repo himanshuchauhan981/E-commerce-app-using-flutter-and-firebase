@@ -118,31 +118,31 @@ class UserService{
 
   Future<List> userWishlist() async{
     String uid = await getUserId();
-    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
-    // List <dynamic> wishlist = userRef.documents[0].data['wishlist'];
+    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).get();
+    List <dynamic> wishlist = userRef.docs[0].data()['wishlist'];
     List userList = new List();
-    // for(String item in wishlist){
-    //   Map<String, dynamic> temp = new Map();
-    //   DocumentSnapshot productRef = await _firestore.collection('products').document(item).get();
-    //   // temp['productName'] = productRef.data['name'];
-    //   // temp['price'] = productRef.data['price'];
-    //   // temp['image'] = productRef.data['image'];
-    //   temp['productId'] = productRef.documentID;
-    //   userList.add(temp);
-    // }
+    for(String item in wishlist){
+      Map<String, dynamic> temp = new Map();
+      DocumentSnapshot productRef = await _firestore.collection('products').doc(item).get();
+      temp['productName'] = productRef.data()['name'];
+      temp['price'] = productRef.data()['price'];
+      temp['image'] = productRef.data()['image'];
+      temp['productId'] = productRef.id;
+      userList.add(temp);
+    }
     return userList;
   }
 
   Future<void> deleteUserWishlistItems(String productId) async{
     String uid = await getUserId();
-    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).getDocuments();
-    String documentId = userRef.documents[0].documentID;
-    // Map<String,dynamic> wishlist = userRef.documents[0].data;
-    // wishlist['wishlist'].remove(productId);
+    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).get();
+    String documentId = userRef.docs[0].id;
+    Map<String,dynamic> wishlist = userRef.docs[0].data();
+    wishlist['wishlist'].remove(productId);
 
-    // await _firestore.collection('users').document(documentId).updateData({
-    //   'wishlist':wishlist['wishlist']
-    // });
+    await _firestore.collection('users').doc(documentId).update({
+      'wishlist':wishlist['wishlist']
+    });
   }
 }
 
