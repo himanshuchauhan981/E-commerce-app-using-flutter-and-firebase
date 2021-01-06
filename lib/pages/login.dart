@@ -20,7 +20,6 @@ class _LoginState extends State<Login> {
   HashMap userValues = new HashMap<String, String>();
   Map customWidth = new Map<String,double>();
 
-  bool _autoValidate = false;
   double borderWidth = 2.0;
 
   ValidateService _validateService = ValidateService();
@@ -45,11 +44,6 @@ class _LoginState extends State<Login> {
           }
         );
       }
-    }
-    else{
-      setState(() {
-        _autoValidate = true;
-      });
     }
   }
 
@@ -133,7 +127,7 @@ class _LoginState extends State<Login> {
           ),
           child: Form(
             key: _formKey,
-            autovalidateMode: AutovalidateMode.always,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

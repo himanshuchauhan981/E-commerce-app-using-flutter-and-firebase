@@ -13,7 +13,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  bool _autoValidate = false;
   double borderWidth = 1.0;
   final _signUpFormKey = GlobalKey<FormState>();
   HashMap userValues = new HashMap<String, String>();
@@ -45,10 +44,6 @@ class _SignUpState extends State<SignUp> {
       } else {
         Navigator.pushReplacementNamed(context, '/');
       }
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
     }
   }
 
@@ -144,7 +139,7 @@ class _SignUpState extends State<SignUp> {
               horizontal: SizeConfig.safeBlockHorizontal * 10),
           child: Form(
             key: _signUpFormKey,
-            autovalidate: _autoValidate,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[

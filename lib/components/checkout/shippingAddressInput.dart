@@ -62,7 +62,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
               decoration: customBorder('Mobile number',Icons.call),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                WhitelistingTextInputFormatter(RegExp(r"^[^._]+$")),
+                FilteringTextInputFormatter.allow(RegExp(r"^[^._]+$")),
                 LengthLimitingTextInputFormatter(10)
               ],
               validator: (value) => _validateService.isEmptyField(value),
@@ -80,7 +80,7 @@ class _ShippingAddressInputState extends State<ShippingAddressInput> {
               decoration: customBorder('PIN code', Icons.code),
               keyboardType: TextInputType.number,
               inputFormatters: [
-                WhitelistingTextInputFormatter(RegExp(r"^[^._]+$")),
+                FilteringTextInputFormatter.allow(RegExp(r"^[^._]+$")),
                 LengthLimitingTextInputFormatter(6)
               ],
               validator: (value) => _validateService.isEmptyField(value),

@@ -87,7 +87,7 @@ class _EditProfileState extends State<EditProfile> {
       body: Container(
         child: Form(
           key: _formKey,
-          autovalidate: _autoValidate,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

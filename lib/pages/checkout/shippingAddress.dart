@@ -234,7 +234,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
           padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
           child: Form(
             key: _formKey,
-            autovalidate: autoValidate,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -29,7 +29,7 @@ class Start extends StatelessWidget{
     SizeConfig().init(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
+      body: SingleChildScrollView(
           child: Center(
             child: Column(
               children: <Widget>[
