@@ -15,13 +15,14 @@ class ProductService{
   Future<List> listSubCategories(String categoryId) async {
     QuerySnapshot subCategoryRef = await _subCategoryReference.where('categoryId',isEqualTo: categoryId).get();
     List subCategoryList = new List();
-    subCategoryRef.docs.forEach((subCategory) async {
-      String imageId = await getProductsImage(subCategory.data()['imageId']);
+    for(int i=0;i< subCategoryRef.docs.length;i++){
+      Map subCategory = subCategoryRef.docs[i].data();
+      String image = await getProductsImage(subCategory['imageId']);
       subCategoryList.add({
-        'imageId': imageId,
-        'name': subCategory.data()['name']
+        'imageId': image,
+        'name': subCategory['name']
       });
-    });
+    }
     return subCategoryList;
   }
 

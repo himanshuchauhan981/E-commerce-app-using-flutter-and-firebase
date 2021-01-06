@@ -1,3 +1,4 @@
+import 'package:app_frontend/components/loader.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/services/productService.dart';
@@ -16,6 +17,17 @@ class CategoryCarousal extends StatefulWidget {
 
 class _HorizontalListState extends State<CategoryCarousal> {
   ProductService _productService = ProductService();
+  List categoryList = [];
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+
+  void initState(){
+    super.initState();
+    _productService.listCategories().then((categories){
+      this.setState(() {
+        categoryList = categories;
+      });
+    });
+  }
 
   final category = <Category>[
     Category(
@@ -36,10 +48,11 @@ class _HorizontalListState extends State<CategoryCarousal> {
     )
   ];
 
-  void listSubCategories(String category) async{
-    category = category.toLowerCase();
-    List subCategory = await _productService.listSubCategories(category);
-    Map args = {'subCategory': subCategory, 'category': category};
+  void listSubCategories(String categoryId,String categoryName) async{
+    Loader.showLoadingScreen(context, _keyLoader);
+    List subCategory = await _productService.listSubCategories(categoryId);
+    Map args = {'subCategory': subCategory, 'categoryName': categoryName};
+    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
     Navigator.pushNamed(context, '/subCategory', arguments: args);
   }
 
@@ -49,14 +62,14 @@ class _HorizontalListState extends State<CategoryCarousal> {
       physics: AlwaysScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
-      itemCount: category.length,
+      itemCount: categoryList.length,
       itemBuilder: (context, index){
-        var item = category[index];
+        var item = categoryList[index];
         return Container(
           width: 200.0,
           child: GestureDetector(
             onTap: (){
-              listSubCategories(item.name);
+              listSubCategories(item['id'],item['name']);
             },
             child: Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -64,7 +77,7 @@ class _HorizontalListState extends State<CategoryCarousal> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   image: DecorationImage(
-                    image: AssetImage(item.url),
+                    image: AssetImage(item['image']),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Color.fromRGBO(90,90,90,0.8),
@@ -74,7 +87,7 @@ class _HorizontalListState extends State<CategoryCarousal> {
                 ),
                 child: Center(
                   child: Text(
-                    item.name,
+                    item['name'].toUpperCase(),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 20.0,
