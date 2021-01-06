@@ -53,10 +53,10 @@ class UserService{
     String password = userValues['password'];
 
     await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user) async{
-      // final FirebaseUser currentUser = await _auth.currentUser();
-      // final uid = currentUser.uid;
+      final User currentUser = _auth.currentUser;
+      final uid = currentUser.uid;
 
-      // createAndStoreJWTToken(uid);
+      createAndStoreJWTToken(uid);
 
       statusCode = 200;
 
