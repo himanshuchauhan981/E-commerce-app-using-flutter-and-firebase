@@ -82,7 +82,6 @@ class _LoginState extends State<Login> {
   }
 
   customScreenWidth(String screen){
-    print(screen);
     switch(screen){
       case 'smallMobile':{
         customWidth['fieldPadding'] = 15.0;
@@ -134,7 +133,7 @@ class _LoginState extends State<Login> {
           ),
           child: Form(
             key: _formKey,
-            autovalidate: _autoValidate,
+            autovalidateMode: AutovalidateMode.always,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

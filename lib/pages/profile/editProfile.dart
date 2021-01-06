@@ -5,6 +5,7 @@ import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/services/validateService.dart';
+import 'package:app_frontend/sizeConfig.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -19,13 +20,12 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   bool showCartIcon = true;
   bool _autoValidate = false;
-  String firstName, lastName, mobileNumber, email;
+  String fullName, mobileNumber, email;
 
   setProfileDetails(){
     dynamic args = ModalRoute.of(context).settings.arguments;
     setState(() {
-      firstName = args['firstName'];
-      lastName = args['lastName'];
+      fullName = args['fullName'];
       mobileNumber = args['mobileNumber'];
       email = args['email'];
     });
@@ -37,15 +37,18 @@ class _EditProfileState extends State<EditProfile> {
       fillColor: Colors.white,
       hintText: text,
       labelText: text,
+      errorStyle: TextStyle(
+        fontSize: SizeConfig.safeBlockHorizontal * 3.2
+      ),
       border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(6.0),
           borderSide: BorderSide(
               width: 2.0,
               color: Colors.black
           )
       ),
       focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(6.0),
           borderSide: BorderSide(
               width: 2.0,
               color: Colors.black
@@ -58,9 +61,12 @@ class _EditProfileState extends State<EditProfile> {
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
       Loader.showLoadingScreen(context, _keyLoader);
-      await _profileService.updateAccountDetails(firstName, lastName, email, mobileNumber);
-      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-      Navigator.of(context).pop();
+      _profileService.updateAccountDetails(fullName, mobileNumber).then((value) async{
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+        Map userData = await _profileService.getUserProfile();
+        Navigator.pushReplacementNamed(context, '/profile',arguments: userData);
+      });
+
     }
     else{
       setState(() {
@@ -72,6 +78,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     setProfileDetails();
+    SizeConfig().init(context);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       key: _scaffoldKey,
@@ -89,31 +96,32 @@ class _EditProfileState extends State<EditProfile> {
                 child: Text(
                   'PUBLIC PROFILE',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontFamily: 'NovaSquare',
+                    fontSize: SizeConfig.safeBlockHorizontal * 5.2,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 40.0),
+                padding: EdgeInsets.fromLTRB(
+                  SizeConfig.safeBlockHorizontal * 6,
+                  0.0,
+                  SizeConfig.safeBlockHorizontal * 6,
+                  SizeConfig.safeBlockVertical * 4
+                ),
                 child: Column(
                   children: <Widget>[
                     TextFormField(
-                      decoration: customFormField('First name'),
-                        initialValue: firstName,
-                        validator: (value)=> _validateService.isEmptyField(value),
-                      keyboardType: TextInputType.text,
-                      onSaved: (String val){
-                        firstName = val;
-                      }
-                    ),
-                    SizedBox(height: 20.0),
-                    TextFormField(
-                      decoration: customFormField('Last name'),
-                      initialValue: lastName,
+                      decoration: customFormField('Full name'),
+                      initialValue: fullName,
                       validator: (value)=> _validateService.isEmptyField(value),
-                      onSaved: (String val) => lastName = val,
+                      keyboardType: TextInputType.text,
+                      onSaved: (String val) => fullName = val,
+                      style: TextStyle(
+                        fontSize: SizeConfig.safeBlockHorizontal * 4.2,
+                        letterSpacing: 1.0
+                      ),
                     ),
                   ],
                 ),
@@ -123,14 +131,20 @@ class _EditProfileState extends State<EditProfile> {
                 child: Text(
                   'PRIVATE PROFILE',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontFamily: 'NovaSquare',
+                    fontSize: SizeConfig.safeBlockHorizontal * 5.2,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0
                   ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                padding: EdgeInsets.fromLTRB(
+                    SizeConfig.safeBlockHorizontal * 6,
+                    0.0,
+                    SizeConfig.safeBlockHorizontal * 6,
+                    SizeConfig.safeBlockVertical * 4
+                ),
                 child: Column(
                   children: <Widget>[
                     TextFormField(
@@ -139,6 +153,10 @@ class _EditProfileState extends State<EditProfile> {
                       keyboardType: TextInputType.emailAddress,
                       validator: (value)=> _validateService.isEmptyField(value),
                       onSaved: (String value) => email = value,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 4.2,
+                          letterSpacing: 1.0
+                      ),
                     ),
                     SizedBox(height: 20.0),
                     TextFormField(
@@ -147,6 +165,10 @@ class _EditProfileState extends State<EditProfile> {
                       validator: (value)=> _validateService.isEmptyField(value),
                       keyboardType: TextInputType.phone,
                       onSaved: (String value) => mobileNumber = value,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 4.2,
+                          letterSpacing: 1.0
+                      ),
                     ),
                   ],
                 ),
@@ -157,15 +179,21 @@ class _EditProfileState extends State<EditProfile> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.grey[200],
-        elevation: 0,
+        elevation: 16,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+          padding: EdgeInsets.symmetric(
+            vertical: SizeConfig.safeBlockVertical * 3,
+            horizontal: SizeConfig.safeBlockHorizontal * 8,
+          ),
           child: ButtonTheme(
+            padding: EdgeInsets.symmetric(
+              horizontal: 0,
+              vertical: SizeConfig.safeBlockVertical * 1.4
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(7.0)),
               side: BorderSide(color: Colors.black,width: 2.0)
             ),
-            minWidth: MediaQuery.of(context).size.width,
             height: 50.0,
             child: RaisedButton(
               color: Colors.white,
@@ -175,9 +203,11 @@ class _EditProfileState extends State<EditProfile> {
               child: Text(
                 'UPDATE',
                 style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold
+                  fontFamily: 'NovaSquare',
+                  fontSize: SizeConfig.safeBlockHorizontal * 4.6,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1
                 ),
               ),
             ),
