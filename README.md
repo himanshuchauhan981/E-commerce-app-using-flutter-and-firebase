@@ -12,9 +12,21 @@ It is an complete e-commerce mobile app which is designed using flutter. It uses
 ## Steps to reproduce the project in your environment
 - Download and setup the flutter SDK
 - Install flutter plugin in your editor(preferably Android Studio).
+- Create your own firebase project and make sure that package name in firebase app should be same as application id which is in android gradle file.
+- Download google-service.json file and paste inside **/android/app** directory.
 - Run flutter get/ pub get for getting dependencies.
 - Press run button in Android studio to install the apk
 - The project will now be running in your device.
+
+## Steps to write sample products data in firebase
+- For product images, drop down all the images from **assets/mock_images** folder to the firebase storage without creating any folder structure inside firebase storage.
+- For product data, make following changes in **main.dart** file
+
+```
+initialRoute:'/admin',
+```
+- Hot reload your app. After this, click on button to write product data in firebase cloud firestore.
+
 
 ## Features of this flutter app
 
