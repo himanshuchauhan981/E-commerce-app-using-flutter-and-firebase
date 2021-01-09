@@ -1,3 +1,6 @@
+import 'package:app_frontend/components/item/customTransition.dart';
+import 'package:app_frontend/pages/home.dart';
+import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,18 +22,17 @@ class ParticularItem extends StatefulWidget {
 
 class _ParticularItemState extends State<ParticularItem> {
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
-  var itemDetails;
-  List<dynamic> size;
-  List<dynamic> colors;
-  String sizeValue = "";
-  String colorValue = "";
+  List<Map<String,bool>> productSizes;
+  List<Map<Color,bool>> productColors;
+  String selectedSize = "";
+  String selectedColor = "";
   int quantity = 1;
   bool editProduct;
   String image,name;
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _productScaffoldKey = new GlobalKey<ScaffoldState>();
   void showInSnackBar(String msg, Color color) {
-    _scaffoldKey.currentState.showSnackBar(
+    _productScaffoldKey.currentState.showSnackBar(
         SnackBar(
           backgroundColor: color,
           content: new Text(msg),
@@ -38,7 +40,7 @@ class _ParticularItemState extends State<ParticularItem> {
             label:'Close',
             textColor: Colors.white,
             onPressed: (){
-              _scaffoldKey.currentState.removeCurrentSnackBar();
+              _productScaffoldKey.currentState.removeCurrentSnackBar();
             },
           ),
         ),
@@ -47,19 +49,26 @@ class _ParticularItemState extends State<ParticularItem> {
 
   editItemDetails(){
     Map<String,dynamic> args = widget.itemDetails;
-    print(args);
     setState(() {
       editProduct = true;
-      sizeValue = args['itemDetails']['selectedSize'];
-      colorValue = args['itemDetails']['selectedColor'];
-      itemDetails = args['itemDetails'];
-      size = args['itemDetails']['size'];
-      colors = setColorList(args['itemDetails']['color']);
+      selectedSize = args['itemDetails']['selectedSize'];
+      selectedColor = args['itemDetails']['selectedColor'];
+      productSizes = args['itemDetails']['size'];
+      productColors = setColorList(args['itemDetails']['color']);
       quantity = args['itemDetails']['quantity'];
-      int index = args['itemDetails']['color'].indexOf("0xFF$colorValue");
+      int index = args['itemDetails']['color'].indexOf("0xFF$selectedColor");
       selectColor(index);
     });
+  }
 
+  List<Map<String,bool>> setSizeList(List sizes){
+    List<Map<String,bool>> sizeList = new List();
+    sizes.forEach((size) {
+      Map<String,bool> sizeMap = new Map();
+      sizeMap[size] = false;
+      sizeList.add(sizeMap);
+    });
+    return sizeList;
   }
 
   setItemDetails(){
@@ -67,12 +76,12 @@ class _ParticularItemState extends State<ParticularItem> {
         SystemUiOverlayStyle(statusBarColor: Colors.black)
     );
     Map<String,dynamic> args = widget.itemDetails;
+    var sizeList =
     setState(() {
       if(!widget.edit){
         editProduct = false;
-        itemDetails = args;
-        size = args['size'];
-        colors = setColorList(args['color']);
+        productColors = setColorList(args['color']);
+        productSizes = setSizeList(args['size']);
       }
       else{
         editItemDetails();
@@ -82,32 +91,32 @@ class _ParticularItemState extends State<ParticularItem> {
 
   setSizeOptions(String size){
     setState(() {
-      sizeValue = size;
+      selectedSize = size;
     });
   }
 
   addToShoppingBag() async{
-    if(sizeValue == '' && size.length != 0) showInSnackBar('Select size',Colors.red);
-    else if(colorValue == '' && colors.length != 0) showInSnackBar('Select color', Colors.red);
+    if(selectedSize == '' && productSizes.length != 0) showInSnackBar('Select size',Colors.red);
+    else if(selectedColor == '' && productColors.length != 0) showInSnackBar('Select color', Colors.red);
     else{
       Loader.showLoadingScreen(context, keyLoader);
       ShoppingBagService _shoppingBagService = new ShoppingBagService();
-      String msg = await _shoppingBagService.add(itemDetails['productId'],sizeValue,colorValue,quantity);
-      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-      showInSnackBar(msg,Colors.black);
+      // String msg = await _shoppingBagService.add(itemDetails['productId'],selectedSize,selectedColor,quantity);
+      // Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+      // showInSnackBar(msg,Colors.black);
     }
   }
 
   checkoutProduct(){
-    if(sizeValue == '' && size.length != 0) showInSnackBar('Select size',Colors.red);
-    else if(colorValue == '' && colors.length != 0) showInSnackBar('Select color', Colors.red);
+    if(selectedSize == '' && productSizes.length != 0) showInSnackBar('Select size',Colors.red);
+    else if(selectedColor == '' && productColors.length != 0) showInSnackBar('Select color', Colors.red);
     else{
       Map<String,dynamic> args = new Map<String, dynamic>();
-      args['price'] = itemDetails['price'];
-      args['productId'] = itemDetails['productId'];
+      args['price'] = widget.itemDetails['price'];
+      args['productId'] = widget.itemDetails['productId'];
       args['quantity'] = quantity;
-      args['size'] = sizeValue;
-      args['color'] = colorValue;
+      args['size'] = selectedSize;
+      args['color'] = selectedColor;
       Navigator.of(context).pushNamed('/checkout/address',arguments: args);
     }
   }
@@ -138,15 +147,15 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   selectColor(index){
-    Color particularKey = colors[index].keys.toList()[0];
-    var boolValues = colors.map((color) => color.values.toList()[0]);
+    Color particularKey = productColors[index].keys.toList()[0];
+    var boolValues = productColors.map((color) => color.values.toList()[0]);
     setState(() {
       if(boolValues.contains(true)){
-        colors.forEach((color){
+        productColors.forEach((color){
           Color key = color.keys.toList()[0];
           if(color[key] == true) color[key] = false;
           else{
-            Color particularKey = colors[index].keys.toList()[0];
+            Color particularKey = productColors[index].keys.toList()[0];
             if(particularKey == key){
               color[key] = true;
             }
@@ -154,9 +163,9 @@ class _ParticularItemState extends State<ParticularItem> {
         });
       }
       else{
-        colors[index][particularKey] = true;
+        productColors[index][particularKey] = true;
       }
-      colorValue = particularKey.value.toRadixString(16).substring(2);
+      selectedColor = particularKey.value.toRadixString(16).substring(2);
     });
   }
 
@@ -168,178 +177,130 @@ class _ParticularItemState extends State<ParticularItem> {
 
   @override
   Widget build(BuildContext buildContext) {
+    SizeConfig().init(buildContext);
     return Scaffold(
-      key: _scaffoldKey,
-      body: SafeArea(
+      key: _productScaffoldKey,
+      appBar: AppBar(
+        title: Text(
+          'Sub category name',
+          style: TextStyle(
+            fontFamily: 'NovaSquare',
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(
+              buildContext,
+              CustomTransition(
+                  type: CustomTransitionType.upToDown,
+                  child: Home()
+              ));
+          },
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            size: 40,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              size: 25,
+              color: Colors.white
+            ),
+            onPressed: null,
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
         child: Container(
-          child: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height - 29
+          decoration: BoxDecoration(
+            color: Colors.grey[200]
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: SizeConfig.screenHeight / 1.9,
+                child: Image.network(widget.itemDetails['image']),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Expanded(
-                    flex: 6,
-                    child: CustomProductImage(
-                      itemDetails['image'],
-                      buildContext,
-                      size,
-                      sizeValue,
-                      editProduct,
-                      itemDetails['productId'],
-                      setSizeOptions,
-                      showInSnackBar
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: SizeConfig.safeBlockVertical* 1.5,
+                  horizontal: SizeConfig.safeBlockHorizontal * 4
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.itemDetails['name'],
+                      style: TextStyle(
+                        fontFamily: 'NovaSquare',
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            itemDetails['name'],
-                            style: TextStyle(
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.1,
-                            ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: Center(
+                        child: Text(
+                          'Color',
+                          style: TextStyle(
+                            fontFamily: 'NovaSquare',
+                            fontSize: 26.0,
                           ),
-                          SizedBox(height: 7.0),
-                          Text(
-                            "\$ ${itemDetails['price']}.00",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0
-                            ),
+                        ),
+                      ),
+                    ),
+                    ColorGroupButton(productColors,selectColor),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: Center(
+                        child: Text(
+                          'Size',
+                          style: TextStyle(
+                            fontFamily: 'NovaSquare',
+                            fontSize: 26.0,
                           ),
-                          SizedBox(height: 10.0),
-                          Center(
+                        ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: ToggleButtons(
+                        fillColor: Colors.black,
+                        selectedColor: Colors.white,
+                        onPressed: (int index){
+                          String key = productSizes[index].keys.toList()[0];
+                          List <Map<String,bool>> tempProductSizes = setSizeList(widget.itemDetails['size']);
+                          tempProductSizes[index][key] = true;
+                          this.setState(() {
+                            productSizes = tempProductSizes;
+                          });
+                        },
+                        children: List.generate(
+                          productSizes.length, (index) => Padding(
+                            padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 2,horizontal: SizeConfig.safeBlockHorizontal * 3),
                             child: Text(
-                              'Color',
+                              productSizes[index].keys.toList()[0],
                               style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                                fontFamily: 'NovaSquare'
+                                fontSize: 20.0
                               ),
                             ),
-                          ),
-                          SizedBox(height: 10.0),
-                          ColorGroupButton(this.colors, this.selectColor),
-                          SizedBox(height: 10.0),
-                          Center(
-                            child: Text(
-                              'Quantity',
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                                fontFamily: 'NovaSquare'
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              MaterialButton(
-                                onPressed: (){
-                                  setQuantity('inc');
-                                },
-                                color: Colors.white,
-                                child: Icon(
-                                  Icons.add,
-                                  size: 30.0,
-                                ),
-                                padding: EdgeInsets.all(12.0),
-                                shape: CircleBorder(),
-                              ),
-                              Text(
-                                quantity.toString(),
-                                style: TextStyle(
-                                  fontSize: 26.0,
-                                  fontWeight: FontWeight.bold
-                                ),
-                              ),
-                              MaterialButton(
-                                onPressed: (){
-                                  setQuantity('dec');
-                                },
-                                textColor: Colors.white,
-                                color: Colors.black,
-                                child: Icon(
-                                    Icons.remove,
-                                    size: 30.0
-                                ),
-                                padding: EdgeInsets.all(12.0),
-                                shape: CircleBorder(),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20.0),
-                          Divider(
-                              color: Colors.black
-                          ),
-                          SizedBox(height: 10.0),
-                          Row(
-                            children: <Widget>[
-                              ButtonTheme(
-                                minWidth: (MediaQuery.of(context).size.width - 30.0 - 10.0) /2,
-                                child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4)
-                                  ),
-                                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                                  color: Colors.black,
-                                  child: Text(
-                                    'ADD TO BAG',
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.white
-                                    ),
-                                  ),
-                                  onPressed: (){
-                                    addToShoppingBag();
-                                  },
-                                ),
-                              ),
-                              SizedBox(width: 10.0),
-                              ButtonTheme(
-                                minWidth: (MediaQuery.of(context).size.width - 30.0 - 10.0) /2,
-                                child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(color: Colors.black),
-                                      borderRadius: BorderRadius.circular(4)
-                                  ),
-                                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                                  color: Colors.white,
-                                  child: Text(
-                                    'Pay',
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.black
-                                    ),
-                                  ),
-                                  onPressed: (){
-                                    checkoutProduct();
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
+                          )
+                        ),
+                        isSelected: productSizes.map((value){
+                          String key = value.keys.toList()[0];
+                          return value[key];
+                        }).toList()
                       ),
                     )
-                  )
-                ],
+                  ],
+                ),
               ),
-            ),
-          )
-        ),
+            ],
+          ),
+        )
       ),
     );
    }
