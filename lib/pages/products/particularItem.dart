@@ -1,14 +1,13 @@
-import 'package:app_frontend/components/item/customTransition.dart';
-import 'package:app_frontend/pages/home.dart';
-import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
-import 'package:app_frontend/components/item/productImage.dart';
 import 'package:app_frontend/components/item/colorGroupButton.dart';
+import 'package:app_frontend/components/item/customTransition.dart';
+import 'package:app_frontend/pages/home.dart';
+import 'package:app_frontend/sizeConfig.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
@@ -26,7 +25,7 @@ class _ParticularItemState extends State<ParticularItem> {
   List<Map<Color,bool>> productColors;
   String selectedSize = "";
   String selectedColor = "";
-  int quantity = 1;
+  int productQuantity = 1;
   bool editProduct;
   String image,name;
 
@@ -55,7 +54,7 @@ class _ParticularItemState extends State<ParticularItem> {
       selectedColor = args['itemDetails']['selectedColor'];
       productSizes = args['itemDetails']['size'];
       productColors = setColorList(args['itemDetails']['color']);
-      quantity = args['itemDetails']['quantity'];
+      productQuantity = args['itemDetails']['quantity'];
       int index = args['itemDetails']['color'].indexOf("0xFF$selectedColor");
       selectColor(index);
     });
@@ -76,7 +75,6 @@ class _ParticularItemState extends State<ParticularItem> {
         SystemUiOverlayStyle(statusBarColor: Colors.black)
     );
     Map<String,dynamic> args = widget.itemDetails;
-    var sizeList =
     setState(() {
       if(!widget.edit){
         editProduct = false;
@@ -101,9 +99,9 @@ class _ParticularItemState extends State<ParticularItem> {
     else{
       Loader.showLoadingScreen(context, keyLoader);
       ShoppingBagService _shoppingBagService = new ShoppingBagService();
-      // String msg = await _shoppingBagService.add(itemDetails['productId'],selectedSize,selectedColor,quantity);
-      // Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-      // showInSnackBar(msg,Colors.black);
+      String msg = await _shoppingBagService.add(widget.itemDetails['productId'],selectedSize,selectedColor,productQuantity);
+      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+      showInSnackBar(msg,Colors.black);
     }
   }
 
@@ -114,23 +112,23 @@ class _ParticularItemState extends State<ParticularItem> {
       Map<String,dynamic> args = new Map<String, dynamic>();
       args['price'] = widget.itemDetails['price'];
       args['productId'] = widget.itemDetails['productId'];
-      args['quantity'] = quantity;
+      args['quantity'] = productQuantity;
       args['size'] = selectedSize;
       args['color'] = selectedColor;
       Navigator.of(context).pushNamed('/checkout/address',arguments: args);
     }
   }
 
-  setQuantity(String type){
+  setProductQuantity(String type){
     setState(() {
       if(type == 'inc'){
-        if(quantity != 5){
-          quantity = quantity + 1;
+        if(productQuantity != 5){
+          productQuantity = productQuantity + 1;
         }
       }
       else{
-        if(quantity != 1){
-          quantity = quantity - 1;
+        if(productQuantity != 1){
+          productQuantity = productQuantity - 1;
         }
       }
     });
@@ -266,34 +264,167 @@ class _ParticularItemState extends State<ParticularItem> {
                       ),
                     ),
                     Container(
+                      height: SizeConfig.safeBlockVertical * 6.5,
                       alignment: Alignment.center,
-                      child: ToggleButtons(
-                        fillColor: Colors.black,
-                        selectedColor: Colors.white,
-                        onPressed: (int index){
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: productSizes.length,
+                        itemBuilder: (context,index){
                           String key = productSizes[index].keys.toList()[0];
-                          List <Map<String,bool>> tempProductSizes = setSizeList(widget.itemDetails['size']);
-                          tempProductSizes[index][key] = true;
-                          this.setState(() {
-                            productSizes = tempProductSizes;
-                          });
+                          return GestureDetector(
+                            onTap: (){
+                              List <Map<String,bool>> tempProductSizes = setSizeList(widget.itemDetails['size']);
+                              tempProductSizes[index][key] = true;
+                              this.setState(() {
+                                productSizes = tempProductSizes;
+                              });
+                            },
+                            child: (
+                              Container(
+                                width: SizeConfig.safeBlockHorizontal * 12.5,
+                                decoration: BoxDecoration(
+                                  color: productSizes[index][key] ? Colors.black : Colors.white,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8)
+                                  ),
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey[300],
+                                      blurRadius: 15.0,
+                                      spreadRadius: 2.0
+                                    )
+                                  ]
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    productSizes[index].keys.toList()[0],
+                                    style: TextStyle(
+                                      fontFamily: 'NovaSquare',
+                                      fontSize: SizeConfig.safeBlockHorizontal * 4.2,
+                                      color: productSizes[index][key] ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                          );
                         },
-                        children: List.generate(
-                          productSizes.length, (index) => Padding(
-                            padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 2,horizontal: SizeConfig.safeBlockHorizontal * 3),
-                            child: Text(
-                              productSizes[index].keys.toList()[0],
-                              style: TextStyle(
-                                fontSize: 20.0
-                              ),
-                            ),
-                          )
-                        ),
-                        isSelected: productSizes.map((value){
-                          String key = value.keys.toList()[0];
-                          return value[key];
-                        }).toList()
+                        separatorBuilder: (BuildContext buildContext,int index) => SizedBox(width: 15.0),
                       ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.0),
+                      child: Center(
+                        child: Text(
+                          'Quantity',
+                          style: TextStyle(
+                            fontFamily: 'NovaSquare',
+                            fontSize: 26.0,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        MaterialButton(
+                          onPressed: (){
+                            setProductQuantity('inc');
+                          },
+                          color: Colors.white,
+                          child: Icon(
+                            Icons.add,
+                            size: 30.0,
+                          ),
+                          padding: EdgeInsets.all(12.0),
+                          shape: CircleBorder(),
+                          elevation: 18.0,
+                        ),
+                        Text(
+                          '$productQuantity',
+                          style: TextStyle(
+                              fontSize: 26.0,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        MaterialButton(
+                          onPressed: (){
+                            setProductQuantity('dec');
+                          },
+                          textColor: Colors.white,
+                          color: Colors.black,
+                          child: Icon(
+                              Icons.remove,
+                              size: 30.0
+                          ),
+                          padding: EdgeInsets.all(12.0),
+                          shape: CircleBorder(),
+                          elevation: 18.0,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: SizeConfig.safeBlockVertical * 2.8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:[
+                        ButtonTheme(
+                          padding: EdgeInsets.symmetric(
+                              vertical: SizeConfig.safeBlockVertical * 2.5
+                          ),
+                          minWidth: SizeConfig.screenWidth / 2.4,
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)
+                            ),
+                            elevation: 16.0,
+                              onPressed: (){
+                                addToShoppingBag();
+                              },
+                              color: Colors.white,
+                              child: Text(
+                                'Add to bag',
+                                style: TextStyle(
+                                  fontFamily: 'NovaSquare',
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0,
+                                  color: Colors.black
+                                ),
+                              )
+                          ),
+                        ),
+                        ButtonTheme(
+                          minWidth: SizeConfig.screenWidth / 2.4,
+                          padding: EdgeInsets.symmetric(
+                              vertical: SizeConfig.safeBlockVertical * 2.5
+                          ),
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)
+                            ),
+                            elevation: 16.0,
+                            onPressed: (){
+                              checkoutProduct();
+                            },
+                            color: Colors.black,
+                            child: Text(
+                              'Pay',
+                              style: TextStyle(
+                                  fontFamily: 'NovaSquare',
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0,
+                                color: Colors.white
+                              ),
+                            )
+                          ),
+                        )
+                      ]
                     )
                   ],
                 ),
