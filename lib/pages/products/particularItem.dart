@@ -23,6 +23,7 @@ class _ParticularItemState extends State<ParticularItem> {
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
   List<Map<String,bool>> productSizes;
   List<Map<Color,bool>> productColors;
+  Map customWidth = new Map();
   String selectedSize = "";
   String selectedColor = "";
   int productQuantity = 1;
@@ -144,6 +145,19 @@ class _ParticularItemState extends State<ParticularItem> {
     return colorList;
   }
 
+  setCustomWidth(String screenSize){
+    print(screenSize);
+    if(screenSize  == 'smallMobile'){
+      customWidth['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 7.5;
+    }
+    else if(screenSize == 'largeMobile'){
+      customWidth['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
+    }
+    else if(screenSize == 'tablet'){
+      customWidth['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
+    }
+  }
+
   selectColor(index){
     Color particularKey = productColors[index].keys.toList()[0];
     var boolValues = productColors.map((color) => color.values.toList()[0]);
@@ -176,6 +190,7 @@ class _ParticularItemState extends State<ParticularItem> {
   @override
   Widget build(BuildContext buildContext) {
     SizeConfig().init(buildContext);
+    setCustomWidth(SizeConfig.screenSize);
     return Scaffold(
       key: _productScaffoldKey,
       appBar: AppBar(
@@ -197,14 +212,14 @@ class _ParticularItemState extends State<ParticularItem> {
           },
           icon: Icon(
             Icons.keyboard_arrow_down,
-            size: 40,
+            size: SizeConfig.safeBlockHorizontal * 8,
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(
               Icons.shopping_cart,
-              size: 25,
+              size: SizeConfig.safeBlockHorizontal * 7,
               color: Colors.white
             ),
             onPressed: null,
@@ -218,9 +233,18 @@ class _ParticularItemState extends State<ParticularItem> {
           ),
           child: Column(
             children: [
-              SizedBox(
-                height: SizeConfig.screenHeight / 1.9,
-                child: Image.network(widget.itemDetails['image']),
+              // SizedBox(
+              //   height: SizeConfig.screenHeight / 1.7,
+              //   child: Image.network(widget.itemDetails['image']),
+              // ),
+              Container(
+                height: SizeConfig.screenHeight / 1.7,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(widget.itemDetails['image']),
+                    fit: BoxFit.fill
+                  )
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -234,7 +258,7 @@ class _ParticularItemState extends State<ParticularItem> {
                       widget.itemDetails['name'],
                       style: TextStyle(
                         fontFamily: 'NovaSquare',
-                        fontSize: 20.0,
+                        fontSize: SizeConfig.safeBlockHorizontal * 5,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -245,7 +269,7 @@ class _ParticularItemState extends State<ParticularItem> {
                           'Color',
                           style: TextStyle(
                             fontFamily: 'NovaSquare',
-                            fontSize: 26.0,
+                            fontSize: SizeConfig.safeBlockHorizontal * 7,
                           ),
                         ),
                       ),
@@ -258,13 +282,13 @@ class _ParticularItemState extends State<ParticularItem> {
                           'Size',
                           style: TextStyle(
                             fontFamily: 'NovaSquare',
-                            fontSize: 26.0,
+                            fontSize: SizeConfig.safeBlockHorizontal * 7,
                           ),
                         ),
                       ),
                     ),
                     Container(
-                      height: SizeConfig.safeBlockVertical * 6.5,
+                      height: customWidth['sizeBoxHeight'],
                       alignment: Alignment.center,
                       child: ListView.separated(
                         shrinkWrap: true,
@@ -323,7 +347,7 @@ class _ParticularItemState extends State<ParticularItem> {
                           'Quantity',
                           style: TextStyle(
                             fontFamily: 'NovaSquare',
-                            fontSize: 26.0,
+                            fontSize: SizeConfig.safeBlockHorizontal * 7,
                             letterSpacing: 1.0,
                           ),
                         ),
@@ -339,7 +363,7 @@ class _ParticularItemState extends State<ParticularItem> {
                           color: Colors.white,
                           child: Icon(
                             Icons.add,
-                            size: 30.0,
+                            size: SizeConfig.safeBlockHorizontal * 7,
                           ),
                           padding: EdgeInsets.all(12.0),
                           shape: CircleBorder(),
@@ -348,7 +372,7 @@ class _ParticularItemState extends State<ParticularItem> {
                         Text(
                           '$productQuantity',
                           style: TextStyle(
-                              fontSize: 26.0,
+                              fontSize: SizeConfig.safeBlockHorizontal * 7,
                               fontWeight: FontWeight.bold
                           ),
                         ),
@@ -360,7 +384,7 @@ class _ParticularItemState extends State<ParticularItem> {
                           color: Colors.black,
                           child: Icon(
                               Icons.remove,
-                              size: 30.0
+                              size: SizeConfig.safeBlockHorizontal * 7,
                           ),
                           padding: EdgeInsets.all(12.0),
                           shape: CircleBorder(),
@@ -376,7 +400,7 @@ class _ParticularItemState extends State<ParticularItem> {
                           padding: EdgeInsets.symmetric(
                               vertical: SizeConfig.safeBlockVertical * 2.5
                           ),
-                          minWidth: SizeConfig.screenWidth / 2.4,
+                          minWidth: SizeConfig.screenWidth / 2.3,
                           child: RaisedButton(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)
@@ -390,16 +414,15 @@ class _ParticularItemState extends State<ParticularItem> {
                                 'Add to bag',
                                 style: TextStyle(
                                   fontFamily: 'NovaSquare',
-                                  fontSize: 20.0,
+                                  fontSize: SizeConfig.safeBlockHorizontal * 5.5,
                                   fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.0,
                                   color: Colors.black
                                 ),
                               )
                           ),
                         ),
                         ButtonTheme(
-                          minWidth: SizeConfig.screenWidth / 2.4,
+                          minWidth: SizeConfig.screenWidth / 2.3,
                           padding: EdgeInsets.symmetric(
                               vertical: SizeConfig.safeBlockVertical * 2.5
                           ),
@@ -415,10 +438,9 @@ class _ParticularItemState extends State<ParticularItem> {
                             child: Text(
                               'Pay',
                               style: TextStyle(
-                                  fontFamily: 'NovaSquare',
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.0,
+                                fontFamily: 'NovaSquare',
+                                fontSize: SizeConfig.safeBlockHorizontal * 5.5,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.white
                               ),
                             )

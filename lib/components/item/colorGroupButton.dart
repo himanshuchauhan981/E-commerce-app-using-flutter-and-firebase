@@ -1,3 +1,4 @@
+import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 
 class ColorGroupButton extends StatefulWidget {
@@ -13,9 +14,10 @@ class ColorGroupButton extends StatefulWidget {
 class _ColorGroupButtonState extends State<ColorGroupButton> {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Container(
       alignment: Alignment.center,
-      height: 50.0,
+      height: SizeConfig.safeBlockVertical * 5.5,
       child: ListView.separated(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
@@ -27,8 +29,7 @@ class _ColorGroupButtonState extends State<ColorGroupButton> {
               widget.selectColor(index);
             },
             child: Container(
-              width: 60.0,
-              height: 60.0,
+              width: SizeConfig.safeBlockHorizontal * 14,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: widget.colorList[index].keys.toList()[0]
@@ -41,7 +42,7 @@ class _ColorGroupButtonState extends State<ColorGroupButton> {
           );
         },
         separatorBuilder: (BuildContext context, int index){
-          return SizedBox(width: 10.0);
+          return SizedBox(width: SizeConfig.safeBlockHorizontal * 6);
         },
       ),
     );
