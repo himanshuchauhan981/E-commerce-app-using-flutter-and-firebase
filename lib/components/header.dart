@@ -1,5 +1,6 @@
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
+import 'package:app_frontend/sizeConfig.dart';
 
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ capitalizeHeading(String text){
 
 Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon, BuildContext context){
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
-
+  SizeConfig().init(context);
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
   return AppBar(
     centerTitle: true,
@@ -24,7 +25,7 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
       style: TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.bold,
-        fontSize: 22.0,
+        fontSize: SizeConfig.safeBlockHorizontal * 5,
         fontFamily: 'NovaSquare'
       ),
     ),
@@ -34,7 +35,7 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
     leading: IconButton(
       icon: Icon(
         Icons.menu,
-        size: 35.0,
+        size: SizeConfig.safeBlockHorizontal * 7,
         color: Colors.black
       ),
       onPressed: (){
@@ -52,7 +53,7 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
         child: IconButton(
           icon: Icon(
             Icons.shopping_basket,
-            size: 35.0,
+            size: SizeConfig.safeBlockHorizontal * 7,
             color: Colors.black,
           ),
           onPressed: () async{
