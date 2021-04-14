@@ -6,9 +6,10 @@ class ProductSize extends StatefulWidget {
   final List<Map<String,bool>> productSizes;
   final Map customDimension;
   final List<Map<String,bool>> Function(List sizes) setSizeList;
-  final Map itemDetails;
 
-  ProductSize(this.productSizes,this.customDimension,this.setSizeList,this.itemDetails);
+  final void Function (int index) selectProductColor;
+
+  ProductSize(this.productSizes,this.customDimension,this.setSizeList,this.selectProductColor);
 
   @override
   _ProductSizeState createState() => _ProductSizeState();
@@ -29,11 +30,7 @@ class _ProductSizeState extends State<ProductSize> {
           String key = widget.productSizes[index].keys.toList()[0];
           return GestureDetector(
             onTap: (){
-              List <Map<String,bool>> tempProductSizes = widget.setSizeList(widget.itemDetails['size']);
-              tempProductSizes[index][key] = true;
-              this.setState(() {
-                // widget.productSizes = tempProductSizes;
-              });
+              widget.selectProductColor(index);
             },
             child: (
                 Container(

@@ -19,7 +19,7 @@ class _ProductButtonsState extends State<ProductButtons> {
       children:[
         ButtonTheme(
           padding: EdgeInsets.symmetric(
-              vertical: SizeConfig.safeBlockVertical * 2.5
+              vertical: SizeConfig.safeBlockVertical * 1.6
           ),
           minWidth: SizeConfig.screenWidth / 2.7,
           child: RaisedButton(
@@ -35,7 +35,7 @@ class _ProductButtonsState extends State<ProductButtons> {
                 'Add to bag',
                 style: TextStyle(
                     fontFamily: 'NovaSquare',
-                    fontSize: SizeConfig.safeBlockHorizontal * 5.5,
+                    fontSize: SizeConfig.safeBlockHorizontal * 5.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.black
                 ),
@@ -45,7 +45,7 @@ class _ProductButtonsState extends State<ProductButtons> {
         ButtonTheme(
           minWidth: SizeConfig.screenWidth / 2.7,
           padding: EdgeInsets.symmetric(
-              vertical: SizeConfig.safeBlockVertical * 2.5
+              vertical: SizeConfig.safeBlockVertical * 1.6
           ),
           child: RaisedButton(
               shape: RoundedRectangleBorder(
@@ -60,7 +60,7 @@ class _ProductButtonsState extends State<ProductButtons> {
                 'Pay',
                 style: TextStyle(
                     fontFamily: 'NovaSquare',
-                    fontSize: SizeConfig.safeBlockHorizontal * 5.5,
+                    fontSize: SizeConfig.safeBlockHorizontal * 5.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.white
                 ),

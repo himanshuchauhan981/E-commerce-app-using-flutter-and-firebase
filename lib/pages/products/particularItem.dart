@@ -1,6 +1,7 @@
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/item/productButton.dart';
 import 'package:app_frontend/components/item/productSize.dart';
+import 'package:app_frontend/components/sidebar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,9 +90,16 @@ class _ParticularItemState extends State<ParticularItem> {
     Color key = tempColorList[index].keys.toList()[0];
     tempColorList[index][key] = true;
     setState(() {
-      print(key);
-      productColors[index][key] = true;
       productColors = tempColorList;
+    });
+  }
+
+  void selectProductSize(int index){
+    List tempSizeList = setSizeList(widget.itemDetails['size']);
+    String key = tempSizeList[index].keys.toList()[0];
+    tempSizeList[index][key] = true;
+    setState(() {
+      productSizes = tempSizeList;
     });
   }
 
@@ -139,10 +147,19 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   addToShoppingBag() async{
-    String selectedSize;
-    String selectedColor;
-    if(selectedSize == '' && productSizes.length != 0) showInSnackBar('Select size',Colors.red);
-    else if(selectedColor == '' && productColors.length != 0) showInSnackBar('Select color', Colors.red);
+    String selectedSize = '';
+    String selectedColor = '';
+    for(Map size in productSizes){
+      if(size.values.toList()[0]) selectedSize = size.keys.toList()[0];
+    }
+
+    for(Map color in productColors) {
+      if (color.values.toList()[0])
+        selectedColor = color.toString().substring(7, 16);
+    }
+
+    if(selectedSize == '') showInSnackBar('Select size',Colors.red);
+    else if(selectedColor == '') showInSnackBar('Select color', Colors.red);
     else{
       Loader.showLoadingScreen(context, keyLoader);
       ShoppingBagService _shoppingBagService = new ShoppingBagService();
@@ -164,7 +181,9 @@ class _ParticularItemState extends State<ParticularItem> {
     SizeConfig().init(buildContext);
     setCustomWidth(SizeConfig.screenSize);
     return Scaffold(
+      key: _productScaffoldKey,
       appBar: header('Product Details', _productScaffoldKey, true, context),
+      drawer: sidebar(context),
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
@@ -285,7 +304,7 @@ class _ParticularItemState extends State<ParticularItem> {
                                 ),
                               ),
                             ),
-                            ProductSize(productSizes, customDimension, setSizeList, widget.itemDetails),
+                            ProductSize(productSizes, customDimension, setSizeList,selectProductSize),
                             Center(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 1.2),
@@ -339,6 +358,7 @@ class _ParticularItemState extends State<ParticularItem> {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 10.0),
                             ProductButtons(addToShoppingBag, checkoutProduct),
                           ]
                         )

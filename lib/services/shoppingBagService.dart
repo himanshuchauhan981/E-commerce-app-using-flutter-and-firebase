@@ -14,6 +14,7 @@ class ShoppingBagService{
       return doc['products'];
     }).toList()[0];
     List product = productItems.where((test)=> test['id'] == productId).toList();
+
     if(product.length != 0){
       productItems.forEach((items){
         if(items['id'] == productId){
@@ -22,21 +23,22 @@ class ShoppingBagService{
           items['quantity'] = quantity;
         }
       });
+      await _firestore.collection('bags').doc(documentId).update({'products':productItems});
       msg =  "Product updated in shopping bag";
     }
     else{
       productItems.add({'id':productId,'size':size,'color':color,'quantity':quantity});
+      await _firestore.collection('bags').doc(documentId).set({'products':productItems});
       msg = 'Product added to shopping bag';
     }
-    await _firestore.collection('bags').doc(documentId).set({'products':productItems});
     return msg;
   }
 
   Future<String> add(String productId,String size,String color,int quantity) async{
     String uid = await userService.getUserId();
     String msg;
-    QuerySnapshot data = await _firestore.collection('bags').where("userId", isEqualTo: uid).get();
-    if(data.docs.length == 0){
+    QuerySnapshot userBag = await _firestore.collection('bags').where("userId", isEqualTo: uid).get();
+    if(userBag.docs.length == 0){
       await _firestore.collection('bags').add({
         'userId': uid,
         'products':[{
@@ -49,7 +51,7 @@ class ShoppingBagService{
       msg =  "Product added to shopping bag";
     }
     else{
-      msg = await update(productId, size, color, quantity, data);
+      msg = await update(productId, size, color, quantity, userBag);
     }
     return msg;
   }
