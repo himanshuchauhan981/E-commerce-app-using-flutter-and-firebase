@@ -1,123 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
+import 'package:app_frontend/components/header.dart';
+import 'package:app_frontend/components/item/productButton.dart';
+import 'package:app_frontend/components/item/productSize.dart';
+import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/components/item/colorGroupButton.dart';
-import 'package:app_frontend/components/item/customTransition.dart';
-import 'package:app_frontend/pages/home.dart';
 import 'package:app_frontend/sizeConfig.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
-  final bool edit;
+  final bool editProduct;
 
-  ParticularItem({var key, this.itemDetails, this.edit}):super(key: key);
+  ParticularItem({var key, this.itemDetails, this.editProduct}):super(key: key);
 
   @override
   _ParticularItemState createState() => _ParticularItemState();
 }
 
 class _ParticularItemState extends State<ParticularItem> {
-  final GlobalKey<State> keyLoader = new GlobalKey<State>();
-  List<Map<String,bool>> productSizes;
-  List<Map<Color,bool>> productColors;
-  Map customWidth = new Map();
-  String selectedSize = "";
-  String selectedColor = "";
-  int productQuantity = 1;
-  bool editProduct;
-  String image,name;
-
   final GlobalKey<ScaffoldState> _productScaffoldKey = new GlobalKey<ScaffoldState>();
-  void showInSnackBar(String msg, Color color) {
-    _productScaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          backgroundColor: color,
-          content: new Text(msg),
-          action: SnackBarAction(
-            label:'Close',
-            textColor: Colors.white,
-            onPressed: (){
-              _productScaffoldKey.currentState.removeCurrentSnackBar();
-            },
-          ),
-        ),
-    );
-  }
+  final GlobalKey<State> keyLoader = new GlobalKey<State>();
 
-  editItemDetails(){
+  Map customDimension = new Map();
+  List <Map<Color,bool>> productColors;
+  List<Map<String,bool>> productSizes;
+  int productQuantity = 1;
+
+  setItemDetails(item){
+    print('set item details');
     Map<String,dynamic> args = widget.itemDetails;
     setState(() {
-      editProduct = true;
-      selectedSize = args['itemDetails']['selectedSize'];
-      selectedColor = args['itemDetails']['selectedColor'];
-      productSizes = args['itemDetails']['size'];
-      productColors = setColorList(args['itemDetails']['color']);
-      productQuantity = args['itemDetails']['quantity'];
-      int index = args['itemDetails']['color'].indexOf("0xFF$selectedColor");
-      selectColor(index);
-    });
-  }
-
-  List<Map<String,bool>> setSizeList(List sizes){
-    List<Map<String,bool>> sizeList = new List();
-    sizes.forEach((size) {
-      Map<String,bool> sizeMap = new Map();
-      sizeMap[size] = false;
-      sizeList.add(sizeMap);
-    });
-    return sizeList;
-  }
-
-  setItemDetails(){
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.black)
-    );
-    Map<String,dynamic> args = widget.itemDetails;
-    setState(() {
-      if(!widget.edit){
-        editProduct = false;
-        productColors = setColorList(args['color']);
-        productSizes = setSizeList(args['size']);
+      if(widget.editProduct){
+        productQuantity = widget.itemDetails['quantity'];
       }
-      else{
-        editItemDetails();
-      }
+      productColors = setColorList(args['color']);
+      productSizes = setSizeList(args['size']);
     });
-  }
-
-  setSizeOptions(String size){
-    setState(() {
-      selectedSize = size;
-    });
-  }
-
-  addToShoppingBag() async{
-    if(selectedSize == '' && productSizes.length != 0) showInSnackBar('Select size',Colors.red);
-    else if(selectedColor == '' && productColors.length != 0) showInSnackBar('Select color', Colors.red);
-    else{
-      Loader.showLoadingScreen(context, keyLoader);
-      ShoppingBagService _shoppingBagService = new ShoppingBagService();
-      String msg = await _shoppingBagService.add(widget.itemDetails['productId'],selectedSize,selectedColor,productQuantity);
-      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-      showInSnackBar(msg,Colors.black);
-    }
-  }
-
-  checkoutProduct(){
-    if(selectedSize == '' && productSizes.length != 0) showInSnackBar('Select size',Colors.red);
-    else if(selectedColor == '' && productColors.length != 0) showInSnackBar('Select color', Colors.red);
-    else{
-      Map<String,dynamic> args = new Map<String, dynamic>();
-      args['price'] = widget.itemDetails['price'];
-      args['productId'] = widget.itemDetails['productId'];
-      args['quantity'] = productQuantity;
-      args['size'] = selectedSize;
-      args['color'] = selectedColor;
-      Navigator.of(context).pushNamed('/checkout/address',arguments: args);
-    }
   }
 
   setProductQuantity(String type){
@@ -135,325 +56,332 @@ class _ParticularItemState extends State<ParticularItem> {
     });
   }
 
-  setColorList(List colors){
+
+  void setCustomWidth(String screenSize){
+    if(screenSize == 'smallMobile'){
+      customDimension['productImageHeight'] = SizeConfig.screenHeight / 2.4;
+      customDimension['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 7.5;
+    }
+    else if(screenSize == 'largeMobile'){
+      customDimension['productImageHeight'] = SizeConfig.screenHeight / 2.2;
+      customDimension['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
+     }
+    else if(screenSize == 'tablet'){
+      customDimension['productImageHeight'] = SizeConfig.screenHeight / 2.3;
+      customDimension['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
+    }
+  }
+
+  List setColorList(List colors){
     List <Map<Color,bool>> colorList = new List();
+    String selectedColor = '0xFF${widget.itemDetails['selectedColor']}';
     colors.forEach((value){
       Map<Color,bool> colorMap = new Map();
-      colorMap[Color(int.parse(value))] = false;
+      if(widget.editProduct && value == selectedColor){
+        colorMap[Color(int.parse(value))] = true;
+        widget.itemDetails.remove('selectedColor');
+      }
+      else{
+        colorMap[Color(int.parse(value))] = false;
+      }
       colorList.add(colorMap);
     });
     return colorList;
   }
 
-  setCustomWidth(String screenSize){
-    print(screenSize);
-    if(screenSize  == 'smallMobile'){
-      customWidth['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 7.5;
-    }
-    else if(screenSize == 'largeMobile'){
-      customWidth['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
-    }
-    else if(screenSize == 'tablet'){
-      customWidth['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
+  void selectProductColor(int index){
+    List tempColorList = setColorList(widget.itemDetails['color']);
+    Color key = tempColorList[index].keys.toList()[0];
+    tempColorList[index][key] = true;
+    setState(() {
+      productColors = tempColorList;
+    });
+  }
+
+  void selectProductSize(int index){
+    List tempSizeList = setSizeList(widget.itemDetails['size']);
+    String key = tempSizeList[index].keys.toList()[0];
+    tempSizeList[index][key] = true;
+    setState(() {
+      productSizes = tempSizeList;
+    });
+  }
+
+  List<Map<String,bool>> setSizeList(List sizes){
+    List<Map<String,bool>> sizeList = new List();
+    String selectedSize = widget.itemDetails['selectedSize'];
+    sizes.forEach((size) {
+      Map<String,bool> sizeMap = new Map();
+      if(widget.editProduct && selectedSize == size){
+        sizeMap[size] = true;
+        widget.itemDetails.remove('selectedSize');
+      }
+      else{
+        sizeMap[size] = false;
+      }
+      sizeList.add(sizeMap);
+    });
+    return sizeList;
+  }
+
+  void showInSnackBar(String msg, Color color) {
+    _productScaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        backgroundColor: color,
+        content: new Text(msg),
+        action: SnackBarAction(
+          label:'Close',
+          textColor: Colors.white,
+          onPressed: (){
+            _productScaffoldKey.currentState.removeCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+
+  checkoutProduct(){
+    String selectedSize;
+    String selectedColor;
+    if(selectedSize == '' && productSizes.length != 0) showInSnackBar('Select size',Colors.red);
+    else if(selectedColor == '' && productColors.length != 0) showInSnackBar('Select color', Colors.red);
+    else{
+      Map<String,dynamic> args = new Map<String, dynamic>();
+      args['price'] = widget.itemDetails['price'];
+      args['productId'] = widget.itemDetails['productId'];
+      args['quantity'] = productQuantity;
+      args['size'] = selectedSize;
+      args['color'] = selectedColor;
+      Navigator.of(context).pushNamed('/checkout/address',arguments: args);
     }
   }
 
-  selectColor(index){
-    Color particularKey = productColors[index].keys.toList()[0];
-    var boolValues = productColors.map((color) => color.values.toList()[0]);
-    setState(() {
-      if(boolValues.contains(true)){
-        productColors.forEach((color){
-          Color key = color.keys.toList()[0];
-          if(color[key] == true) color[key] = false;
-          else{
-            Color particularKey = productColors[index].keys.toList()[0];
-            if(particularKey == key){
-              color[key] = true;
-            }
-          }
-        });
-      }
-      else{
-        productColors[index][particularKey] = true;
-      }
-      selectedColor = particularKey.value.toRadixString(16).substring(2);
-    });
+  addToShoppingBag() async{
+    String selectedSize = '';
+    String selectedColor = '';
+    for(Map size in productSizes){
+      if(size.values.toList()[0]) selectedSize = size.keys.toList()[0];
+    }
+
+    for(Map color in productColors) {
+      if (color.values.toList()[0])
+        selectedColor = color.toString().substring(11, 17);
+    }
+
+    if(selectedSize == '') showInSnackBar('Select size',Colors.red);
+    else if(selectedColor == '') showInSnackBar('Select color', Colors.red);
+    else{
+      Loader.showLoadingScreen(context, keyLoader);
+      ShoppingBagService _shoppingBagService = new ShoppingBagService();
+      String msg = await _shoppingBagService.add(widget.itemDetails['productId'],selectedSize,selectedColor,productQuantity);
+      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+      showInSnackBar(msg,Colors.black);
+    }
   }
+
 
   @override
   void initState() {
     super.initState();
-    setItemDetails();
+    setItemDetails(widget.itemDetails);
   }
 
   @override
   Widget build(BuildContext buildContext) {
     SizeConfig().init(buildContext);
     setCustomWidth(SizeConfig.screenSize);
+
     return Scaffold(
       key: _productScaffoldKey,
-      appBar: AppBar(
-        title: Text(
-          'Sub category name',
-          style: TextStyle(
-            fontFamily: 'NovaSquare',
-            fontWeight: FontWeight.bold
-          ),
-        ),
-        leading: IconButton(
-          onPressed: (){
-            Navigator.pop(
-              buildContext,
-              CustomTransition(
-                  type: CustomTransitionType.upToDown,
-                  child: Home()
-              ));
-          },
-          icon: Icon(
-            Icons.keyboard_arrow_down,
-            size: SizeConfig.safeBlockHorizontal * 8,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              size: SizeConfig.safeBlockHorizontal * 7,
-              color: Colors.white
-            ),
-            onPressed: null,
-          )
-        ],
-      ),
+      appBar: header('Product Details', _productScaffoldKey, true, context),
+      drawer: sidebar(context),
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.grey[200]
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.25,0.2],
+              colors: [Color(0xff4CEEFB), Colors.white],
+            ),
           ),
-          child: Column(
-            children: [
-              // SizedBox(
-              //   height: SizeConfig.screenHeight / 1.7,
-              //   child: Image.network(widget.itemDetails['image']),
-              // ),
-              Container(
-                height: SizeConfig.screenHeight / 1.7,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(widget.itemDetails['image']),
-                    fit: BoxFit.fill
-                  )
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              SizeConfig.safeBlockHorizontal * 6.7,
+              SizeConfig.topPadding,
+              SizeConfig.safeBlockHorizontal * 6.7,
+              SizeConfig.topPadding
+            ),
+            child: SizedBox(
+              height: SizeConfig.screenHeight,
+              width: SizeConfig.screenWidth,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(35)
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: SizeConfig.safeBlockVertical* 1.5,
-                  horizontal: SizeConfig.safeBlockHorizontal * 4
-                ),
+                color: Colors.red,
+                elevation: 10.0,
+                margin: EdgeInsets.zero,
+                clipBehavior: Clip.antiAlias,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.itemDetails['name'],
-                      style: TextStyle(
-                        fontFamily: 'NovaSquare',
-                        fontSize: SizeConfig.safeBlockHorizontal * 5,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Center(
-                        child: Text(
-                          'Color',
-                          style: TextStyle(
-                            fontFamily: 'NovaSquare',
-                            fontSize: SizeConfig.safeBlockHorizontal * 7,
-                          ),
-                        ),
-                      ),
-                    ),
-                    ColorGroupButton(productColors,selectColor),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Center(
-                        child: Text(
-                          'Size',
-                          style: TextStyle(
-                            fontFamily: 'NovaSquare',
-                            fontSize: SizeConfig.safeBlockHorizontal * 7,
-                          ),
-                        ),
-                      ),
-                    ),
                     Container(
-                      height: customWidth['sizeBoxHeight'],
-                      alignment: Alignment.center,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: productSizes.length,
-                        itemBuilder: (context,index){
-                          String key = productSizes[index].keys.toList()[0];
-                          return GestureDetector(
-                            onTap: (){
-                              List <Map<String,bool>> tempProductSizes = setSizeList(widget.itemDetails['size']);
-                              tempProductSizes[index][key] = true;
-                              this.setState(() {
-                                productSizes = tempProductSizes;
-                              });
-                            },
-                            child: (
-                              Container(
-                                width: SizeConfig.safeBlockHorizontal * 12.5,
-                                decoration: BoxDecoration(
-                                  color: productSizes[index][key] ? Colors.black : Colors.white,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8)
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey[300],
-                                      blurRadius: 15.0,
-                                      spreadRadius: 2.0
-                                    )
-                                  ]
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    productSizes[index].keys.toList()[0],
+                      height: customDimension['productImageHeight'],
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(widget.itemDetails['image']),
+                          fit: BoxFit.fill
+                        )
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: SizeConfig.screenWidth,
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0,
+                            horizontal: SizeConfig.safeBlockHorizontal * 5
+                        ),
+                        margin: EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                          color: Color(0xff4CCEFB),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'T-Shirt',
                                     style: TextStyle(
                                       fontFamily: 'NovaSquare',
-                                      fontSize: SizeConfig.safeBlockHorizontal * 4.2,
-                                      color: productSizes[index][key] ? Colors.white : Colors.black,
+                                      fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 1.0
                                     ),
                                   ),
-                                ),
-                              )),
-                          );
-                        },
-                        separatorBuilder: (BuildContext buildContext,int index) => SizedBox(width: 15.0),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Center(
-                        child: Text(
-                          'Quantity',
-                          style: TextStyle(
-                            fontFamily: 'NovaSquare',
-                            fontSize: SizeConfig.safeBlockHorizontal * 7,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        MaterialButton(
-                          onPressed: (){
-                            setProductQuantity('inc');
-                          },
-                          color: Colors.white,
-                          child: Icon(
-                            Icons.add,
-                            size: SizeConfig.safeBlockHorizontal * 7,
-                          ),
-                          padding: EdgeInsets.all(12.0),
-                          shape: CircleBorder(),
-                          elevation: 18.0,
-                        ),
-                        Text(
-                          '$productQuantity',
-                          style: TextStyle(
-                              fontSize: SizeConfig.safeBlockHorizontal * 7,
-                              fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        MaterialButton(
-                          onPressed: (){
-                            setProductQuantity('dec');
-                          },
-                          textColor: Colors.white,
-                          color: Colors.black,
-                          child: Icon(
-                              Icons.remove,
-                              size: SizeConfig.safeBlockHorizontal * 7,
-                          ),
-                          padding: EdgeInsets.all(12.0),
-                          shape: CircleBorder(),
-                          elevation: 18.0,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: SizeConfig.safeBlockVertical * 2.8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children:[
-                        ButtonTheme(
-                          padding: EdgeInsets.symmetric(
-                              vertical: SizeConfig.safeBlockVertical * 2.5
-                          ),
-                          minWidth: SizeConfig.screenWidth / 2.3,
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)
+                                  Text(
+                                    "\$${widget.itemDetails['price']}.00",
+                                    style: TextStyle(
+                                      fontSize: SizeConfig.safeBlockHorizontal * 4.8,
+                                      fontFamily: 'NovaSquare',
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                            elevation: 16.0,
-                              onPressed: (){
-                                addToShoppingBag();
-                              },
-                              color: Colors.white,
-                              child: Text(
-                                'Add to bag',
-                                style: TextStyle(
-                                  fontFamily: 'NovaSquare',
-                                  fontSize: SizeConfig.safeBlockHorizontal * 5.5,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black
-                                ),
-                              )
-                          ),
-                        ),
-                        ButtonTheme(
-                          minWidth: SizeConfig.screenWidth / 2.3,
-                          padding: EdgeInsets.symmetric(
-                              vertical: SizeConfig.safeBlockVertical * 2.5
-                          ),
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            elevation: 16.0,
-                            onPressed: (){
-                              checkoutProduct();
-                            },
-                            color: Colors.black,
-                            child: Text(
-                              'Pay',
+                            SizedBox(height: 10.0),
+                            Text(
+                              widget.itemDetails['name'],
                               style: TextStyle(
                                 fontFamily: 'NovaSquare',
-                                fontSize: SizeConfig.safeBlockHorizontal * 5.5,
+                                fontSize: SizeConfig.safeBlockHorizontal * 3.8,
+                                color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white
+                                letterSpacing: 1.0,
                               ),
-                            )
-                          ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 1.2),
+                              child: Center(
+                                child: Text(
+                                  'Color',
+                                  style: TextStyle(
+                                    fontFamily: 'NovaSquare',
+                                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                    letterSpacing: 1.0,
+                                    fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ColorGroupButton(productColors, selectProductColor),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 1.2),
+                              child: Center(
+                                child: Text(
+                                  'Size',
+                                  style: TextStyle(
+                                      fontFamily: 'NovaSquare',
+                                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                      letterSpacing: 1.0,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ProductSize(productSizes, customDimension, setSizeList,selectProductSize),
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 1.2),
+                                child: Text(
+                                  'Quantity',
+                                  style: TextStyle(
+                                      fontFamily: 'NovaSquare',
+                                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                      letterSpacing: 1.0,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                MaterialButton(
+                                  onPressed: (){
+                                    setProductQuantity('inc');
+                                  },
+                                  color: Colors.white,
+                                  child: Icon(
+                                    Icons.add,
+                                    size: SizeConfig.safeBlockHorizontal * 7,
+                                  ),
+                                  padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 3),
+                                  shape: CircleBorder(),
+                                  elevation: 18.0,
+                                ),
+                                Text(
+                                  '$productQuantity',
+                                  style: TextStyle(
+                                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                                MaterialButton(
+                                  onPressed: (){
+                                    setProductQuantity('dec');
+                                  },
+                                  textColor: Colors.white,
+                                  color: Colors.black,
+                                  child: Icon(
+                                    Icons.remove,
+                                    size: SizeConfig.safeBlockHorizontal * 7,
+                                  ),
+                                  padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 3),
+                                  shape: CircleBorder(),
+                                  elevation: 18.0,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.0),
+                            ProductButtons(addToShoppingBag, checkoutProduct),
+                          ]
                         )
-                      ]
+                      )
                     )
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-        )
+        ),
       ),
     );
    }

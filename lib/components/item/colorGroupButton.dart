@@ -2,10 +2,10 @@ import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 
 class ColorGroupButton extends StatefulWidget {
-  final List<dynamic> colorList;
-  final void Function (int index) selectColor;
+  final List <Map<Color,bool>> productColors;
+  final void Function (int index) selectProductColor;
 
-  ColorGroupButton(this.colorList, this.selectColor);
+  ColorGroupButton(this.productColors, this.selectProductColor);
 
   @override
   _ColorGroupButtonState createState() => _ColorGroupButtonState();
@@ -22,19 +22,20 @@ class _ColorGroupButtonState extends State<ColorGroupButton> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         physics: NeverScrollableScrollPhysics(),
-        itemCount: widget.colorList.length,
+        itemCount: widget.productColors.length,
         itemBuilder: (context, index){
+          Color key = widget.productColors[index].keys.toList()[0];
           return GestureDetector(
             onTap: (){
-              widget.selectColor(index);
+              widget.selectProductColor(index);
             },
             child: Container(
-              width: SizeConfig.safeBlockHorizontal * 14,
+              width: SizeConfig.safeBlockHorizontal * 11,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: widget.colorList[index].keys.toList()[0]
+                color: key
               ),
-              child: widget.colorList[index].values.toList()[0] ? Icon(
+              child: widget.productColors[index][key] ? Icon(
                 Icons.done,
                 color: Colors.white,
               ): null,
@@ -42,7 +43,7 @@ class _ColorGroupButtonState extends State<ColorGroupButton> {
           );
         },
         separatorBuilder: (BuildContext context, int index){
-          return SizedBox(width: SizeConfig.safeBlockHorizontal * 6);
+          return SizedBox(width: SizeConfig.safeBlockHorizontal);
         },
       ),
     );

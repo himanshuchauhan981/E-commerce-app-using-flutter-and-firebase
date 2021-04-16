@@ -36,7 +36,7 @@ class _GridItemListState extends State<GridItemList> {
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
               itemDetails: itemDetails,
-              edit: false,
+              editProduct: false,
             )
         )
     );

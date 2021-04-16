@@ -54,8 +54,9 @@ class _ShoppingBagState extends State<ShoppingBag> {
   }
 
   void removeItem(item,context) async{
-    bagItemList.removeWhere((items) => items['id'] == item['id']);
-    await _shoppingBagService.remove(item['id']);
+    bagItemList.removeWhere((items) => items['productId'] == item['productId']);
+
+    await _shoppingBagService.remove(item['productId']);
     setState(() {
       bagItemList = bagItemList;
     });
@@ -131,14 +132,18 @@ class _ShoppingBagState extends State<ShoppingBag> {
 
   openParticularItem(Map item) async{
     Map<String,dynamic> args = new Map();
-    args['itemDetails'] = item;
+
+    item.forEach((key, value) {
+      args[key] = value;
+    });
+
     Navigator.pushReplacement(
         context,
         CustomTransition(
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
               itemDetails: args,
-              edit: true,
+              editProduct: true,
             )
         )
     );
