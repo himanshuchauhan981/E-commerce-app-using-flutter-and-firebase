@@ -1,23 +1,20 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/item/productButton.dart';
 import 'package:app_frontend/components/item/productSize.dart';
 import 'package:app_frontend/components/sidebar.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/components/item/colorGroupButton.dart';
-import 'package:app_frontend/components/item/customTransition.dart';
-import 'package:app_frontend/pages/home.dart';
 import 'package:app_frontend/sizeConfig.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
-  final bool edit;
+  final bool editProduct;
 
-  ParticularItem({var key, this.itemDetails, this.edit}):super(key: key);
+  ParticularItem({var key, this.itemDetails, this.editProduct}):super(key: key);
 
   @override
   _ParticularItemState createState() => _ParticularItemState();
@@ -30,17 +27,17 @@ class _ParticularItemState extends State<ParticularItem> {
   Map customDimension = new Map();
   List <Map<Color,bool>> productColors;
   List<Map<String,bool>> productSizes;
-  bool editProduct;
   int productQuantity = 1;
 
   setItemDetails(item){
+    print('set item details');
     Map<String,dynamic> args = widget.itemDetails;
     setState(() {
-      if(!widget.edit){
-        editProduct = false;
-        productColors = setColorList(args['color']);
-        productSizes = setSizeList(args['size']);
+      if(widget.editProduct){
+        productQuantity = widget.itemDetails['quantity'];
       }
+      productColors = setColorList(args['color']);
+      productSizes = setSizeList(args['size']);
     });
   }
 
@@ -77,9 +74,16 @@ class _ParticularItemState extends State<ParticularItem> {
 
   List setColorList(List colors){
     List <Map<Color,bool>> colorList = new List();
+    String selectedColor = '0xFF${widget.itemDetails['selectedColor']}';
     colors.forEach((value){
       Map<Color,bool> colorMap = new Map();
-      colorMap[Color(int.parse(value))] = false;
+      if(widget.editProduct && value == selectedColor){
+        colorMap[Color(int.parse(value))] = true;
+        widget.itemDetails.remove('selectedColor');
+      }
+      else{
+        colorMap[Color(int.parse(value))] = false;
+      }
       colorList.add(colorMap);
     });
     return colorList;
@@ -105,9 +109,16 @@ class _ParticularItemState extends State<ParticularItem> {
 
   List<Map<String,bool>> setSizeList(List sizes){
     List<Map<String,bool>> sizeList = new List();
+    String selectedSize = widget.itemDetails['selectedSize'];
     sizes.forEach((size) {
       Map<String,bool> sizeMap = new Map();
-      sizeMap[size] = false;
+      if(widget.editProduct && selectedSize == size){
+        sizeMap[size] = true;
+        widget.itemDetails.remove('selectedSize');
+      }
+      else{
+        sizeMap[size] = false;
+      }
       sizeList.add(sizeMap);
     });
     return sizeList;
@@ -155,7 +166,7 @@ class _ParticularItemState extends State<ParticularItem> {
 
     for(Map color in productColors) {
       if (color.values.toList()[0])
-        selectedColor = color.toString().substring(7, 16);
+        selectedColor = color.toString().substring(11, 17);
     }
 
     if(selectedSize == '') showInSnackBar('Select size',Colors.red);
@@ -180,6 +191,7 @@ class _ParticularItemState extends State<ParticularItem> {
   Widget build(BuildContext buildContext) {
     SizeConfig().init(buildContext);
     setCustomWidth(SizeConfig.screenSize);
+
     return Scaffold(
       key: _productScaffoldKey,
       appBar: header('Product Details', _productScaffoldKey, true, context),

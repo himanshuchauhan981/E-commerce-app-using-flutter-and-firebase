@@ -44,7 +44,7 @@ class _ItemsState extends State<Items> {
             type: CustomTransitionType.downToUp,
             child: ParticularItem(
               itemDetails: itemDetails,
-              edit: false,
+              editProduct: false,
             )
         )
     );

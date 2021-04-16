@@ -1,10 +1,13 @@
 import 'package:app_frontend/services/userService.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ShoppingBagService{
   UserService userService = new UserService();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  CollectionReference _shoppingBagReference = FirebaseFirestore.instance.collection('bags');
+  CollectionReference _productReference = FirebaseFirestore.instance.collection('products');
 
   Future<String> update(String productId, String size, String color, int quantity, QuerySnapshot bagItems) async{
     String documentId;
@@ -23,12 +26,12 @@ class ShoppingBagService{
           items['quantity'] = quantity;
         }
       });
-      await _firestore.collection('bags').doc(documentId).update({'products':productItems});
+      await _shoppingBagReference.doc(documentId).update({'products':productItems});
       msg =  "Product updated in shopping bag";
     }
     else{
       productItems.add({'id':productId,'size':size,'color':color,'quantity':quantity});
-      await _firestore.collection('bags').doc(documentId).set({'products':productItems});
+      await _shoppingBagReference.doc(documentId).update({'products':productItems});
       msg = 'Product added to shopping bag';
     }
     return msg;
@@ -37,7 +40,7 @@ class ShoppingBagService{
   Future<String> add(String productId,String size,String color,int quantity) async{
     String uid = await userService.getUserId();
     String msg;
-    QuerySnapshot userBag = await _firestore.collection('bags').where("userId", isEqualTo: uid).get();
+    QuerySnapshot userBag = await _shoppingBagReference.where("userId", isEqualTo: uid).get();
     if(userBag.docs.length == 0){
       await _firestore.collection('bags').add({
         'userId': uid,
@@ -56,50 +59,60 @@ class ShoppingBagService{
     return msg;
   }
 
+  Future<String> downloadStorageImage(String image) {
+    Reference imageRef = FirebaseStorage.instance.ref().child('/$image.jpg');
+    return imageRef.getDownloadURL();
+  }
+
   Future<List> list() async{
     List bagItemsList = new List();
-    List itemDetails ;
-    List productIdList =  new List(0);
+    List bagItemDetails ;
     String uid = await userService.getUserId();
 
-    QuerySnapshot docRef = await _firestore.collection('bags').where("userId",isEqualTo: uid).get();
-    int itemLength = docRef.docs.length;
-    if(itemLength != 0){
-      itemDetails = docRef.docs.map((doc){
-        return doc.data()['products'];
+    QuerySnapshot userBagDocRef = await _shoppingBagReference.where("userId",isEqualTo: uid).get();
+
+    int totalBags = userBagDocRef.docs.length;
+
+    if(totalBags != 0){
+      bagItemDetails = userBagDocRef.docs.map((bagDoc){
+        return bagDoc.data()['products'];
       }).toList()[0];
-      productIdList = itemDetails.map((value) => value['id']).toList();
     }
 
-    for(int i=0;i< productIdList.length;i++){
-      Map mapProduct = new Map();
-      DocumentSnapshot productRef = await _firestore.collection('products').doc(productIdList[i]).get();
-      mapProduct['id'] = productRef.id;
-      mapProduct['name'] = productRef.data()['name'];
-      mapProduct['image'] = productRef.data()['image'][0];
-      mapProduct['price']  = productRef.data()['price'].toString();
-      mapProduct['color'] = productRef.data()['color'].cast<String>().toList();
-      mapProduct['size'] = productRef.data()['size'].cast<String>().toList();
-      mapProduct['selectedSize'] = itemDetails[i]['size'];
-      mapProduct['selectedColor'] = itemDetails[i]['color'];
-      mapProduct['quantity'] = itemDetails[i]['quantity'];
-      bagItemsList.add(mapProduct);
+    for(int i=0; i < bagItemDetails.length; i++){
+      Map bagItems = new Map();
+
+      DocumentSnapshot productRef = await _productReference.doc(bagItemDetails[i]['id']).get();
+      String image = productRef.data()['imageId'][0];
+
+      String imageUrl = (await downloadStorageImage(image)).toString();
+      bagItems['productId'] = productRef.id;
+      bagItems['name']  = productRef.data()['name'];
+      bagItems['image'] = imageUrl;
+      bagItems['price']  = productRef.data()['price'].toString();
+      bagItems['color'] = productRef.data()['color'].cast<String>().toList();
+      bagItems['size'] = productRef.data()['size'].cast<String>().toList();
+      bagItems['selectedSize'] = bagItemDetails[i]['size'];
+      bagItems['selectedColor'] = bagItemDetails[i]['color'];
+      bagItems['quantity'] = bagItemDetails[i]['quantity'];
+      bagItemsList.add(bagItems);
     }
+
     return bagItemsList;
   }
 
   Future<void> remove(String id) async{
     String uid = await userService.getUserId();
 
-    await _firestore.collection('bags').where('userId',isEqualTo: uid).get().then((QuerySnapshot doc){
+    await _shoppingBagReference.where('userId',isEqualTo: uid).get().then((QuerySnapshot doc){
       doc.docs.forEach((docRef) async{
         List products = docRef['products'];
         if(products.length == 1){
-          await _firestore.collection('bags').doc(docRef.id).delete();
+          await _shoppingBagReference.doc(docRef.id).delete();
         }
         else{
           products.removeWhere((productData) => productData['id'] == id);
-          await _firestore.collection('bags').doc(docRef.id).set({'products':products});
+          await _shoppingBagReference.doc(docRef.id).update({'products':products});
         }
       });
     });
@@ -108,11 +121,11 @@ class ShoppingBagService{
   Future<void> delete() async{
     String uid = await userService.getUserId();
 
-    QuerySnapshot bagItems = await _firestore.collection('bags').where('userId',isEqualTo: uid).get();
+    QuerySnapshot bagItems = await _shoppingBagReference.where('userId',isEqualTo: uid).get();
     String shoppingBagItemId = bagItems.docs[0].id;
 
     final TransactionHandler deleteTransaction = (Transaction tx) async{
-      final DocumentSnapshot ds = await tx.get(_firestore.collection('bags').doc(shoppingBagItemId));
+      final DocumentSnapshot ds = await tx.get(_shoppingBagReference.doc(shoppingBagItemId));
       tx.delete(ds.reference);
     };
 
