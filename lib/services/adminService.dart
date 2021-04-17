@@ -44,33 +44,31 @@ class AdminService {
         QuerySnapshot subCategorySnapshot;
 
         for(int i=1;i<tempProductData.length;i++){
-          if(tempProductData[i][2] != 'Accessories' && tempProductData[i][2] != 'Mobile phones'){
-            QuerySnapshot categorySnapshot = await _categoryReference.where('name',isEqualTo: tempProductData[i][2]).get();
-            String categoryId = categorySnapshot.docs[0].id;
+          String categoryName = tempProductData[i][2];
+          String subCategoryName = tempProductData[i][3];
 
-            subCategorySnapshot = await _subCategoryReference.where('name',isEqualTo: tempProductData[i][3]).get();
-            if(subCategorySnapshot.docs.length == 0){
-              print(tempProductData[i][2]);
-              print(tempProductData[i][3]);
-            }
-            String subCategoryId = subCategorySnapshot.docs[0].id;
+          QuerySnapshot categorySnapshot = await _categoryReference.where('name',isEqualTo: categoryName).get();
+          String categoryId = categorySnapshot.docs[0].id;
+          subCategorySnapshot = await _subCategoryReference.where('name',isEqualTo: subCategoryName).get();
 
-            List<String> image = new List<String>();
-            for(int j =0;j<3;j++){
-              image.add(tempProductData[i][0]);
-            }
-            _productsReference.add({
-              'name':tempProductData[i][1],
-              'category': categoryId,
-              'subCategory':subCategoryId,
-              'availableQuantity':tempProductData[i][4],
-              'orderedQuantity': tempProductData[i][5],
-              'price': tempProductData[i][6],
-              'imageId':image,
-              'size':['S','M','L','XL','2XL'],
-              'color':['0xFF0000ff','0xFF000000','0xFF8b4513']
-            });
+          String subCategoryId = subCategorySnapshot.docs[0].id;
+
+          List<String> image = new List<String>();
+          for(int j =0;j<3;j++){
+            image.add(tempProductData[i][0]);
           }
+
+          _productsReference.add({
+            'name':tempProductData[i][1],
+            'category': categoryId,
+            'subCategory':subCategoryId,
+            'availableQuantity':tempProductData[i][4],
+            'orderedQuantity': tempProductData[i][5],
+            'price': tempProductData[i][6],
+            'imageId':image,
+            'size':['S','M','L','XL','2XL'],
+            'color':['0xFF0000ff','0xFF000000','0xFF8b4513']
+          });
         }
       });
     });
