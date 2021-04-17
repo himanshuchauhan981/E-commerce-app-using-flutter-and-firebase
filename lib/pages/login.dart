@@ -1,7 +1,7 @@
 import 'dart:collection';
-import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/sizeConfig.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
@@ -87,7 +87,7 @@ class _LoginState extends State<Login> {
       case 'largeMobile':{
         customWidth['fieldPadding'] = 24.0;
         customWidth['formFieldSpacing'] = 22.0;
-        customWidth['formTextSize'] = 19.0;
+        customWidth['formfgTextSize'] = 19.0;
         customWidth['buttonWidth'] =180.0;
         break;
       }
@@ -127,7 +127,7 @@ class _LoginState extends State<Login> {
           ),
           child: Form(
             key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
+            autovalidateMode: AutovalidateMode.disabled,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
