@@ -139,7 +139,7 @@ class _SignUpState extends State<SignUp> {
               horizontal: SizeConfig.safeBlockHorizontal * 10),
           child: Form(
             key: _signUpFormKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
+            autovalidateMode: AutovalidateMode.disabled,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[

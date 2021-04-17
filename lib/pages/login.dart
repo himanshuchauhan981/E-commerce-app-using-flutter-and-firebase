@@ -87,7 +87,7 @@ class _LoginState extends State<Login> {
       case 'largeMobile':{
         customWidth['fieldPadding'] = 24.0;
         customWidth['formFieldSpacing'] = 22.0;
-        customWidth['formfgTextSize'] = 19.0;
+        customWidth['formTextSize'] = 19.0;
         customWidth['buttonWidth'] =180.0;
         break;
       }
