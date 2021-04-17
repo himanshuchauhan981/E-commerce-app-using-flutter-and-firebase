@@ -6,10 +6,10 @@ id,category,subCategory,images
 5ff0b509fc13ae631b000004,Accessories,Bags,assets/shop/accessories.png
 5ff0b509fc13ae631b000005,Accessories,Wallets,assets/shop/accessories.png
 5ff0b509fc13ae631b000006,Accessories,Sunglasses,assets/shop/accessories.png
-5ff0b509fc13ae631b000007,Mobile phones,Mobile cover,assets/shop/mobilephones.jpg
-5ff0b509fc13ae631b000008,Mobile phones,Power banks,assets/shop/mobilephones.jpg
-5ff0b509fc13ae631b000009,Mobile phones,Tablets,assets/shop/mobilephones.jpg
-5ff0b509fc13ae631b00000a,Mobile phones,Mobile accessories,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b000007,Electronics,Mobile cover,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b000008,Electronics,Power banks,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b000009,Electronics,Tablets,assets/shop/mobilephones.jpg
+5ff0b509fc13ae631b00000a,Electronics,Mobile accessories,assets/shop/mobilephones.jpg
 5ff0b509fc13ae631b00000b,Shoes,Sports shoes,assets/shop/shoes.jpg
 5ff0b509fc13ae631b00000c,Shoes,Formal shoes,assets/shop/shoes.jpg
 5ff0b509fc13ae631b00000d,Shoes,Casual shoes,assets/shop/shoes.jpg

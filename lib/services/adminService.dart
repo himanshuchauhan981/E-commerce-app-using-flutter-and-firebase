@@ -1,12 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:firebase_core/firebase_core.dart';
 
 class AdminService {
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  CollectionReference _categoryReference = FirebaseFirestore.instance.collection('category');
-  CollectionReference _subCategoryReference = FirebaseFirestore.instance.collection('subCategory');
-  CollectionReference _productsReference = FirebaseFirestore.instance.collection('products');
+  FirebaseFirestore _firestore;
+  CollectionReference _categoryReference;
+  CollectionReference _subCategoryReference;
+  CollectionReference _productsReference;
+
+  initiateFirebase() async{
+    await Firebase.initializeApp();
+    _firestore = FirebaseFirestore.instance;
+    _categoryReference = FirebaseFirestore.instance.collection('category');
+    _subCategoryReference = FirebaseFirestore.instance.collection('subCategory');
+    _productsReference = FirebaseFirestore.instance.collection('products');
+  }
+
+  AdminService(){
+    initiateFirebase();
+  }
 
   Future<String> loadAsset(String path) async {
     return await rootBundle.loadString(path);
@@ -58,17 +71,31 @@ class AdminService {
             image.add(tempProductData[i][0]);
           }
 
-          _productsReference.add({
-            'name':tempProductData[i][1],
-            'category': categoryId,
-            'subCategory':subCategoryId,
-            'availableQuantity':tempProductData[i][4],
-            'orderedQuantity': tempProductData[i][5],
-            'price': tempProductData[i][6],
-            'imageId':image,
-            'size':['S','M','L','XL','2XL'],
-            'color':['0xFF0000ff','0xFF000000','0xFF8b4513']
-          });
+          if(categoryName == 'Clothing'){
+            _productsReference.add({
+              'name':tempProductData[i][1],
+              'category': categoryId,
+              'subCategory':subCategoryId,
+              'availableQuantity':tempProductData[i][4],
+              'orderedQuantity': tempProductData[i][5],
+              'price': tempProductData[i][6],
+              'imageId':image,
+              'size':['S','M','L','XL','2XL'],
+              'color':['0xFF0000ff','0xFF000000','0xFF8b4513']
+            });
+          }
+          else{
+            _productsReference.add({
+              'name':tempProductData[i][1],
+              'category': categoryId,
+              'subCategory':subCategoryId,
+              'availableQuantity':tempProductData[i][4],
+              'orderedQuantity': tempProductData[i][5],
+              'price': tempProductData[i][6],
+              'imageId':image,
+              'color':['0xFF0000ff','0xFF000000','0xFF8b4513']
+            });
+          }
         }
       });
     });
