@@ -6,7 +6,7 @@ import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
 import 'package:app_frontend/components/alertBox.dart';
-
+import 'package:app_frontend/components/modals/internetConnection.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -28,22 +28,30 @@ class _LoginState extends State<Login> {
   login() async{
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
-      Loader.showLoadingScreen(context, _keyLoader);
-      await _userService.login(userValues);
-      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-      int statusCode = _userService.statusCode;
-      if(statusCode == 200){
-        Navigator.pushNamed(context, '/home');
+
+      bool connectionStatus = await _userService.checkInternetConnectivity();
+      if(connectionStatus){
+        Loader.showLoadingScreen(context, _keyLoader);
+        await _userService.login(userValues);
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+        int statusCode = _userService.statusCode;
+        if(statusCode == 200){
+          Navigator.pushNamed(context, '/home');
+        }
+        else{
+          AlertBox alertBox = AlertBox(_userService.msg);
+          return showDialog(
+              context: context,
+              builder: (BuildContext context){
+                return alertBox.build(context);
+              }
+          );
+        }
       }
       else{
-        AlertBox alertBox = AlertBox(_userService.msg);
-        return showDialog(
-          context: context,
-          builder: (BuildContext context){
-            return alertBox.build(context);
-          }
-        );
+        internetConnectionDialog(context);
       }
+
     }
   }
 

@@ -9,6 +9,8 @@ import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/components/item/colorGroupButton.dart';
 import 'package:app_frontend/sizeConfig.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class ParticularItem extends StatefulWidget {
   final Map <String,dynamic> itemDetails;
@@ -22,6 +24,8 @@ class ParticularItem extends StatefulWidget {
 
 class _ParticularItemState extends State<ParticularItem> {
   final GlobalKey<ScaffoldState> _productScaffoldKey = new GlobalKey<ScaffoldState>();
+  ShoppingBagService _shoppingBagService = new ShoppingBagService();
+  UserService _userService = new UserService();
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
 
   Map customDimension = new Map();
@@ -172,11 +176,18 @@ class _ParticularItemState extends State<ParticularItem> {
     if(selectedSize == '') showInSnackBar('Select size',Colors.red);
     else if(selectedColor == '') showInSnackBar('Select color', Colors.red);
     else{
-      Loader.showLoadingScreen(context, keyLoader);
-      ShoppingBagService _shoppingBagService = new ShoppingBagService();
-      String msg = await _shoppingBagService.add(widget.itemDetails['productId'],selectedSize,selectedColor,productQuantity);
-      Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-      showInSnackBar(msg,Colors.black);
+      bool connectionStatus = await _userService.checkInternetConnectivity();
+
+      if(connectionStatus){
+        Loader.showLoadingScreen(context, keyLoader);
+        String msg = await _shoppingBagService.add(widget.itemDetails['productId'],selectedSize,selectedColor,productQuantity);
+        Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+        showInSnackBar(msg,Colors.black);
+      }
+      else{
+        internetConnectionDialog(context);
+      }
+
     }
   }
 

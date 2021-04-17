@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:app_frontend/pages/signup.dart';
@@ -35,7 +34,6 @@ Future<void> main() async{
     prefs.setBool('initScreen', true);
   }
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   runApp(
     Main()
   );

@@ -1,6 +1,8 @@
-import 'package:app_frontend/components/loader.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/productService.dart';
 
 class Category{
@@ -17,16 +19,27 @@ class CategoryCarousal extends StatefulWidget {
 
 class _HorizontalListState extends State<CategoryCarousal> {
   ProductService _productService = ProductService();
+  UserService _userService = new UserService();
   List categoryList = [];
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
+  void listCategories() async {
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+    if(connectionStatus){
+      _productService.listCategories().then((categories){
+        this.setState(() {
+          categoryList = categories;
+        });
+      });
+    }
+    else{
+      internetConnectionDialog(context);
+    }
+  }
+
   void initState(){
     super.initState();
-    _productService.listCategories().then((categories){
-      this.setState(() {
-        categoryList = categories;
-      });
-    });
+    listCategories();
   }
 
   final category = <Category>[
@@ -49,11 +62,18 @@ class _HorizontalListState extends State<CategoryCarousal> {
   ];
 
   void listSubCategories(String categoryId,String categoryName) async{
-    Loader.showLoadingScreen(context, _keyLoader);
-    List subCategory = await _productService.listSubCategories(categoryId);
-    Map args = {'subCategory': subCategory, 'categoryName': categoryName};
-    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-    Navigator.pushNamed(context, '/subCategory', arguments: args);
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+    if(connectionStatus){
+      Loader.showLoadingScreen(context, _keyLoader);
+      List subCategory = await _productService.listSubCategories(categoryId);
+      Map args = {'subCategory': subCategory, 'categoryName': categoryName};
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+      Navigator.pushNamed(context, '/subCategory', arguments: args);
+    }
+    else{
+      internetConnectionDialog(context);
+    }
+
   }
 
   @override

@@ -1,10 +1,12 @@
-import 'package:app_frontend/services/productService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/sidebar.dart';
+import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/services/userService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
 
 class Items extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class Items extends StatefulWidget {
 
 class _ItemsState extends State<Items> {
   ProductService _productService = new ProductService();
+  UserService _userService = new UserService();
   String heading;
 
   bool showIcon = true;
@@ -36,18 +39,25 @@ class _ItemsState extends State<Items> {
   }
 
   openParticularItem(item) async{
-    String productId = item['productId'];
-    Map itemDetails = await _productService.particularItem(productId);
-    Navigator.push(
-        context,
-        CustomTransition(
-            type: CustomTransitionType.downToUp,
-            child: ParticularItem(
-              itemDetails: itemDetails,
-              editProduct: false,
-            )
-        )
-    );
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      String productId = item['productId'];
+      Map itemDetails = await _productService.particularItem(productId);
+      Navigator.push(
+          context,
+          CustomTransition(
+              type: CustomTransitionType.downToUp,
+              child: ParticularItem(
+                itemDetails: itemDetails,
+                editProduct: false,
+              )
+          )
+      );
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   Widget itemsCard(item){

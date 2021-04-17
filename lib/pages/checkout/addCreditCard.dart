@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:app_frontend/services/checkoutService.dart';
 import 'package:app_frontend/services/creditCardFormatter.dart';
 import 'package:app_frontend/services/creditCardValidation.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class AddCreditCard extends StatefulWidget {
   @override
@@ -22,6 +24,7 @@ class _AddCreditCardState extends State<AddCreditCard> {
 
   PaymentCard _paymentCard = new PaymentCard();
   CheckoutService _checkoutService = new CheckoutService();
+  UserService _userService = new UserService();
   GlobalKey _formKey = new GlobalKey<FormState>();
 
   @override
@@ -31,16 +34,24 @@ class _AddCreditCardState extends State<AddCreditCard> {
   }
 
   void addNewCard() async{
-    final FormState form = _formKey.currentState;
-    if(form.validate()){
-      await _checkoutService.newCreditCardDetails(cardNumber, expiryDate, cardHolderName);
-      Navigator.of(context).pushNamed('/checkout/paymentMethod');
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      final FormState form = _formKey.currentState;
+      if(form.validate()){
+        await _checkoutService.newCreditCardDetails(cardNumber, expiryDate, cardHolderName);
+        Navigator.of(context).pushNamed('/checkout/paymentMethod');
+      }
+      else{
+        setState(() {
+          autoValidate = true;
+        });
+      }
     }
     else{
-      setState(() {
-        autoValidate = true;
-      });
+      internetConnectionDialog(context);
     }
+
   }
 
   @override

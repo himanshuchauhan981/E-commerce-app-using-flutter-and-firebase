@@ -1,5 +1,6 @@
-import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app_frontend/sizeConfig.dart';
 
 class SlideTile extends StatelessWidget {
   final String imagePath, title, desc;

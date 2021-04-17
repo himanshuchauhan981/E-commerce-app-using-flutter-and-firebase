@@ -1,26 +1,36 @@
-import 'package:app_frontend/sizeConfig.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:app_frontend/services/userService.dart';
+import 'package:app_frontend/sizeConfig.dart';
 
 class Start extends StatelessWidget{
   final UserService _userService = new UserService();
 
   validateToken(context) async{
-    final storage = new FlutterSecureStorage();
-    String value = await storage.read(key: 'idToken');
-    if(value != null){
-      String decodedToken = _userService.validateToken(value);
-      if(decodedToken != null){
-        Navigator.of(context).pushReplacementNamed('/home');
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus) {
+      await Firebase.initializeApp();
+      final storage = new FlutterSecureStorage();
+      String value = await storage.read(key: 'idToken');
+      if (value != null) {
+        String decodedToken = _userService.validateToken(value);
+        if (decodedToken != null) {
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+        else {
+          Navigator.of(context).pushReplacementNamed('/login');
+        }
       }
-      else{
+      else {
         Navigator.of(context).pushReplacementNamed('/login');
       }
     }
     else{
-      Navigator.of(context).pushReplacementNamed('/login');
+      internetConnectionDialog(context);
     }
   }
 

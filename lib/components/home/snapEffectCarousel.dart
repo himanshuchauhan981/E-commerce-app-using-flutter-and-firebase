@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class SnapEffectCarousel extends StatefulWidget {
   @override
@@ -13,31 +15,46 @@ class _SnapEffectCarouselState extends State<SnapEffectCarousel> {
   int _index = 0;
   List newArrivals = new List();
   ProductService _productService = new ProductService();
+  UserService _userService = new UserService();
 
   _SnapEffectCarouselState(){
     listNewArrivals();
   }
 
   void listNewArrivals() async{
-    List<Map<String,String>> newArrivalList = await _productService.newItemArrivals();
-    setState(() {
-      newArrivals = newArrivalList;
-    });
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+    if(connectionStatus){
+      List<Map<String,String>> newArrivalList = await _productService.newItemArrivals();
+      setState(() {
+        newArrivals = newArrivalList;
+      });
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   void showParticularItem(Map item) async{
-    String productId = item['productId'];
-    Map itemDetails = await _productService.particularItem(productId);
-    Navigator.push(
-      context,
-      CustomTransition(
-        type: CustomTransitionType.downToUp,
-        child: ParticularItem(
-          itemDetails: itemDetails,
-          editProduct: false,
-        )
-      )
-    );
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      String productId = item['productId'];
+      Map itemDetails = await _productService.particularItem(productId);
+      Navigator.push(
+          context,
+          CustomTransition(
+              type: CustomTransitionType.downToUp,
+              child: ParticularItem(
+                itemDetails: itemDetails,
+                editProduct: false,
+              )
+          )
+      );
+    }
+    else{
+      internetConnectionDialog(context);
+    }
+
   }
 
   @override

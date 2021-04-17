@@ -8,6 +8,7 @@ import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -92,10 +93,17 @@ class _UserProfileState extends State<UserProfile> {
                   size: 35.0,
                 ),
                 onTap: () async{
-                  dynamic args = ModalRoute.of(context).settings.arguments;
-                  String email = _userService.userEmail();
-                  args['email'] = email;
-                  Navigator.pushNamed(context, '/profile/edit',arguments: args);
+                  bool connectionStatus = await _userService.checkInternetConnectivity();
+
+                  if(connectionStatus){
+                    dynamic args = ModalRoute.of(context).settings.arguments;
+                    String email = _userService.userEmail();
+                    args['email'] = email;
+                    Navigator.pushNamed(context, '/profile/edit',arguments: args);
+                  }
+                  else{
+                    internetConnectionDialog(context);
+                  }
                 },
               ),
               ListTile(
@@ -116,10 +124,17 @@ class _UserProfileState extends State<UserProfile> {
                   size: 35.0,
                 ),
                 onTap: () async{
-                  Loader.showLoadingScreen(context, _keyLoader);
-                  List userList = await _userService.userWishlist();
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.pushNamed(context, '/wishlist',arguments: {'userList':userList});
+                  bool connectionStatus = await _userService.checkInternetConnectivity();
+
+                  if(connectionStatus){
+                    Loader.showLoadingScreen(context, _keyLoader);
+                    List userList = await _userService.userWishlist();
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                    Navigator.pushNamed(context, '/wishlist',arguments: {'userList':userList});
+                  }
+                  else{
+                    internetConnectionDialog(context);
+                  }
                 },
               ),
               ListTile(
@@ -139,10 +154,17 @@ class _UserProfileState extends State<UserProfile> {
                   size: 35.0,
                 ),
                 onTap: () async{
-                  Loader.showLoadingScreen(context, _keyLoader);
-                  List orderData = await _checkoutService.listPlacedOrder();
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
+                  bool connectionStatus = await _userService.checkInternetConnectivity();
+
+                  if(connectionStatus){
+                    Loader.showLoadingScreen(context, _keyLoader);
+                    List orderData = await _checkoutService.listPlacedOrder();
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                    Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
+                  }
+                  else{
+                    internetConnectionDialog(context);
+                  }
                 },
               ),
               ListTile(
@@ -163,10 +185,18 @@ class _UserProfileState extends State<UserProfile> {
                   size: 35.0,
                 ),
                 onTap: () async{
-                  Loader.showLoadingScreen(context, _keyLoader);
-                  QuerySnapshot userSettings = await _profileService.getUserSettings();
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.of(context).pushNamed('/profile/settings', arguments: userSettings.docs[0].data);
+                  bool connectionStatus = await _userService.checkInternetConnectivity();
+
+                  if(connectionStatus){
+                    Loader.showLoadingScreen(context, _keyLoader);
+                    QuerySnapshot userSettings = await _profileService.getUserSettings();
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                    Navigator.of(context).pushNamed('/profile/settings', arguments: userSettings.docs[0].data);
+                  }
+                  else{
+                    internetConnectionDialog(context);
+                  }
+
                 },
               ),
               ListTile(

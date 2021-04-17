@@ -1,9 +1,11 @@
 import 'dart:collection';
+import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:app_frontend/components/checkout/shippingAddressInput.dart';
 import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
 
 class ShippingAddress extends StatefulWidget {
   @override
@@ -16,6 +18,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
   bool visibleInput = false;
   int selectedAddress;
   CheckoutService _checkoutService = new CheckoutService();
+  UserService _userService = new UserService();
   HashMap addressValues = new HashMap();
   List shippingAddress = new List();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -51,28 +54,42 @@ class _ShippingAddressState extends State<ShippingAddress> {
   }
 
   validateInput() async{
-    if(_formKey.currentState.validate()){
-      _formKey.currentState.save();
-      await _checkoutService.newShippingAddress(addressValues);
-      String msg = 'Address is saved';
-      showInSnackBar(msg, Colors.black);
-      setState(() {
-        visibleInput = !visibleInput;
-        shippingAddress.add(addressValues);
-      });
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      if(_formKey.currentState.validate()){
+        _formKey.currentState.save();
+        await _checkoutService.newShippingAddress(addressValues);
+        String msg = 'Address is saved';
+        showInSnackBar(msg, Colors.black);
+        setState(() {
+          visibleInput = !visibleInput;
+          shippingAddress.add(addressValues);
+        });
+      }
+      else{
+        setState(() {
+          autoValidate = true;
+        });
+      }
     }
     else{
-      setState(() {
-        autoValidate = true;
-      });
+      internetConnectionDialog(context);
     }
   }
 
   listShippingAddress() async{
-    List data = await _checkoutService.listShippingAddress();
-    setState(() {
-      shippingAddress = data;
-    });
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      List data = await _checkoutService.listShippingAddress();
+      setState(() {
+        shippingAddress = data;
+      });
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   saveNewAddress(){

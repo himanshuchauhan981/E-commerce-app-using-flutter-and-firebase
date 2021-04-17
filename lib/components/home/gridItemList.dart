@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:app_frontend/components/item/customTransition.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class GridItemList extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class GridItemList extends StatefulWidget {
 class _GridItemListState extends State<GridItemList> {
 
   ProductService _productService = new ProductService();
+  UserService _userService = new UserService();
 
   _GridItemListState(){
     listFeaturedItems();
@@ -21,25 +24,38 @@ class _GridItemListState extends State<GridItemList> {
   List featuredItems  = new List(0);
 
   void listFeaturedItems() async{
-    List<Map<String,String>> featuredItemList = await _productService.featuredItems();
-    setState(() {
-      featuredItems = featuredItemList;
-    });
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+    if(connectionStatus){
+      List<Map<String,String>> featuredItemList = await _productService.featuredItems();
+      setState(() {
+        featuredItems = featuredItemList;
+      });
+    }
+    else{
+      internetConnectionDialog(context);
+    }
+
   }
 
   void showParticularItem(Map item) async{
-    String productId = item['productId'];
-    Map itemDetails = await _productService.particularItem(productId);
-    Navigator.push(
-        context,
-        CustomTransition(
-            type: CustomTransitionType.downToUp,
-            child: ParticularItem(
-              itemDetails: itemDetails,
-              editProduct: false,
-            )
-        )
-    );
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+    if(connectionStatus){
+      String productId = item['productId'];
+      Map itemDetails = await _productService.particularItem(productId);
+      Navigator.push(
+          context,
+          CustomTransition(
+              type: CustomTransitionType.downToUp,
+              child: ParticularItem(
+                itemDetails: itemDetails,
+                editProduct: false,
+              )
+          )
+      );
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   Widget build(BuildContext context){

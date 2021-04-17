@@ -1,6 +1,7 @@
-import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:app_frontend/sizeConfig.dart';
 
 class ProductSize extends StatefulWidget {
   final List<Map<String,bool>> productSizes;

@@ -1,3 +1,5 @@
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/sidebar.dart';
@@ -16,6 +18,7 @@ class _EditProfileState extends State<EditProfile> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ValidateService _validateService  = new ValidateService();
   ProfileService _profileService = new ProfileService();
+  UserService _userService = new UserService();
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   bool showCartIcon = true;
@@ -60,13 +63,19 @@ class _EditProfileState extends State<EditProfile> {
   validateProfile(context) async{
     if(this._formKey.currentState.validate()){
       _formKey.currentState.save();
-      Loader.showLoadingScreen(context, _keyLoader);
-      _profileService.updateAccountDetails(fullName, mobileNumber).then((value) async{
-        Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-        Map userData = await _profileService.getUserProfile();
-        Navigator.pushReplacementNamed(context, '/profile',arguments: userData);
-      });
+      bool connectionStatus = await _userService.checkInternetConnectivity();
 
+      if(connectionStatus){
+        Loader.showLoadingScreen(context, _keyLoader);
+        _profileService.updateAccountDetails(fullName, mobileNumber).then((value) async{
+          Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+          Map userData = await _profileService.getUserProfile();
+          Navigator.pushReplacementNamed(context, '/profile',arguments: userData);
+        });
+      }
+      else{
+        internetConnectionDialog(context);
+      }
     }
     else{
       setState(() {

@@ -1,8 +1,11 @@
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
+import 'package:flutter/material.dart';
+
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/sizeConfig.dart';
 
-import 'package:flutter/material.dart';
 
 capitalizeHeading(String text){
   if(text == null){
@@ -18,6 +21,8 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
   SizeConfig().init(context);
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
+  UserService _userService = new UserService();
+
   return AppBar(
     centerTitle: true,
     title: Text(
@@ -57,12 +62,18 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
             color: Colors.black,
           ),
           onPressed: () async{
-            Map<String,dynamic> args = new Map();
-            Loader.showLoadingScreen(context, keyLoader);
-            List bagItems = await _shoppingBagService.list();
-            args['bagItems'] = bagItems;
-            Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-            Navigator.pushNamed(context, '/bag', arguments: args);
+            bool connectionStatus = await _userService.checkInternetConnectivity();
+            if(connectionStatus){
+              Map<String,dynamic> args = new Map();
+              Loader.showLoadingScreen(context, keyLoader);
+              List bagItems = await _shoppingBagService.list();
+              args['bagItems'] = bagItems;
+              Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+              Navigator.pushNamed(context, '/bag', arguments: args);
+            }
+            else{
+              internetConnectionDialog(context);
+            }
           },
         ),
       )

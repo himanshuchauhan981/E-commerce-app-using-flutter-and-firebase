@@ -1,5 +1,5 @@
-import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
+import 'package:app_frontend/sizeConfig.dart';
 
 class ProductButtons extends StatefulWidget {
   final void Function() addToShoppingBag;

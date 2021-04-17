@@ -4,6 +4,8 @@ import 'package:app_frontend/components/header.dart';
 import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/services/productService.dart';
 import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class SubCategory extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class SubCategory extends StatefulWidget {
 class _SubCategoryState extends State<SubCategory> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   ProductService _productService = new ProductService();
+  UserService _userService = new UserService();
   String heading;
   bool showIcon = false;
   List subCategoryList = new List();
@@ -27,10 +30,17 @@ class _SubCategoryState extends State<SubCategory> {
   }
 
   listSubCategoryItems(String subCategoryId, String subCategoryName, BuildContext context) async{
-    Loader.showLoadingScreen(context, _keyLoader);
-    List <Map<String,String>> items = await _productService.listSubCategoryItems(subCategoryId);
-    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-    Navigator.pushNamed(context, '/items', arguments: {'items': items, 'heading': subCategoryName});
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      Loader.showLoadingScreen(context, _keyLoader);
+      List <Map<String,String>> items = await _productService.listSubCategoryItems(subCategoryId);
+      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+      Navigator.pushNamed(context, '/items', arguments: {'items': items, 'heading': subCategoryName});
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   @override

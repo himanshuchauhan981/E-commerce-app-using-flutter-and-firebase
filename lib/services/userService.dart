@@ -1,20 +1,38 @@
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class UserService{
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final storage = new FlutterSecureStorage();
-  final String sharedKey = '2c8e2b296c6f3284ec30b8865d7293e627fa2b8f';
+  FirebaseAuth _auth;
+  FirebaseFirestore _firestore;
+  FlutterSecureStorage _storage;
+
+  UserService(){
+    initializeFirebaseApp();
+  }
+
+  void initializeFirebaseApp() async{
+    bool internetConnection = await checkInternetConnectivity();
+    if(internetConnection){
+      await Firebase.initializeApp();
+      _auth = FirebaseAuth.instance;
+      _firestore = FirebaseFirestore.instance;
+      _storage = new FlutterSecureStorage();
+    }
+  }
+
   int statusCode;
   String msg;
 
   void storeJWTToken(String idToken, refreshToken) async{
-    await storage.write(key: 'idToken', value: idToken);
-    await storage.write(key: 'refreshToken', value: refreshToken);
+    await _storage.write(key: 'idToken', value: idToken);
+    await _storage.write(key: 'refreshToken', value: refreshToken);
   }
 
   String validateToken(String token){
@@ -30,7 +48,7 @@ class UserService{
   }
 
   void logOut(context) async{
-    await storage.deleteAll();
+    await _storage.deleteAll();
     Navigator.of(context).pushReplacementNamed('/');
   }
 
@@ -54,7 +72,7 @@ class UserService{
   }
 
   Future<String> getUserId() async{
-    var token = await storage.read(key: 'idToken');
+    var token = await _storage.read(key: 'idToken');
     var uid = validateToken(token);
     return uid;
   }
@@ -135,6 +153,37 @@ class UserService{
     await _firestore.collection('users').doc(documentId).update({
       'wishlist':wishlist['wishlist']
     });
+  }
+
+  String getConnectionValue(var connectivityResult) {
+    String status = '';
+    switch (connectivityResult) {
+      case ConnectivityResult.mobile:
+        status = 'Mobile';
+        break;
+      case ConnectivityResult.wifi:
+        status = 'Wi-Fi';
+        break;
+      case ConnectivityResult.none:
+        status = 'None';
+        break;
+      default:
+        status = 'None';
+        break;
+    }
+    return status;
+  }
+
+  Future<bool> checkInternetConnectivity() async{
+    final Connectivity _connectivity = Connectivity();
+    ConnectivityResult result = await _connectivity.checkConnectivity();
+    String connection = getConnectionValue(result);
+    if(connection == 'None') {
+      return false;
+    }
+    else{
+      return true;
+    }
   }
 }
 

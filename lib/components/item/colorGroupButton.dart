@@ -1,5 +1,6 @@
-import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
+
+import 'package:app_frontend/sizeConfig.dart';
 
 class ColorGroupButton extends StatefulWidget {
   final List <Map<Color,bool>> productColors;

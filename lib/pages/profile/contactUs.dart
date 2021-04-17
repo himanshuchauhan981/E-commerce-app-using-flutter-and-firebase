@@ -1,6 +1,6 @@
-import 'package:app_frontend/components/profileAppBar.dart';
-
 import 'package:flutter/material.dart';
+
+import 'package:app_frontend/components/profileAppBar.dart';
 
 class ContactUs extends StatefulWidget {
   @override

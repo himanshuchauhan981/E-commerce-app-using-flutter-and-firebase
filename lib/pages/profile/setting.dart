@@ -1,3 +1,4 @@
+import 'package:app_frontend/components/modals/internetConnection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/profileAppBar.dart';
@@ -17,8 +18,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
   Map<String,bool> settings = new Map();
 
   saveUserSettings(String key, bool value) async{
-    settings[key] = value;
-    await _profileService.updateUserSettings(settings);
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      settings[key] = value;
+      await _profileService.updateUserSettings(settings);
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   userSetting(){

@@ -12,6 +12,8 @@ import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class ShoppingBag extends StatefulWidget {
   @override
@@ -23,6 +25,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
   String selectedSize, selectedColor, totalPrice;
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
   ProductService _productService = new ProductService();
+  UserService _userService = new UserService();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   String route;
 
@@ -54,13 +57,20 @@ class _ShoppingBagState extends State<ShoppingBag> {
   }
 
   void removeItem(item,context) async{
-    bagItemList.removeWhere((items) => items['productId'] == item['productId']);
+    bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    await _shoppingBagService.remove(item['productId']);
-    setState(() {
-      bagItemList = bagItemList;
-    });
-    Navigator.of(context, rootNavigator: true).pop();
+    if(connectionStatus){
+      bagItemList.removeWhere((items) => items['productId'] == item['productId']);
+
+      await _shoppingBagService.remove(item['productId']);
+      setState(() {
+        bagItemList = bagItemList;
+      });
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   void removeItemAlertBox(BuildContext context, Map id) {
@@ -172,12 +182,20 @@ class _ShoppingBagState extends State<ShoppingBag> {
               child: RaisedButton(
                 color: Color(0xff313134),
                 onPressed: () async{
-                  Map<String,dynamic> args = new Map();
-                  Loader.showLoadingScreen(context, _keyLoader);
-                  List<Map<String,String>> categoryList = await _productService.listCategories();
-                  args['category'] = categoryList;
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.pushReplacementNamed(context, '/shop',arguments: args);
+                  bool connectionStatus = await _userService.checkInternetConnectivity();
+
+                  if(connectionStatus){
+                    Map<String,dynamic> args = new Map();
+                    Loader.showLoadingScreen(context, _keyLoader);
+                    List<Map<String,String>> categoryList = await _productService.listCategories();
+                    args['category'] = categoryList;
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                    Navigator.pushReplacementNamed(context, '/shop',arguments: args);
+                  }
+                  else{
+                    internetConnectionDialog(context);
+                  }
+
                 },
                 child: Text(
                   'Shop',

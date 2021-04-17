@@ -1,11 +1,11 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 
+import 'package:app_frontend/components/modals/internetConnection.dart';
 import 'package:app_frontend/components/alertBox.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:app_frontend/services/validateService.dart';
-
-import '../sizeConfig.dart';
+import 'package:app_frontend/sizeConfig.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -30,19 +30,27 @@ class _SignUpState extends State<SignUp> {
   }
 
   signUpUser() async {
+    bool connectionStatus = await userService.checkInternetConnectivity();
+
     if (this._signUpFormKey.currentState.validate()) {
       _signUpFormKey.currentState.save();
-      await userService.signup(userValues);
-      int statusCode = userService.statusCode;
-      if (statusCode == 400) {
-        AlertBox alertBox = AlertBox(userService.msg);
-        return showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return alertBox.build(context);
-            });
-      } else {
-        Navigator.pushReplacementNamed(context, '/');
+
+      if(connectionStatus){
+        await userService.signup(userValues);
+        int statusCode = userService.statusCode;
+        if (statusCode == 400) {
+          AlertBox alertBox = AlertBox(userService.msg);
+          return showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return alertBox.build(context);
+              });
+        } else {
+          Navigator.pushReplacementNamed(context, '/');
+        }
+      }
+      else{
+       internetConnectionDialog(context);
       }
     }
   }

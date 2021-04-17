@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/userService.dart';
 
 class PaymentMethod extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class PaymentMethod extends StatefulWidget {
 
 class _PaymentMethodState extends State<PaymentMethod> {
   CheckoutService _checkoutService = new CheckoutService();
+  UserService _userService = new UserService();
   List<String> cardNumberList = new List<String>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String selectedPaymentCard;
@@ -39,10 +42,18 @@ class _PaymentMethodState extends State<PaymentMethod> {
   }
 
   listPaymentMethod() async{
-    List data = await _checkoutService.listCreditCardDetails();
-    setState(() {
-      cardNumberList = data;
-    });
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      List data = await _checkoutService.listCreditCardDetails();
+      setState(() {
+        cardNumberList = data;
+      });
+    }
+    else{
+      internetConnectionDialog(context);
+    }
+
   }
 
   showSavedCreditCard(){

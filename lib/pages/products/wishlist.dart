@@ -1,3 +1,4 @@
+import 'package:app_frontend/components/modals/internetConnection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/header.dart';
@@ -88,12 +89,19 @@ class _WishListState extends State<WishList> {
               child: RaisedButton(
                 color: Color(0xff313134),
                 onPressed: () async{
-                  Map<String,dynamic> args = new Map();
-                  Loader.showLoadingScreen(context, _keyLoader);
-                  List<Map<String,String>> categoryList = await _productService.listCategories();
-                  args['category'] = categoryList;
-                  Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                  Navigator.pushReplacementNamed(context, '/shop',arguments: args);
+                  bool connectionStatus = await _userService.checkInternetConnectivity();
+
+                  if(connectionStatus){
+                    Map<String,dynamic> args = new Map();
+                    Loader.showLoadingScreen(context, _keyLoader);
+                    List<Map<String,String>> categoryList = await _productService.listCategories();
+                    args['category'] = categoryList;
+                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+                    Navigator.pushReplacementNamed(context, '/shop',arguments: args);
+                  }
+                  else{
+                    internetConnectionDialog(context);
+                  }
                 },
                 child: Text(
                   'Shop',

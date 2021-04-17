@@ -1,7 +1,9 @@
+import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
 
 class PlaceOrder extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class _PlaceOrderState extends State<PlaceOrder> {
   void thirdFunction(){}
   Map<String,dynamic> orderDetails;
   CheckoutService _checkoutService = new CheckoutService();
+  UserService _userService = new UserService();
 
   setOrderData(){
     Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
@@ -21,8 +24,15 @@ class _PlaceOrderState extends State<PlaceOrder> {
   }
 
   placeNewOrder() async{
-    await _checkoutService.placeNewOrder(orderDetails);
-    Navigator.pushReplacementNamed(context, '/home');
+    bool connectionStatus = await _userService.checkInternetConnectivity();
+
+    if(connectionStatus){
+      await _checkoutService.placeNewOrder(orderDetails);
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+    else{
+      internetConnectionDialog(context);
+    }
   }
 
   @override
