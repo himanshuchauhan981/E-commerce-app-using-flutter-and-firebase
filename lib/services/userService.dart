@@ -1,50 +1,37 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:jaguar_jwt/jaguar_jwt.dart';
-import 'package:corsac_jwt/corsac_jwt.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 class UserService{
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final storage = new FlutterSecureStorage();
-  final String sharedKey = 'sharedKey';
+  final String sharedKey = '2c8e2b296c6f3284ec30b8865d7293e627fa2b8f';
   int statusCode;
   String msg;
 
-  void createAndStoreJWTToken(String uid) async{
-    var builder = new JWTBuilder();
-    var token = builder
-    ..expiresAt = new DateTime.now().add(new Duration(hours: 3))
-    ..setClaim('data', {'uid': uid})
-    ..getToken();
-
-    var signer = new JWTHmacSha256Signer(sharedKey);
-    var signedToken = builder.getSignedToken(signer);
-    await storage.write(key: 'token', value: signedToken.toString());
+  void storeJWTToken(String idToken, refreshToken) async{
+    await storage.write(key: 'idToken', value: idToken);
+    await storage.write(key: 'refreshToken', value: refreshToken);
   }
 
   String validateToken(String token){
-    var signer = new JWTHmacSha256Signer(sharedKey);
-    var decodedToken = new JWT.parse(token);
-    if(decodedToken.verify(signer)){
-      final parts = token.split('.');
-      final payload = parts[1];
-      final String decoded = B64urlEncRfc7515.decodeUtf8(payload);
-      final int expiry = jsonDecode(decoded)['exp']* 1000;
-      final currentDate = DateTime.now().millisecondsSinceEpoch;
-      if(currentDate > expiry){
-        return null;
-      }
-      return  jsonDecode(decoded)['data']['uid'];
+    bool isExpired = Jwt.isExpired(token);
+
+    if(isExpired){
+      return null;
     }
-    return null;
+    else{
+      Map<String, dynamic> payload = Jwt.parseJwt(token);
+      print(payload);
+      return payload['user_id'];
+    }
   }
 
   void logOut(context) async{
-    await storage.delete(key: 'token');
+    await storage.deleteAll();
     Navigator.of(context).pushReplacementNamed('/');
   }
 
@@ -54,9 +41,11 @@ class UserService{
 
     await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user) async{
       final User currentUser = _auth.currentUser;
-      final uid = currentUser.uid;
 
-      createAndStoreJWTToken(uid);
+      String idToken = await currentUser.getIdToken();
+      String refreshToken = currentUser.refreshToken;
+
+      storeJWTToken(idToken, refreshToken);
 
       statusCode = 200;
 
