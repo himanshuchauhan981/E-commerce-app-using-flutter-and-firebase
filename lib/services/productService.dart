@@ -20,7 +20,8 @@ class ProductService{
       String image = await getProductsImage(subCategory['imageId']);
       subCategoryList.add({
         'imageId': image,
-        'name': subCategory['name']
+        'name': subCategory['name'],
+        'id': subCategoryRef.docs[i].id
       });
     }
     return subCategoryList;
