@@ -25,7 +25,6 @@ class UserService{
     }
     else{
       Map<String, dynamic> payload = Jwt.parseJwt(token);
-      print(payload);
       return payload['user_id'];
     }
   }
@@ -55,7 +54,7 @@ class UserService{
   }
 
   Future<String> getUserId() async{
-    var token = await storage.read(key: 'token');
+    var token = await storage.read(key: 'idToken');
     var uid = validateToken(token);
     return uid;
   }

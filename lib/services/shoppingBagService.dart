@@ -77,25 +77,25 @@ class ShoppingBagService{
       bagItemDetails = userBagDocRef.docs.map((bagDoc){
         return bagDoc.data()['products'];
       }).toList()[0];
-    }
 
-    for(int i=0; i < bagItemDetails.length; i++){
-      Map bagItems = new Map();
+      for(int i=0; i < bagItemDetails.length; i++){
+        Map bagItems = new Map();
 
-      DocumentSnapshot productRef = await _productReference.doc(bagItemDetails[i]['id']).get();
-      String image = productRef.data()['imageId'][0];
+        DocumentSnapshot productRef = await _productReference.doc(bagItemDetails[i]['id']).get();
+        String image = productRef.data()['imageId'][0];
 
-      String imageUrl = (await downloadStorageImage(image)).toString();
-      bagItems['productId'] = productRef.id;
-      bagItems['name']  = productRef.data()['name'];
-      bagItems['image'] = imageUrl;
-      bagItems['price']  = productRef.data()['price'].toString();
-      bagItems['color'] = productRef.data()['color'].cast<String>().toList();
-      bagItems['size'] = productRef.data()['size'].cast<String>().toList();
-      bagItems['selectedSize'] = bagItemDetails[i]['size'];
-      bagItems['selectedColor'] = bagItemDetails[i]['color'];
-      bagItems['quantity'] = bagItemDetails[i]['quantity'];
-      bagItemsList.add(bagItems);
+        String imageUrl = (await downloadStorageImage(image)).toString();
+        bagItems['productId'] = productRef.id;
+        bagItems['name']  = productRef.data()['name'];
+        bagItems['image'] = imageUrl;
+        bagItems['price']  = productRef.data()['price'].toString();
+        bagItems['color'] = productRef.data()['color'].cast<String>().toList();
+        bagItems['size'] = productRef.data()['size'].cast<String>().toList();
+        bagItems['selectedSize'] = bagItemDetails[i]['size'];
+        bagItems['selectedColor'] = bagItemDetails[i]['color'];
+        bagItems['quantity'] = bagItemDetails[i]['quantity'];
+        bagItemsList.add(bagItems);
+      }
     }
 
     return bagItemsList;
