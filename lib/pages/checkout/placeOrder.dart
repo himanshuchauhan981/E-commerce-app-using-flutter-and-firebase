@@ -1,9 +1,8 @@
+import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/checkoutService.dart';
 import 'package:app_frontend/services/userService.dart';
 import 'package:flutter/material.dart';
-
-import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
-import 'package:app_frontend/services/checkoutService.dart';
-import 'package:app_frontend/components/modals/internetConnection.dart';
 
 class PlaceOrder extends StatefulWidget {
   @override
@@ -11,26 +10,25 @@ class PlaceOrder extends StatefulWidget {
 }
 
 class _PlaceOrderState extends State<PlaceOrder> {
-  void thirdFunction(){}
-  Map<String,dynamic> orderDetails;
+  void thirdFunction() {}
+  Map<dynamic, dynamic> orderDetails = {};
   CheckoutService _checkoutService = new CheckoutService();
   UserService _userService = new UserService();
 
-  setOrderData(){
-    Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+  setOrderData() {
+    Map args = ModalRoute.of(context)?.settings.arguments as Map;
     setState(() {
       orderDetails = args;
     });
   }
 
-  placeNewOrder() async{
+  placeNewOrder() async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
+    if (connectionStatus) {
       await _checkoutService.placeNewOrder(orderDetails);
       Navigator.pushReplacementNamed(context, '/home');
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
   }
@@ -39,13 +37,18 @@ class _PlaceOrderState extends State<PlaceOrder> {
   Widget build(BuildContext context) {
     setOrderData();
     return Scaffold(
-      appBar: CheckoutAppBar('Shopping Bag','Place Order',this.thirdFunction),
+      appBar: CheckoutAppBar('Shopping Bag', 'Place Order', this.thirdFunction),
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xffF4F4F4)
+          color: Color(
+            0xffF4F4F4,
+          ),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
+          padding: EdgeInsets.symmetric(
+            vertical: 20.0,
+            horizontal: 10.0,
+          ),
           child: Column(
             children: <Widget>[
               Text(
@@ -53,27 +56,26 @@ class _PlaceOrderState extends State<PlaceOrder> {
                 style: TextStyle(
                   fontSize: 25.0,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0
+                  letterSpacing: 1.0,
                 ),
               ),
               SizedBox(height: 30.0),
               Card(
                 color: Colors.white,
                 shape: ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.zero
+                  borderRadius: BorderRadius.zero,
                 ),
                 borderOnForeground: true,
                 elevation: 0,
                 child: ListTile(
                   title: Text('Payment'),
                   trailing: Text('Visa ${orderDetails['selectedCard']}'),
-
                 ),
               ),
               Card(
                 color: Colors.white,
                 shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.zero
+                  borderRadius: BorderRadius.zero,
                 ),
                 borderOnForeground: true,
                 elevation: 0,
@@ -85,7 +87,7 @@ class _PlaceOrderState extends State<PlaceOrder> {
               Card(
                 color: Colors.white,
                 shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.zero
+                  borderRadius: BorderRadius.zero,
                 ),
                 borderOnForeground: true,
                 elevation: 0,
@@ -98,22 +100,24 @@ class _PlaceOrderState extends State<PlaceOrder> {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: ButtonTheme(
-                    minWidth: MediaQuery.of(context).size.width/1.5,
+                    minWidth: MediaQuery.of(context).size.width / 1.5,
                     height: 50.0,
-                    child: FlatButton(
+                    child: ElevatedButton(
                       onPressed: () {
                         placeNewOrder();
                       },
                       child: const Text(
-                          'Place order',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0
-                          )
+                        'Place order',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                          color: Colors.white,
+                        ),
                       ),
-                      color: Color(0xff616161),
-                      textColor: Colors.white
+                      style: ElevatedButton.styleFrom(
+                        primary: Color(0xff313134),
+                      ),
                     ),
                   ),
                 ),

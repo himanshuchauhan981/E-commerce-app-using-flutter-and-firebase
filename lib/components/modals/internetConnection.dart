@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-void internetConnectionDialog(BuildContext context) async{
+void internetConnectionDialog(BuildContext context) async {
   return showDialog(
     context: context,
-    builder: (BuildContext context){
+    builder: (BuildContext context) {
       return Dialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0)
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Container(
           height: 300,
           // width: 100,
@@ -24,9 +21,9 @@ void internetConnectionDialog(BuildContext context) async{
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text('Oops!',
+                  child: Text(
+                    'Oops!',
                     style: TextStyle(
-                      fontFamily: 'NovaSquare',
                       fontSize: 20.0,
                     ),
                   ),
@@ -35,16 +32,12 @@ void internetConnectionDialog(BuildContext context) async{
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     'No internet connection found',
-                    style: TextStyle(
-                      fontSize: 20.0
-                    ),
+                    style: TextStyle(fontSize: 20.0),
                   ),
                 ),
                 Text(
                   'Check your connection',
-                  style: TextStyle(
-                    fontSize: 20.0
-                  ),
+                  style: TextStyle(fontSize: 20.0),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(25.0),
@@ -52,17 +45,15 @@ void internetConnectionDialog(BuildContext context) async{
                     width: double.infinity,
                     height: 50.0,
                     child: ElevatedButton(
-                      child: Text('Close',
-                        style: TextStyle(
-                          fontSize: 18.0
-                        ),
+                      child: Text(
+                        'Close',
+                        style: TextStyle(fontSize: 18.0),
                       ),
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.of(context).pop();
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.black),
-
                       ),
                     ),
                   ),
@@ -72,6 +63,6 @@ void internetConnectionDialog(BuildContext context) async{
           ),
         ),
       );
-    }
+    },
   );
 }

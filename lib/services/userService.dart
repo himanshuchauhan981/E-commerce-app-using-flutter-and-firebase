@@ -1,25 +1,26 @@
-import 'package:app_frontend/components/modals/internetConnection.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-class UserService{
-  FirebaseAuth _auth;
-  FirebaseFirestore _firestore;
-  FlutterSecureStorage _storage;
+class UserService {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FlutterSecureStorage _storage = new FlutterSecureStorage();
+  int statusCode;
+  String msg;
 
-  UserService(){
+  UserService({this.statusCode = 0, this.msg = 'Something went wrong, please try again'}) {
     initializeFirebaseApp();
   }
 
-  void initializeFirebaseApp() async{
+  void initializeFirebaseApp() async {
     bool internetConnection = await checkInternetConnectivity();
-    if(internetConnection){
+    if (internetConnection) {
       await Firebase.initializeApp();
       _auth = FirebaseAuth.instance;
       _firestore = FirebaseFirestore.instance;
@@ -27,77 +28,92 @@ class UserService{
     }
   }
 
-  int statusCode;
-  String msg;
-
-  void storeJWTToken(String idToken, refreshToken) async{
+  void storeJWTToken(String idToken, refreshToken) async {
     await _storage.write(key: 'idToken', value: idToken);
     await _storage.write(key: 'refreshToken', value: refreshToken);
   }
 
-  String validateToken(String token){
+  String? validateToken(String token) {
     bool isExpired = Jwt.isExpired(token);
 
-    if(isExpired){
+    if (isExpired) {
       return null;
-    }
-    else{
+    } else {
       Map<String, dynamic> payload = Jwt.parseJwt(token);
       return payload['user_id'];
     }
   }
 
-  void logOut(context) async{
+  void logOut(context) async {
     await _storage.deleteAll();
     Navigator.of(context).pushReplacementNamed('/');
   }
 
-  Future<void> login(userValues) async{
+  Future<void> login(userValues) async {
     String email = userValues['email'];
     String password = userValues['password'];
+    await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user) async {
+      final User? currentUser = _auth.currentUser;
 
-    await _auth.signInWithEmailAndPassword(email: email, password: password).then((dynamic user) async{
-      final User currentUser = _auth.currentUser;
+      String? idToken = await currentUser?.getIdToken();
+      String? refreshToken = currentUser?.refreshToken;
 
-      String idToken = await currentUser.getIdToken();
-      String refreshToken = currentUser.refreshToken;
-
-      storeJWTToken(idToken, refreshToken);
+      storeJWTToken(idToken!, refreshToken);
 
       statusCode = 200;
-
-    }).catchError((error){
+    }).catchError((error) {
       handleAuthErrors(error);
     });
   }
 
-  Future<String> getUserId() async{
+  Future<void> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    await _auth.signInWithCredential(credential).then((dynamic user) async {
+      final User? currentUser = _auth.currentUser;
+
+      String? idToken = await currentUser?.getIdToken();
+      String? refreshToken = currentUser?.refreshToken;
+
+      storeJWTToken(idToken!, refreshToken);
+
+      statusCode = 200;
+    }).catchError((error) {
+      handleAuthErrors(error);
+    });
+  }
+
+  Future<String?> getUserId() async {
     var token = await _storage.read(key: 'idToken');
-    var uid = validateToken(token);
+    var uid = validateToken(token!);
     return uid;
   }
 
-  Future<void> signup(userValues) async{
+  Future<void> signup(userValues) async {
     String email = userValues['email'];
     String password = userValues['password'];
 
-    await _auth.createUserWithEmailAndPassword(email: email, password: password).then((dynamic user){
+    await _auth.createUserWithEmailAndPassword(email: email, password: password).then((dynamic user) {
       String uid = user.user.uid;
-      _firestore.collection('users').add({
-        'fullName': userValues['fullName'],
-        'mobileNumber': userValues['mobileNumber'],
-        'userId': uid
-      });
+      _firestore
+          .collection('users')
+          .add({'fullName': userValues['fullName'], 'mobileNumber': userValues['mobileNumber'], 'userId': uid});
 
       statusCode = 200;
-    }).catchError((error){
+    }).catchError((error) {
       handleAuthErrors(error);
     });
   }
 
-  void handleAuthErrors(error){
+  void handleAuthErrors(error) {
     String errorCode = error.code;
-    switch(errorCode){
+    switch (errorCode) {
       case "ERROR_EMAIL_ALREADY_IN_USE":
         {
           statusCode = 400;
@@ -112,30 +128,30 @@ class UserService{
     }
   }
 
-  String capitalizeName(String name){
-    name = name[0].toUpperCase()+ name.substring(1);
+  String capitalizeName(String name) {
+    name = name[0].toUpperCase() + name.substring(1);
     return name;
   }
 
-  String userEmail(){
+  String? userEmail() {
     var user = _auth.currentUser;
-    return user.email;
+    return user?.email;
   }
 
-  Future<List> userWishlist() async{
-    String uid = await getUserId();
-    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).get();
+  Future<List> userWishlist() async {
+    String? uid = await getUserId();
+    QuerySnapshot userRef = await _firestore.collection('users').where('userId', isEqualTo: uid).get();
 
-    Map userData = userRef.docs[0].data();
-    List userWishList = new List();
+    Map userData = userRef.docs[0].data() as Map;
+    List userWishList = [];
 
-    if(userData.containsKey('wishlist')){
-      for(String item in userData['wishlist']){
+    if (userData.containsKey('wishlist')) {
+      for (String item in userData['wishlist']) {
         Map<String, dynamic> tempWishList = new Map();
         DocumentSnapshot productRef = await _firestore.collection('products').doc(item).get();
-        tempWishList['productName'] = productRef.data()['name'];
-        tempWishList['price'] = productRef.data()['price'];
-        tempWishList['image'] = productRef.data()['image'];
+        tempWishList['productName'] = productRef['name'];
+        tempWishList['price'] = productRef['price'];
+        tempWishList['image'] = productRef['image'];
         tempWishList['productId'] = productRef.id;
         userWishList.add(tempWishList);
       }
@@ -143,16 +159,16 @@ class UserService{
     return userWishList;
   }
 
-  Future<void> deleteUserWishlistItems(String productId) async{
-    String uid = await getUserId();
-    QuerySnapshot userRef = await _firestore.collection('users').where('userId',isEqualTo: uid).get();
-    String documentId = userRef.docs[0].id;
-    Map<String,dynamic> wishlist = userRef.docs[0].data();
-    wishlist['wishlist'].remove(productId);
+  Future<void> deleteUserWishlistItems(String productId) async {
+    String? uid = await getUserId();
+    if (uid != null) {
+      QuerySnapshot userRef = await _firestore.collection('users').where('userId', isEqualTo: uid).get();
+      String documentId = userRef.docs[0].id;
+      Map<String, dynamic> wishlist = userRef.docs[0].data() as Map<String, dynamic>;
+      wishlist['wishlist'].remove(productId);
 
-    await _firestore.collection('users').doc(documentId).update({
-      'wishlist':wishlist['wishlist']
-    });
+      await _firestore.collection('users').doc(documentId).update({'wishlist': wishlist['wishlist']});
+    }
   }
 
   String getConnectionValue(var connectivityResult) {
@@ -174,16 +190,14 @@ class UserService{
     return status;
   }
 
-  Future<bool> checkInternetConnectivity() async{
+  Future<bool> checkInternetConnectivity() async {
     final Connectivity _connectivity = Connectivity();
     ConnectivityResult result = await _connectivity.checkConnectivity();
     String connection = getConnectionValue(result);
-    if(connection == 'None') {
+    if (connection == 'None') {
       return false;
-    }
-    else{
+    } else {
       return true;
     }
   }
 }
-

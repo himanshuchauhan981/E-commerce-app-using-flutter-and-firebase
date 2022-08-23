@@ -5,6 +5,7 @@ class ProfileAppBar extends StatefulWidget with PreferredSizeWidget {
   final BuildContext buildContext;
 
   ProfileAppBar(this.title, this.buildContext);
+
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
@@ -13,7 +14,6 @@ class ProfileAppBar extends StatefulWidget with PreferredSizeWidget {
 }
 
 class _ProfileAppBarState extends State<ProfileAppBar> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,7 +35,7 @@ class _ProfileAppBarState extends State<ProfileAppBar> {
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1.0
+            letterSpacing: 1.0,
           ),
         ),
       ),

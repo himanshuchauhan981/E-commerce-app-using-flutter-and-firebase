@@ -16,7 +16,7 @@ class AddCreditCard extends StatefulWidget {
 class _AddCreditCardState extends State<AddCreditCard> {
   String cardNumber = 'XXXX XXXX XXXX XXXX';
   String expiryDate = 'MM/YY';
-  String cardHolderName ='CardHolder name';
+  String cardHolderName = 'CardHolder name';
   String cvvCode = 'CVV/CVC';
   bool isCvvFocused = false;
   bool autoValidate = false;
@@ -33,34 +33,31 @@ class _AddCreditCardState extends State<AddCreditCard> {
     _paymentCard.type = CardType.Others;
   }
 
-  void addNewCard() async{
+  void addNewCard() async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
-      final FormState form = _formKey.currentState;
-      if(form.validate()){
+    if (connectionStatus) {
+      final FormState form = _formKey.currentState as FormState;
+      if (form.validate()) {
         await _checkoutService.newCreditCardDetails(cardNumber, expiryDate, cardHolderName);
         Navigator.of(context).pushNamed('/checkout/paymentMethod');
-      }
-      else{
+      } else {
         setState(() {
           autoValidate = true;
         });
       }
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CheckoutAppBar('Cancel','Next',this.addNewCard),
+      appBar: CheckoutAppBar('Cancel', 'Next', this.addNewCard),
       body: Container(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
+          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
           child: Form(
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -73,11 +70,14 @@ class _AddCreditCardState extends State<AddCreditCard> {
                     style: TextStyle(
                       fontSize: 35.0,
                       letterSpacing: 1.0,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 20.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20.0,
+                      horizontal: 20.0,
+                    ),
                     child: Container(
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -101,12 +101,14 @@ class _AddCreditCardState extends State<AddCreditCard> {
                               cardNumber,
                               style: TextStyle(
                                 fontSize: 24.0,
-                                color: Colors.white
+                                color: Colors.white,
                               ),
                             ),
                             SizedBox(height: 100.0),
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10.0),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10.0,
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
@@ -114,14 +116,14 @@ class _AddCreditCardState extends State<AddCreditCard> {
                                     expiryDate,
                                     style: TextStyle(
                                       fontSize: 18.0,
-                                      color: Colors.white
+                                      color: Colors.white,
                                     ),
                                   ),
                                   Text(
                                     cvvCode,
                                     style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.white
+                                      fontSize: 18.0,
+                                      color: Colors.white,
                                     ),
                                   )
                                 ],
@@ -130,8 +132,8 @@ class _AddCreditCardState extends State<AddCreditCard> {
                             Text(
                               cardHolderName,
                               style: TextStyle(
-                                  fontSize: 22.0,
-                                  color: Colors.white
+                                fontSize: 22.0,
+                                color: Colors.white,
                               ),
                             )
                           ],
@@ -144,26 +146,26 @@ class _AddCreditCardState extends State<AddCreditCard> {
                       padding: EdgeInsets.only(top: 10.0),
                       child: Icon(
                         Icons.credit_card,
-                        color: iconColorState == 'cardNumber'? Colors.black : Colors.grey,
+                        color: iconColorState == 'cardNumber' ? Colors.black : Colors.grey,
                       ),
                     ),
                     title: TextFormField(
-                      onTap: (){
+                      onTap: () {
                         setState(() {
                           iconColorState = 'cardNumber';
                         });
                       },
-                      onChanged: (text){
+                      onChanged: (text) {
                         setState(() {
-                          if(text.length == 0) cardNumber = 'XXXX XXXX XXXX XXXX';
-                          else cardNumber = text;
+                          if (text.length == 0)
+                            cardNumber = 'XXXX XXXX XXXX XXXX';
+                          else
+                            cardNumber = text;
                         });
                       },
-                      decoration: InputDecoration(
-                        labelText: 'Card Number'
-                      ),
+                      decoration: InputDecoration(labelText: 'Card Number'),
                       keyboardType: TextInputType.number,
-                      validator: CreditCardValidation.validateCardNumber,
+                      validator: (value) => CreditCardValidation.validateCardNumber(value!),
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(16),
@@ -176,23 +178,25 @@ class _AddCreditCardState extends State<AddCreditCard> {
                       padding: EdgeInsets.only(top: 10.0),
                       child: Icon(
                         Icons.calendar_today,
-                        color: iconColorState == 'expiryDate'? Colors.black : Colors.grey,
+                        color: iconColorState == 'expiryDate' ? Colors.black : Colors.grey,
                       ),
                     ),
                     title: TextFormField(
-                      onTap: (){
+                      onTap: () {
                         setState(() {
                           iconColorState = 'expiryDate';
                         });
                       },
-                      onChanged: (text){
+                      onChanged: (text) {
                         setState(() {
-                          if(text.length == 0) expiryDate = 'MM/YY';
-                          else expiryDate = text;
+                          if (text.length == 0)
+                            expiryDate = 'MM/YY';
+                          else
+                            expiryDate = text;
                         });
                       },
                       decoration: InputDecoration(
-                        labelText: 'Expiry Date'
+                        labelText: 'Expiry Date',
                       ),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
@@ -200,9 +204,9 @@ class _AddCreditCardState extends State<AddCreditCard> {
                         LengthLimitingTextInputFormatter(4),
                         CardMonthInputFormatter()
                       ],
-                      validator: CreditCardValidation.validateDate,
-                      onSaved: (value){
-                        List<int> expiryDate = CreditCardValidation.getExpiryDate(value);
+                      validator: (value) => CreditCardValidation.validateDate(value!),
+                      onSaved: (value) {
+                        List<int> expiryDate = CreditCardValidation.getExpiryDate(value!);
                         _paymentCard.month = expiryDate[0];
                         _paymentCard.year = expiryDate[1];
                       },
@@ -213,28 +217,28 @@ class _AddCreditCardState extends State<AddCreditCard> {
                       padding: EdgeInsets.only(top: 10.0),
                       child: Icon(
                         Icons.person,
-                        color: iconColorState == 'cardHolderName'? Colors.black : Colors.grey,
+                        color: iconColorState == 'cardHolderName' ? Colors.black : Colors.grey,
                       ),
                     ),
                     title: TextFormField(
-                      onTap: (){
+                      onTap: () {
                         setState(() {
                           iconColorState = 'cardHolderName';
                         });
                       },
-                      onChanged: (text){
+                      onChanged: (text) {
                         setState(() {
-                          if(text.length == 0) cardHolderName = 'CardHolder name';
-                          else cardHolderName = text;
+                          if (text.length == 0)
+                            cardHolderName = 'CardHolder name';
+                          else
+                            cardHolderName = text;
                         });
                       },
-                      decoration: InputDecoration(
-                        labelText: 'Card Name'
-                      ),
+                      decoration: InputDecoration(labelText: 'Card Name'),
                       keyboardType: TextInputType.text,
-                      validator: (String value) => value.isEmpty ? ErrorString.reqField : null,
-                      onSaved: (String value){
-                        _paymentCard.name = value;
+                      validator: (String? value) => value!.isEmpty ? ErrorString.reqField : null,
+                      onSaved: (String? value) {
+                        _paymentCard.name = value!;
                       },
                     ),
                   )

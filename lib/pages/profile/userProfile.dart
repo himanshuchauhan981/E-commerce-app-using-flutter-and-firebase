@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
-import 'package:app_frontend/components/loader.dart';
-import 'package:app_frontend/services/userService.dart';
-import 'package:app_frontend/services/profileService.dart';
-import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/header.dart';
-import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/components/sidebar.dart';
+import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/services/profileService.dart';
+import 'package:app_frontend/services/userService.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -22,23 +20,23 @@ class _UserProfileState extends State<UserProfile> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   bool showCartIcon = true;
-  String name;
-  String mobileNumber;
-  String email;
+  String name = '';
+  String mobileNumber = '';
+  String email = '';
 
   void setProfileDetails(context) async {
-    dynamic args = ModalRoute.of(context).settings.arguments;
+    dynamic args = ModalRoute.of(context)?.settings.arguments;
     this.setState(() {
       name = args['fullName'];
       mobileNumber = args['mobileNumber'];
     });
   }
 
-  void initState(){
+  void initState() {
     super.initState();
-    name ='';
-    mobileNumber ='';
-    email ='';
+    name = '';
+    mobileNumber = '';
+    email = '';
   }
 
   @override
@@ -46,7 +44,7 @@ class _UserProfileState extends State<UserProfile> {
     setProfileDetails(context);
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header('Profile', _scaffoldKey,showCartIcon,context),
+      appBar: header('Profile', _scaffoldKey, showCartIcon, context),
       drawer: sidebar(context),
       body: Container(
         alignment: Alignment.center,
@@ -61,8 +59,8 @@ class _UserProfileState extends State<UserProfile> {
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     fit: BoxFit.fill,
-                    image: AssetImage('assets/userProfile.jpg')
-                  )
+                    image: AssetImage('assets/userProfile.jpg'),
+                  ),
                 ),
               ),
               SizedBox(height: 10.0),
@@ -71,7 +69,7 @@ class _UserProfileState extends State<UserProfile> {
                 style: TextStyle(
                   fontSize: 25.0,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0
+                  letterSpacing: 1.0,
                 ),
               ),
               SizedBox(height: 60.0),
@@ -84,24 +82,27 @@ class _UserProfileState extends State<UserProfile> {
                 title: Text(
                   'Account Details',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22.0
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22.0,
                   ),
                 ),
                 trailing: Icon(
                   Icons.keyboard_arrow_right,
                   size: 35.0,
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
 
-                  if(connectionStatus){
-                    dynamic args = ModalRoute.of(context).settings.arguments;
-                    String email = _userService.userEmail();
+                  if (connectionStatus) {
+                    dynamic args = ModalRoute.of(context)?.settings.arguments;
+                    String? email = _userService.userEmail();
                     args['email'] = email;
-                    Navigator.pushNamed(context, '/profile/edit',arguments: args);
-                  }
-                  else{
+                    Navigator.pushNamed(
+                      context,
+                      '/profile/edit',
+                      arguments: args,
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -115,24 +116,26 @@ class _UserProfileState extends State<UserProfile> {
                 title: Text(
                   'WishList',
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22.0
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22.0,
                   ),
                 ),
                 trailing: Icon(
                   Icons.keyboard_arrow_right,
                   size: 35.0,
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
-
-                  if(connectionStatus){
+                  if (connectionStatus) {
                     Loader.showLoadingScreen(context, _keyLoader);
                     List userList = await _userService.userWishlist();
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.pushNamed(context, '/wishlist',arguments: {'userList':userList});
-                  }
-                  else{
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.pushNamed(
+                      context,
+                      '/wishlist',
+                      arguments: {'userList': userList},
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -146,23 +149,26 @@ class _UserProfileState extends State<UserProfile> {
                   'Order History',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 22.0
+                    fontSize: 22.0,
                   ),
                 ),
                 trailing: Icon(
                   Icons.keyboard_arrow_right,
                   size: 35.0,
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
 
-                  if(connectionStatus){
+                  if (connectionStatus) {
                     Loader.showLoadingScreen(context, _keyLoader);
                     List orderData = await _checkoutService.listPlacedOrder();
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
-                  }
-                  else{
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.popAndPushNamed(
+                      context,
+                      '/placedOrder',
+                      arguments: {'data': orderData},
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -177,26 +183,27 @@ class _UserProfileState extends State<UserProfile> {
                   'Settings',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 22.0
+                    fontSize: 22.0,
                   ),
                 ),
                 trailing: Icon(
                   Icons.keyboard_arrow_right,
                   size: 35.0,
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
 
-                  if(connectionStatus){
+                  if (connectionStatus) {
                     Loader.showLoadingScreen(context, _keyLoader);
-                    QuerySnapshot userSettings = await _profileService.getUserSettings();
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.of(context).pushNamed('/profile/settings', arguments: userSettings.docs[0].data);
-                  }
-                  else{
+                    QuerySnapshot? userSettings = await _profileService.getUserSettings();
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.of(context).pushNamed(
+                      '/profile/settings',
+                      arguments: userSettings!.docs[0].data,
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
-
                 },
               ),
               ListTile(
@@ -209,41 +216,45 @@ class _UserProfileState extends State<UserProfile> {
                   'Contact Us',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 22.0
+                    fontSize: 22.0,
                   ),
                 ),
                 trailing: Icon(
                   Icons.keyboard_arrow_right,
                   size: 35.0,
                 ),
-                onTap: () async{
+                onTap: () async {
                   Navigator.of(context).pushNamed('/profile/contactUs');
                 },
               ),
               SizedBox(height: 60.0),
               ButtonTheme(
-                  minWidth: MediaQuery.of(context).size.width - 50.0,
-                  height: 50.0,
-                  child: FlatButton(
-                    onPressed: (){
-                      _userService.logOut(context);
-                    },
-                    color: Colors.white,
-                    child: Text(
-                      'Logout',
-                      style: TextStyle(
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54
-                      ),
-                    ),
+                minWidth: MediaQuery.of(context).size.width - 50.0,
+                height: 50.0,
+                child: TextButton(
+                  style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                         color: Colors.black26,
-                        width: 2.0
+                        width: 2.0,
                       ),
                     ),
-                  )
+                    textStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    _userService.logOut(context);
+                  },
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

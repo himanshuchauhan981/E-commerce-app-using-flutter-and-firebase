@@ -8,13 +8,15 @@ class ShippingMethod extends StatefulWidget {
 }
 
 class _ShippingMethodState extends State<ShippingMethod> {
-
   String selectedShippingMethod = 'UPS Ground';
 
-  checkoutShippingMethod(){
-    Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+  checkoutShippingMethod() {
+    Map args = ModalRoute.of(context)?.settings.arguments as Map;
     args['shippingMethod'] = selectedShippingMethod;
-    Navigator.of(context).pushNamed('/checkout/paymentMethod', arguments: args);
+    Navigator.of(context).pushNamed(
+      '/checkout/paymentMethod',
+      arguments: args,
+    );
   }
 
   @override
@@ -23,21 +25,26 @@ class _ShippingMethodState extends State<ShippingMethod> {
       appBar: CheckoutAppBar('Back', 'Done', checkoutShippingMethod),
       body: Container(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+          padding: EdgeInsets.symmetric(
+            vertical: 20.0,
+            horizontal: 10.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
                 'Shipping',
                 style: TextStyle(
-                  fontFamily: 'NovaSquare',
                   fontSize: 40.0,
                   letterSpacing: 1.0,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 60.0, bottom: 30.0),
+                padding: const EdgeInsets.only(
+                  top: 60.0,
+                  bottom: 30.0,
+                ),
                 child: Center(
                   child: Image.asset(
                     'assets/cartonBox.png',
@@ -51,55 +58,56 @@ class _ShippingMethodState extends State<ShippingMethod> {
                 style: TextStyle(
                   fontSize: 20.0,
                   letterSpacing: 1.0,
-                  fontWeight: FontWeight.bold
-                )
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                leading: Icon(Icons.local_shipping),
-                title: Text(
-                  'UPS Ground',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                    vertical: 10.0,
                   ),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 3.0),
-                    Text(
-                      'Arrives in 3-5 days',
-                      style: TextStyle(
-                        fontSize: 16.0
-                      ),
+                  leading: Icon(Icons.local_shipping),
+                  title: Text(
+                    'UPS Ground',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(
-                      'free',
-                      style: TextStyle(
-                        fontSize: 16.0
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 3.0),
+                      Text(
+                        'Arrives in 3-5 days',
+                        style: TextStyle(fontSize: 16.0),
                       ),
-                    )
-                  ],
-                ),
-                trailing: Radio(
-                  value: 'UPS Ground',
-                  groupValue: selectedShippingMethod,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedShippingMethod = 'UPS Ground';
-                    });
-                  },
-                )
-              ),
+                      Text(
+                        'free',
+                        style: TextStyle(fontSize: 16.0),
+                      )
+                    ],
+                  ),
+                  trailing: Radio(
+                    value: 'UPS Ground',
+                    groupValue: selectedShippingMethod,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedShippingMethod = 'UPS Ground';
+                      });
+                    },
+                  )),
               ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 10.0,
+                  vertical: 10.0,
+                ),
                 leading: Icon(Icons.local_shipping),
                 title: Text(
                   'FedEx',
                   style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: Column(
@@ -107,27 +115,25 @@ class _ShippingMethodState extends State<ShippingMethod> {
                   children: <Widget>[
                     Text(
                       'Arriving tomorrow',
-                      style: TextStyle(
-                          fontSize: 16.0
-                      ),
+                      style: TextStyle(fontSize: 16.0),
                     ),
                     Text(
                       '\$5.00',
-                      style: TextStyle(
-                          fontSize: 16.0
-                      ),
+                      style: TextStyle(fontSize: 16.0),
                     ),
                   ],
                 ),
-                  trailing: Radio(
-                    value: 'FedEx',
-                    groupValue: selectedShippingMethod,
-                    onChanged: (value) {
-                      setState(() {
+                trailing: Radio(
+                  value: 'FedEx',
+                  groupValue: selectedShippingMethod,
+                  onChanged: (value) {
+                    setState(
+                      () {
                         selectedShippingMethod = 'FedEx';
-                      });
-                    },
-                  )
+                      },
+                    );
+                  },
+                ),
               )
             ],
           ),

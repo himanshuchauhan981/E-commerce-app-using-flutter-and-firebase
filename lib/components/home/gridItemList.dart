@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 import 'package:app_frontend/components/item/customTransition.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
 import 'package:app_frontend/pages/products/particularItem.dart';
 import 'package:app_frontend/services/productService.dart';
-import 'package:app_frontend/components/modals/internetConnection.dart';
 import 'package:app_frontend/services/userService.dart';
+import 'package:flutter/material.dart';
 
 class GridItemList extends StatefulWidget {
   @override
@@ -13,52 +11,49 @@ class GridItemList extends StatefulWidget {
 }
 
 class _GridItemListState extends State<GridItemList> {
-
   ProductService _productService = new ProductService();
   UserService _userService = new UserService();
 
-  _GridItemListState(){
+  _GridItemListState() {
     listFeaturedItems();
   }
 
-  List featuredItems  = new List(0);
+  List featuredItems = new List.filled(0, null, growable: false);
 
-  void listFeaturedItems() async{
+  void listFeaturedItems() async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
-    if(connectionStatus){
-      List<Map<String,String>> featuredItemList = await _productService.featuredItems();
+    if (connectionStatus) {
+      List featuredItemList = await _productService.featuredItems();
       setState(() {
         featuredItems = featuredItemList;
       });
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
-
   }
 
-  void showParticularItem(Map item) async{
+  void showParticularItem(Map item) async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
-    if(connectionStatus){
+    if (connectionStatus) {
       String productId = item['productId'];
-      Map itemDetails = await _productService.particularItem(productId);
+      Map<String, dynamic> itemDetails = await _productService.particularItem(productId);
       Navigator.push(
           context,
           CustomTransition(
-              type: CustomTransitionType.downToUp,
-              child: ParticularItem(
-                itemDetails: itemDetails,
-                editProduct: false,
-              )
-          )
-      );
-    }
-    else{
+            type: CustomTransitionType.downToUp,
+            child: ParticularItem(
+              itemDetails: itemDetails,
+              editProduct: false,
+            ),
+            key: GlobalKey<FormState>(),
+            alignment: Alignment.center,
+          ));
+    } else {
       internetConnectionDialog(context);
     }
   }
 
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     double itemHeight = (size.height - kToolbarHeight - 24) / 2;
@@ -70,18 +65,14 @@ class _GridItemListState extends State<GridItemList> {
           crossAxisCount: 2,
           mainAxisSpacing: 20.0,
           crossAxisSpacing: 20.0,
-
         ),
-        delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+        delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
           var item = featuredItems[index];
-          return featuredItemCard(item,index);
-        },
-            childCount: featuredItems.length
-        )
-    );
+          return featuredItemCard(item, index);
+        }, childCount: featuredItems.length));
   }
 
-  Widget featuredItemCard(item,index){
+  Widget featuredItemCard(item, index) {
     return Card(
       elevation: 0,
       semanticContainer: true,
@@ -115,8 +106,8 @@ class _GridItemListState extends State<GridItemList> {
                 Text(
                   "\$${item['price']}.00",
                   style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
@@ -124,8 +115,8 @@ class _GridItemListState extends State<GridItemList> {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.grey
+                    fontSize: 15.0,
+                    color: Colors.grey,
                   ),
                 ),
               ],

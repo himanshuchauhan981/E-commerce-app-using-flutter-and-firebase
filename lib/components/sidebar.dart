@@ -1,14 +1,13 @@
-import 'package:app_frontend/components/modals/internetConnection.dart';
-import 'package:flutter/material.dart';
-
 import 'package:app_frontend/components/loader.dart';
+import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/services/productService.dart';
+import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
-import 'package:app_frontend/services/profileService.dart';
-import 'package:app_frontend/services/productService.dart';
-import 'package:app_frontend/services/checkoutService.dart';
+import 'package:flutter/material.dart';
 
-Widget sidebar(BuildContext context){
+Widget sidebar(BuildContext context) {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   UserService _userService = new UserService();
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
@@ -27,12 +26,12 @@ Widget sidebar(BuildContext context){
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.home),
-                title:Text(
+                title: Text(
                   'HOME',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
                 onTap: () {
@@ -44,23 +43,26 @@ Widget sidebar(BuildContext context){
                 title: Text(
                   'SHOP',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
 
-                  if(connectionStatus){
-                    Map<String,dynamic> args = new Map();
+                  if (connectionStatus) {
+                    Map<String, dynamic> args = new Map();
                     Loader.showLoadingScreen(context, _keyLoader);
-                    List<Map<String,String>> categoryList = await _productService.listCategories();
+                    List categoryList = await _productService.listCategories();
                     args['category'] = categoryList;
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.pushReplacementNamed(context, '/shop',arguments: args);
-                  }
-                  else{
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/shop',
+                      arguments: args,
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -70,24 +72,26 @@ Widget sidebar(BuildContext context){
                 title: Text(
                   'BAG',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
-
-                  if(connectionStatus){
-                    Map<String,dynamic> args = new Map();
+                  if (connectionStatus) {
+                    Map<String, dynamic> args = new Map();
                     Loader.showLoadingScreen(context, _keyLoader);
                     List bagItems = await _shoppingBagService.list();
                     args['bagItems'] = bagItems;
                     args['route'] = '/home';
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.pushReplacementNamed(context, '/bag', arguments: args);
-                  }
-                  else{
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/bag',
+                      arguments: args,
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -97,9 +101,9 @@ Widget sidebar(BuildContext context){
                 title: Text(
                   'SEARCH',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
               ),
@@ -108,21 +112,24 @@ Widget sidebar(BuildContext context){
                 title: Text(
                   'ORDERS',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
                 onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
 
-                  if(connectionStatus){
+                  if (connectionStatus) {
                     Loader.showLoadingScreen(context, _keyLoader);
                     List orderData = await _checkoutService.listPlacedOrder();
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.popAndPushNamed(context, '/placedOrder',arguments: {'data': orderData});
-                  }
-                  else{
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.popAndPushNamed(
+                      context,
+                      '/placedOrder',
+                      arguments: {'data': orderData},
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -132,21 +139,23 @@ Widget sidebar(BuildContext context){
                 title: Text(
                   'WISHLIST',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
-
-                  if(connectionStatus){
+                  if (connectionStatus) {
                     Loader.showLoadingScreen(context, _keyLoader);
                     List userList = await _userService.userWishlist();
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.popAndPushNamed(context, '/wishlist',arguments: {'userList':userList});
-                  }
-                  else{
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.popAndPushNamed(
+                      context,
+                      '/wishlist',
+                      arguments: {'userList': userList},
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -156,21 +165,23 @@ Widget sidebar(BuildContext context){
                 title: Text(
                   'PROFILE',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
-
-                  if(connectionStatus){
+                  if (connectionStatus) {
                     Loader.showLoadingScreen(context, _keyLoader);
                     Map userProfile = await _profileService.getUserProfile();
-                    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-                    Navigator.popAndPushNamed(context, '/profile',arguments: userProfile);
-                  }
-                  else{
+                    Navigator.of(context, rootNavigator: true).pop();
+                    Navigator.popAndPushNamed(
+                      context,
+                      '/profile',
+                      arguments: userProfile,
+                    );
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
@@ -180,18 +191,16 @@ Widget sidebar(BuildContext context){
                 title: Text(
                   'LOGOUT',
                   style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.0,
                   ),
                 ),
-                onTap: () async{
+                onTap: () async {
                   bool connectionStatus = await _userService.checkInternetConnectivity();
-
-                  if(connectionStatus){
+                  if (connectionStatus) {
                     _userService.logOut(context);
-                  }
-                  else{
+                  } else {
                     internetConnectionDialog(context);
                   }
                 },
