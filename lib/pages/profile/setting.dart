@@ -5,7 +5,6 @@ import 'package:app_frontend/components/profileAppBar.dart';
 import 'package:app_frontend/services/profileService.dart';
 import 'package:app_frontend/services/userService.dart';
 
-
 class ProfileSetting extends StatefulWidget {
   @override
   _ProfileSettingState createState() => _ProfileSettingState();
@@ -15,25 +14,24 @@ class _ProfileSettingState extends State<ProfileSetting> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ProfileService _profileService = new ProfileService();
   UserService _userService = new UserService();
-  Map<String,bool> settings = new Map();
+  Map<String, bool> settings = new Map();
 
-  saveUserSettings(String key, bool value) async{
+  saveUserSettings(String key, bool value) async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
+    if (connectionStatus) {
       settings[key] = value;
       await _profileService.updateUserSettings(settings);
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
   }
 
-  userSetting(){
-    Map args = ModalRoute.of(context).settings.arguments;
-    List<String> keys = args.keys.toList();
-    for(String key in keys){
-      if(key != 'userId') {
+  userSetting() {
+    Map args = ModalRoute.of(context)?.settings.arguments as Map;
+    List keys = args.keys.toList();
+    for (String key in keys) {
+      if (key != 'userId') {
         setState(() {
           settings[key] = args[key];
         });
@@ -46,9 +44,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
     userSetting();
     return Scaffold(
       key: _scaffoldKey,
-      appBar: ProfileAppBar('Settings',context),
+      appBar: ProfileAppBar('Settings', context),
       body: Container(
-        padding: EdgeInsets.only(top: 40.0,left: 10.0, right: 10.0),
+        padding: EdgeInsets.only(
+          top: 40.0,
+          left: 10.0,
+          right: 10.0,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -56,7 +58,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
               'SECURITY',
               style: TextStyle(
                 fontSize: 18.0,
-                letterSpacing: 1.0
+                letterSpacing: 1.0,
               ),
             ),
             ListTile(
@@ -65,12 +67,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 'Enable Face ID / Touch ID login',
                 style: TextStyle(
                   fontSize: 20.0,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               trailing: Switch(
-                value: settings['touchId'],
-                onChanged: (value) => saveUserSettings('touchId',value),
+                value: settings['touchId']!,
+                onChanged: (value) => saveUserSettings('touchId', value),
                 activeColor: Colors.green,
               ),
             ),
@@ -78,8 +80,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
             Text(
               'PUSH NOTIFICATIONS',
               style: TextStyle(
-                  fontSize: 18.0,
-                  letterSpacing: 1.0
+                fontSize: 18.0,
+                letterSpacing: 1.0,
               ),
             ),
             ListTile(
@@ -87,13 +89,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
               leading: Text(
                 'Order Updates',
                 style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               trailing: Switch(
-                value: settings['orderUpdates'],
-                onChanged: (value) => saveUserSettings('orderUpdates',value),
+                value: settings['orderUpdates']!,
+                onChanged: (value) => saveUserSettings('orderUpdates', value),
                 activeColor: Colors.green,
               ),
             ),
@@ -102,12 +104,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
               leading: Text(
                 'New arrivals',
                 style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               trailing: Switch(
-                value: settings['newArrivals'],
+                value: settings['newArrivals']!,
                 onChanged: (value) => saveUserSettings('newArrivals', value),
                 activeColor: Colors.green,
               ),
@@ -117,12 +119,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
               leading: Text(
                 'Promotions',
                 style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               trailing: Switch(
-                value: settings['promotions'],
+                value: settings['promotions']!,
                 onChanged: (value) => saveUserSettings('promotions', value),
                 activeColor: Colors.green,
               ),
@@ -132,12 +134,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
               leading: Text(
                 'Sales alerts',
                 style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               trailing: Switch(
-                value: settings['saleAlerts'],
+                value: settings['saleAlerts']!,
                 onChanged: (value) => saveUserSettings('saleAlerts', value),
                 activeColor: Colors.green,
               ),
@@ -146,8 +148,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
             Text(
               'ACCOUNT',
               style: TextStyle(
-                  fontSize: 18.0,
-                  letterSpacing: 1.0
+                fontSize: 18.0,
+                letterSpacing: 1.0,
               ),
             ),
             SizedBox(height: 10.0),
@@ -168,7 +170,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
             Material(
               color: Colors.white,
               child: ListTile(
-                onTap: (){
+                onTap: () {
                   _userService.logOut(context);
                 },
                 title: Center(

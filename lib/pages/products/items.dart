@@ -16,51 +16,52 @@ class Items extends StatefulWidget {
 class _ItemsState extends State<Items> {
   ProductService _productService = new ProductService();
   UserService _userService = new UserService();
-  String heading;
+  String heading = '';
 
   bool showIcon = true;
   bool showButton = true;
   int childCount = 4;
-  var itemList = new List<dynamic>();
+  var itemList = <dynamic>[];
 
-  setItems(){
-    Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+  setItems() {
+    Map<String, dynamic> args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     this.setState(() {
       heading = args['heading'];
       itemList = args['items'];
     });
   }
 
-  setAllItems(){
+  setAllItems() {
     setState(() {
-      showButton  = false;
-      childCount =  itemList.length;
+      showButton = false;
+      childCount = itemList.length;
     });
   }
 
-  openParticularItem(item) async{
+  openParticularItem(item) async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
+    if (connectionStatus) {
       String productId = item['productId'];
-      Map itemDetails = await _productService.particularItem(productId);
+      Map<String, dynamic> itemDetails = await _productService.particularItem(productId);
       Navigator.push(
-          context,
-          CustomTransition(
-              type: CustomTransitionType.downToUp,
-              child: ParticularItem(
-                itemDetails: itemDetails,
-                editProduct: false,
-              )
-          )
+        context,
+        CustomTransition(
+          type: CustomTransitionType.downToUp,
+          child: ParticularItem(
+            itemDetails: itemDetails,
+            editProduct: false,
+          ),
+          key: UniqueKey(),
+          alignment: Alignment.center,
+        ),
       );
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
   }
 
-  Widget itemsCard(item){
+  Widget itemsCard(item) {
     return Card(
       elevation: 0,
       semanticContainer: true,
@@ -95,7 +96,7 @@ class _ItemsState extends State<Items> {
                   "\$${item['price'].toString()}.00",
                   style: TextStyle(
                     fontSize: 18.0,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
@@ -104,7 +105,7 @@ class _ItemsState extends State<Items> {
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 15.0,
-                    color: Colors.grey
+                    color: Colors.grey,
                   ),
                 ),
               ],
@@ -115,7 +116,7 @@ class _ItemsState extends State<Items> {
     );
   }
 
-  Widget setCustomScrollView(){
+  Widget setCustomScrollView() {
     var size = MediaQuery.of(context).size;
 
     final double itemHeight = (size.height - kToolbarHeight - 24) / 2;
@@ -130,45 +131,42 @@ class _ItemsState extends State<Items> {
             mainAxisSpacing: 26.0,
             crossAxisCount: 2,
           ),
-          delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+          delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
             var item = itemList[index];
             return itemsCard(item);
-          },
-              childCount: childCount
-          ),
+          }, childCount: childCount),
         ),
         SliverFillRemaining(
-            hasScrollBody: false,
-            child: Visibility(
-              visible: showButton,
-              child: ButtonTheme(
-                  minWidth: 250.0,
-                  child: RaisedButton(
-                    onPressed: (){
-                      setAllItems();
-                    },
-                    color: Colors.white,
-                    child: Text(
-                      'Browse All',
-                      style: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          color: Colors.black,
-                          width: 2.0
-                      ),
-                    ),
-                  )
+          hasScrollBody: false,
+          child: Visibility(
+            visible: showButton,
+            child: ButtonTheme(
+              minWidth: 250.0,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                  onPrimary: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: () {
+                  setAllItems();
+                },
+                child: Text(
+                  'Browse All',
+                  style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            )
+            ),
+          ),
         )
       ],
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -177,10 +175,10 @@ class _ItemsState extends State<Items> {
     setItems();
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header(heading, _scaffoldKey, showIcon,context),
+      appBar: header(heading, _scaffoldKey, showIcon, context),
       drawer: sidebar(context),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
         child: setCustomScrollView(),
       ),
     );

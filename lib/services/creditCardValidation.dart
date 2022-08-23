@@ -1,9 +1,9 @@
-class ErrorString{
+class ErrorString {
   static const String reqField = 'This field is required';
   static const String invalidCardNumber = 'Card is invalid';
 }
 
-enum CardType{
+enum CardType {
   Master,
   Visa,
   Verve,
@@ -15,24 +15,23 @@ enum CardType{
   Invalid
 }
 
-class PaymentCard{
-  CardType type;
-  int month;
-  int year;
-  int cvv;
-  String name;
+class PaymentCard {
+  late final CardType? type;
+  late final int? month;
+  late final int? year;
+  late final int? cvv;
+  late final String? name;
 
   PaymentCard({this.type, this.month, this.year, this.cvv, this.name});
 
   @override
-  String toString(){
+  String toString() {
     return '[Type: $type, Month: $month, Year: $year]';
   }
 }
 
-
-class CreditCardValidation{
-  static String validateCVV(String value) {
+class CreditCardValidation {
+  static String? validateCVV(String value) {
     if (value.isEmpty) {
       return ErrorString.reqField;
     }
@@ -43,8 +42,8 @@ class CreditCardValidation{
     return null;
   }
 
-  static String validateDate(String value){
-    if(value.isEmpty){
+  static String? validateDate(String value) {
+    if (value.isEmpty) {
       return ErrorString.reqField;
     }
 
@@ -55,9 +54,7 @@ class CreditCardValidation{
       var split = value.split(new RegExp(r'(\/)'));
       month = int.parse(split[0]);
       year = int.parse(split[1]);
-
-    }
-    else {
+    } else {
       month = int.parse(value.substring(0, (value.length)));
       year = -1;
     }
@@ -112,19 +109,18 @@ class CreditCardValidation{
     return fourDigitsYear < now.year;
   }
 
-  static String formatCardNumber(String text){
+  static String formatCardNumber(String text) {
     RegExp exp = new RegExp(r"[^0-9]");
-    return text.replaceAll(exp,'');
-
+    return text.replaceAll(exp, '');
   }
 
-  static String validateCardNumber(String input){
-    if(input.isEmpty){
+  static String? validateCardNumber(String input) {
+    if (input.isEmpty) {
       return ErrorString.reqField;
     }
 
     input = formatCardNumber(input);
-    if(input.length < 12){
+    if (input.length < 12) {
       return ErrorString.invalidCardNumber;
     }
 

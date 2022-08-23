@@ -16,24 +16,28 @@ class _AdminPanelState extends State<AdminPanel> {
       appBar: AppBar(
         title: Text('Create sample data'),
         iconTheme: IconThemeData(
-            color: Colors.black
+          color: Colors.black,
         ),
         backgroundColor: Colors.blueAccent,
       ),
       body: Container(
-        child:  Center(
-          child: RaisedButton(
-            padding: EdgeInsets.symmetric(horizontal: 20.0,vertical: 15.0),
-            color: Colors.blueAccent,
-            onPressed: (){
+        child: Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blueAccent,
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 15.0,
+              ),
+            ),
+            onPressed: () {
               adminService.createSampleData();
             },
             child: Text(
               'Load data',
               style: TextStyle(
-                fontFamily: 'NovaSquare',
                 color: Colors.white,
-                fontSize: 25
+                fontSize: 25,
               ),
             ),
           ),

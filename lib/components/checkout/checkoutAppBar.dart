@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CheckoutAppBar extends StatefulWidget with PreferredSizeWidget {
   final String leftButtonText;
   final String rightButtonText;
-  final void Function () rightButtonFunction;
+  final void Function() rightButtonFunction;
 
   CheckoutAppBar(this.leftButtonText, this.rightButtonText, this.rightButtonFunction);
 
@@ -15,7 +15,6 @@ class CheckoutAppBar extends StatefulWidget with PreferredSizeWidget {
 }
 
 class _CheckoutAppBarState extends State<CheckoutAppBar> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,29 +27,25 @@ class _CheckoutAppBarState extends State<CheckoutAppBar> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
               },
               child: Text(
                 widget.leftButtonText,
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black
-                ),
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black),
               ),
             ),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 widget.rightButtonFunction();
               },
               child: Text(
-                  widget.rightButtonText,
-                  style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
-                  )
+                widget.rightButtonText,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
             )
           ],
@@ -59,4 +54,3 @@ class _CheckoutAppBarState extends State<CheckoutAppBar> {
     );
   }
 }
-

@@ -16,29 +16,28 @@ class _SubCategoryState extends State<SubCategory> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   ProductService _productService = new ProductService();
   UserService _userService = new UserService();
-  String heading;
+  String heading = '';
   bool showIcon = false;
-  List subCategoryList = new List();
-  List <String> imageList = new List();
+  List subCategoryList = [];
+  List<String> imageList = [];
 
-  setSubCategory(context){
-    Map<dynamic,dynamic> args = ModalRoute.of(context).settings.arguments;
+  setSubCategory(context) {
+    Map args = ModalRoute.of(context)?.settings.arguments as Map;
     this.setState(() {
       heading = args['categoryName'];
       subCategoryList = args['subCategory'];
     });
   }
 
-  listSubCategoryItems(String subCategoryId, String subCategoryName, BuildContext context) async{
+  listSubCategoryItems(String subCategoryId, String subCategoryName, BuildContext context) async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
+    if (connectionStatus) {
       Loader.showLoadingScreen(context, _keyLoader);
-      List <Map<String,String>> items = await _productService.listSubCategoryItems(subCategoryId);
-      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+      List items = await _productService.listSubCategoryItems(subCategoryId);
+      Navigator.of(context, rootNavigator: true).pop();
       Navigator.pushNamed(context, '/items', arguments: {'items': items, 'heading': subCategoryName});
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
   }
@@ -53,11 +52,8 @@ class _SubCategoryState extends State<SubCategory> {
       drawer: sidebar(context),
       body: GridView.builder(
         itemCount: subCategoryList.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 8.0 / 10.0,
-          crossAxisCount: 2
-        ),
-        itemBuilder: (BuildContext context, int index){
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(childAspectRatio: 8.0 / 10.0, crossAxisCount: 2),
+        itemBuilder: (BuildContext context, int index) {
           String subCategoryId = subCategoryList[index]['id'];
           String name = subCategoryList[index]['name'];
           String imagePath = subCategoryList[index]['imageId'];
@@ -65,41 +61,37 @@ class _SubCategoryState extends State<SubCategory> {
             padding: EdgeInsets.all(5.0),
             child: Card(
               semanticContainer: true,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               clipBehavior: Clip.antiAlias,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
-                    child: Material(
-                      child: InkWell(
-                        onTap: (){
-                          listSubCategoryItems(subCategoryId,name,context);
-                        },
-                        child: GridTile(
-                          footer: Container(
-                            color: Colors.white70,
-                            child: ListTile(
-                              leading: Text(
-                                name,
-                                style: TextStyle(
-                                  fontFamily: 'NovaSquare',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 22.0
-                                ),
+                      child: Material(
+                    child: InkWell(
+                      onTap: () {
+                        listSubCategoryItems(subCategoryId, name, context);
+                      },
+                      child: GridTile(
+                        footer: Container(
+                          color: Colors.white70,
+                          child: ListTile(
+                            leading: Text(
+                              name,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22.0,
                               ),
                             ),
                           ),
-                          child: Image.network(
-                            imagePath,
-                            fit: BoxFit.cover,
-                          ),
+                        ),
+                        child: Image.network(
+                          imagePath,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    )
-                  )
+                    ),
+                  ))
                 ],
               ),
             ),

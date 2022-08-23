@@ -5,7 +5,7 @@ import 'package:app_frontend/sizeConfig.dart';
 class SlideTile extends StatelessWidget {
   final String imagePath, title, desc;
 
-  SlideTile({this.imagePath, this.title, this.desc});
+  SlideTile({required this.imagePath, required this.title, required this.desc});
 
   @override
   Widget build(BuildContext context) {
@@ -30,24 +30,24 @@ class SlideTile extends StatelessWidget {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: 'NovaSquare',
               fontWeight: FontWeight.bold,
               fontSize: SizeConfig.safeBlockVertical * 6,
-              letterSpacing: 1.0
+              letterSpacing: 1.0,
             ),
           ),
           SizedBox(
             height: SizeConfig.safeBlockVertical * 5,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 15.0,
+            ),
             child: Text(
               desc,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'NovaSquare',
                 fontWeight: FontWeight.w500,
-                fontSize: SizeConfig.safeBlockVertical * 3
+                fontSize: SizeConfig.safeBlockVertical * 3,
               ),
             ),
           )

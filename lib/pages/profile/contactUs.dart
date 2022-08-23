@@ -21,14 +21,18 @@ class _ContactUsState extends State<ContactUs> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 40.0),
+            SizedBox(
+              height: 40.0,
+            ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              padding: EdgeInsets.symmetric(
+                horizontal: 10.0,
+              ),
               child: Text(
                 'CONTACT',
                 style: TextStyle(
-                    fontSize: 15.0,
-                    letterSpacing: 1.0
+                  fontSize: 15.0,
+                  letterSpacing: 1.0,
                 ),
               ),
             ),
@@ -39,16 +43,16 @@ class _ContactUsState extends State<ContactUs> {
                 title: Text(
                   'Our address',
                   style: TextStyle(
-                    fontSize:20.0,
+                    fontSize: 20.0,
                     letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 subtitle: Text(
                   '1412 Steiner Street, San Francisco, CA, 94115',
                   style: TextStyle(
-                    fontSize:16.0,
-                    fontWeight: FontWeight.bold
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -59,16 +63,16 @@ class _ContactUsState extends State<ContactUs> {
                 leading: Text(
                   'E-mail us',
                   style: TextStyle(
-                    fontSize:20.0,
+                    fontSize: 20.0,
                     letterSpacing: 1.0,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 trailing: Text(
                   'office@shopertino.com',
                   style: TextStyle(
                     fontSize: 20.0,
-                    color: Colors.grey
+                    color: Colors.grey,
                   ),
                 ),
               ),
@@ -76,7 +80,7 @@ class _ContactUsState extends State<ContactUs> {
             Padding(
               padding: EdgeInsets.only(top: 20.0, left: 10.0),
               child: Text(
-                'Our business hour are Mon - Fri, 10am - 6pm, PST'
+                'Our business hour are Mon - Fri, 10am - 6pm, PST',
               ),
             ),
             SizedBox(height: 20.0),
@@ -88,7 +92,7 @@ class _ContactUsState extends State<ContactUs> {
                     'Call Us',
                     style: TextStyle(
                       fontSize: 20.0,
-                      color: Colors.blue
+                      color: Colors.blue,
                     ),
                   ),
                 ),

@@ -1,22 +1,21 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 import 'package:app_frontend/components/header.dart';
+import 'package:app_frontend/components/item/colorGroupButton.dart';
 import 'package:app_frontend/components/item/productButton.dart';
 import 'package:app_frontend/components/item/productSize.dart';
-import 'package:app_frontend/components/sidebar.dart';
 import 'package:app_frontend/components/loader.dart';
-import 'package:app_frontend/services/shoppingBagService.dart';
-import 'package:app_frontend/components/item/colorGroupButton.dart';
-import 'package:app_frontend/sizeConfig.dart';
 import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/components/sidebar.dart';
+import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
+import 'package:app_frontend/sizeConfig.dart';
+import 'package:flutter/material.dart';
 
 class ParticularItem extends StatefulWidget {
-  final Map <String,dynamic> itemDetails;
-  final bool editProduct;
+  final Map<String, dynamic>? itemDetails;
 
-  ParticularItem({var key, this.itemDetails, this.editProduct}):super(key: key);
+  final bool? editProduct;
+
+  ParticularItem({var key, this.itemDetails, this.editProduct}) : super(key: key);
 
   @override
   _ParticularItemState createState() => _ParticularItemState();
@@ -29,63 +28,57 @@ class _ParticularItemState extends State<ParticularItem> {
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
 
   Map customDimension = new Map();
-  List <Map<Color,bool>> productColors;
-  List<Map<String,bool>> productSizes;
+  late List<Map<Color, bool>> productColors;
+  late List<Map<String, bool>> productSizes;
   int productQuantity = 1;
 
-  setItemDetails(item){
-    print('set item details');
-    Map<String,dynamic> args = widget.itemDetails;
+  setItemDetails(item) {
+    Map<String, dynamic> args = widget.itemDetails!;
     setState(() {
-      if(widget.editProduct){
-        productQuantity = widget.itemDetails['quantity'];
+      if (widget.editProduct!) {
+        productQuantity = widget.itemDetails!['quantity'];
       }
       productColors = setColorList(args['color']);
       productSizes = setSizeList(args['size']);
     });
   }
 
-  setProductQuantity(String type){
+  setProductQuantity(String type) {
     setState(() {
-      if(type == 'inc'){
-        if(productQuantity != 5){
+      if (type == 'inc') {
+        if (productQuantity != 5) {
           productQuantity = productQuantity + 1;
         }
-      }
-      else{
-        if(productQuantity != 1){
+      } else {
+        if (productQuantity != 1) {
           productQuantity = productQuantity - 1;
         }
       }
     });
   }
 
-
-  void setCustomWidth(String screenSize){
-    if(screenSize == 'smallMobile'){
+  void setCustomWidth(String screenSize) {
+    if (screenSize == 'smallMobile') {
       customDimension['productImageHeight'] = SizeConfig.screenHeight / 2.4;
       customDimension['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 7.5;
-    }
-    else if(screenSize == 'largeMobile'){
+    } else if (screenSize == 'largeMobile') {
       customDimension['productImageHeight'] = SizeConfig.screenHeight / 2.2;
       customDimension['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
-     }
-    else if(screenSize == 'tablet'){
+    } else if (screenSize == 'tablet') {
       customDimension['productImageHeight'] = SizeConfig.screenHeight / 2.3;
       customDimension['sizeBoxHeight'] = SizeConfig.safeBlockVertical * 6.5;
     }
   }
 
-  List setColorList(List colors){
-    List <Map<Color,bool>> colorList = new List();
-    String selectedColor = '0xFF${widget.itemDetails['selectedColor']}';
-    colors.forEach((value){
-      Map<Color,bool> colorMap = new Map();
-      if(widget.editProduct && value == selectedColor){
+  List<Map<Color, bool>> setColorList(List colors) {
+    List<Map<Color, bool>> colorList = [];
+    String selectedColor = '0xFF${widget.itemDetails!['selectedColor']}';
+    colors.forEach((value) {
+      Map<Color, bool> colorMap = new Map();
+      if (widget.editProduct! && value == selectedColor) {
         colorMap[Color(int.parse(value))] = true;
-        widget.itemDetails.remove('selectedColor');
-      }
-      else{
+        widget.itemDetails!.remove('selectedColor');
+      } else {
         colorMap[Color(int.parse(value))] = false;
       }
       colorList.add(colorMap);
@@ -93,8 +86,8 @@ class _ParticularItemState extends State<ParticularItem> {
     return colorList;
   }
 
-  void selectProductColor(int index){
-    List tempColorList = setColorList(widget.itemDetails['color']);
+  void selectProductColor(int index) {
+    List<Map<Color, bool>> tempColorList = setColorList(widget.itemDetails!['color']);
     Color key = tempColorList[index].keys.toList()[0];
     tempColorList[index][key] = true;
     setState(() {
@@ -102,8 +95,8 @@ class _ParticularItemState extends State<ParticularItem> {
     });
   }
 
-  void selectProductSize(int index){
-    List tempSizeList = setSizeList(widget.itemDetails['size']);
+  void selectProductSize(int index) {
+    List<Map<String, bool>> tempSizeList = setSizeList(widget.itemDetails!['size']);
     String key = tempSizeList[index].keys.toList()[0];
     tempSizeList[index][key] = true;
     setState(() {
@@ -111,16 +104,15 @@ class _ParticularItemState extends State<ParticularItem> {
     });
   }
 
-  List<Map<String,bool>> setSizeList(List sizes){
-    List<Map<String,bool>> sizeList = new List();
-    String selectedSize = widget.itemDetails['selectedSize'];
+  List<Map<String, bool>> setSizeList(List sizes) {
+    List<Map<String, bool>> sizeList = [];
+    String? selectedSize = widget.itemDetails?['selectedSize'];
     sizes.forEach((size) {
-      Map<String,bool> sizeMap = new Map();
-      if(widget.editProduct && selectedSize == size){
+      Map<String, bool> sizeMap = new Map();
+      if (widget.editProduct! && selectedSize == size) {
         sizeMap[size] = true;
-        widget.itemDetails.remove('selectedSize');
-      }
-      else{
+        widget.itemDetails!.remove('selectedSize');
+      } else {
         sizeMap[size] = false;
       }
       sizeList.add(sizeMap);
@@ -129,68 +121,68 @@ class _ParticularItemState extends State<ParticularItem> {
   }
 
   void showInSnackBar(String msg, Color color) {
-    _productScaffoldKey.currentState.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        content: Text(msg),
         backgroundColor: color,
-        content: new Text(msg),
         action: SnackBarAction(
-          label:'Close',
+          label: 'Close',
           textColor: Colors.white,
-          onPressed: (){
-            _productScaffoldKey.currentState.removeCurrentSnackBar();
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },
         ),
       ),
     );
   }
 
-
-  checkoutProduct(){
-    String selectedSize;
-    String selectedColor;
-    if(selectedSize == '' && productSizes.length != 0) showInSnackBar('Select size',Colors.red);
-    else if(selectedColor == '' && productColors.length != 0) showInSnackBar('Select color', Colors.red);
-    else{
-      Map<String,dynamic> args = new Map<String, dynamic>();
-      args['price'] = widget.itemDetails['price'];
-      args['productId'] = widget.itemDetails['productId'];
+  checkoutProduct() {
+    String selectedSize = '';
+    String selectedColor = '';
+    if (selectedSize == '' && productSizes.length != 0)
+      showInSnackBar('Select size', Colors.red);
+    else if (selectedColor == '' && productColors.length != 0)
+      showInSnackBar('Select color', Colors.red);
+    else {
+      Map<String, dynamic> args = new Map<String, dynamic>();
+      args['price'] = widget.itemDetails!['price'];
+      args['productId'] = widget.itemDetails!['productId'];
       args['quantity'] = productQuantity;
       args['size'] = selectedSize;
       args['color'] = selectedColor;
-      Navigator.of(context).pushNamed('/checkout/address',arguments: args);
+      Navigator.of(context).pushNamed('/checkout/address', arguments: args);
     }
   }
 
-  addToShoppingBag() async{
+  addToShoppingBag() async {
     String selectedSize = '';
     String selectedColor = '';
-    for(Map size in productSizes){
-      if(size.values.toList()[0]) selectedSize = size.keys.toList()[0];
+    for (Map size in productSizes) {
+      if (size.values.toList()[0]) selectedSize = size.keys.toList()[0];
     }
 
-    for(Map color in productColors) {
-      if (color.values.toList()[0])
-        selectedColor = color.toString().substring(11, 17);
+    for (Map color in productColors) {
+      if (color.values.toList()[0]) selectedColor = color.toString().substring(11, 17);
     }
 
-    if(selectedSize == '') showInSnackBar('Select size',Colors.red);
-    else if(selectedColor == '') showInSnackBar('Select color', Colors.red);
-    else{
+    if (selectedSize == '')
+      showInSnackBar('Select size', Colors.red);
+    else if (selectedColor == '')
+      showInSnackBar('Select color', Colors.red);
+    else {
       bool connectionStatus = await _userService.checkInternetConnectivity();
 
-      if(connectionStatus){
+      if (connectionStatus) {
         Loader.showLoadingScreen(context, keyLoader);
-        String msg = await _shoppingBagService.add(widget.itemDetails['productId'],selectedSize,selectedColor,productQuantity);
-        Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
-        showInSnackBar(msg,Colors.black);
-      }
-      else{
+        String msg = await _shoppingBagService.add(
+            widget.itemDetails!['productId'], selectedSize, selectedColor, productQuantity);
+        Navigator.of(context, rootNavigator: true).pop();
+        showInSnackBar(msg, Colors.black);
+      } else {
         internetConnectionDialog(context);
       }
-
     }
   }
-
 
   @override
   void initState() {
@@ -213,23 +205,19 @@ class _ParticularItemState extends State<ParticularItem> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              stops: [0.25,0.2],
+              stops: [0.25, 0.2],
               colors: [Color(0xff4CEEFB), Colors.white],
             ),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              SizeConfig.safeBlockHorizontal * 6.7,
-              SizeConfig.topPadding,
-              SizeConfig.safeBlockHorizontal * 6.7,
-              SizeConfig.topPadding
-            ),
+            padding: EdgeInsets.fromLTRB(SizeConfig.safeBlockHorizontal * 6.7, SizeConfig.topPadding,
+                SizeConfig.safeBlockHorizontal * 6.7, SizeConfig.topPadding),
             child: SizedBox(
               height: SizeConfig.screenHeight,
               width: SizeConfig.screenWidth,
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(35)
+                  borderRadius: BorderRadius.circular(35),
                 ),
                 color: Colors.red,
                 elevation: 10.0,
@@ -241,17 +229,17 @@ class _ParticularItemState extends State<ParticularItem> {
                       height: customDimension['productImageHeight'],
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(widget.itemDetails['image']),
-                          fit: BoxFit.fill
-                        )
+                          image: NetworkImage(widget.itemDetails!['image']),
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Container(
                         width: SizeConfig.screenWidth,
                         padding: EdgeInsets.symmetric(
-                            vertical: 10.0,
-                            horizontal: SizeConfig.safeBlockHorizontal * 5
+                          vertical: 10.0,
+                          horizontal: SizeConfig.safeBlockHorizontal * 5,
                         ),
                         margin: EdgeInsets.zero,
                         decoration: BoxDecoration(
@@ -268,30 +256,27 @@ class _ParticularItemState extends State<ParticularItem> {
                                   Text(
                                     'T-Shirt',
                                     style: TextStyle(
-                                      fontFamily: 'NovaSquare',
                                       fontSize: SizeConfig.safeBlockHorizontal * 4.5,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      letterSpacing: 1.0
+                                      letterSpacing: 1.0,
                                     ),
                                   ),
                                   Text(
-                                    "\$${widget.itemDetails['price']}.00",
+                                    "\$${widget.itemDetails!['price']}.00",
                                     style: TextStyle(
                                       fontSize: SizeConfig.safeBlockHorizontal * 4.8,
-                                      fontFamily: 'NovaSquare',
                                       color: Colors.white70,
-                                      fontWeight: FontWeight.bold
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
                             SizedBox(height: 10.0),
                             Text(
-                              widget.itemDetails['name'],
+                              widget.itemDetails!['name'],
                               style: TextStyle(
-                                fontFamily: 'NovaSquare',
                                 fontSize: SizeConfig.safeBlockHorizontal * 3.8,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -299,46 +284,51 @@ class _ParticularItemState extends State<ParticularItem> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 1.2),
+                              padding: EdgeInsets.symmetric(
+                                vertical: SizeConfig.safeBlockVertical * 1.2,
+                              ),
                               child: Center(
                                 child: Text(
                                   'Color',
                                   style: TextStyle(
-                                    fontFamily: 'NovaSquare',
-                                    fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                    letterSpacing: 1.0,
-                                    fontWeight: FontWeight.bold
-                                  ),
+                                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                      letterSpacing: 1.0,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
                             ColorGroupButton(productColors, selectProductColor),
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 1.2),
+                              padding: EdgeInsets.symmetric(
+                                vertical: SizeConfig.safeBlockVertical * 1.2,
+                              ),
                               child: Center(
                                 child: Text(
                                   'Size',
                                   style: TextStyle(
-                                      fontFamily: 'NovaSquare',
                                       fontSize: SizeConfig.safeBlockHorizontal * 5,
                                       letterSpacing: 1.0,
-                                      fontWeight: FontWeight.bold
-                                  ),
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
-                            ProductSize(productSizes, customDimension, setSizeList,selectProductSize),
+                            ProductSize(
+                              productSizes,
+                              customDimension,
+                              setSizeList,
+                              selectProductSize,
+                            ),
                             Center(
                               child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: SizeConfig.safeBlockVertical * 1.2),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: SizeConfig.safeBlockVertical * 1.2,
+                                ),
                                 child: Text(
                                   'Quantity',
                                   style: TextStyle(
-                                      fontFamily: 'NovaSquare',
                                       fontSize: SizeConfig.safeBlockHorizontal * 5,
                                       letterSpacing: 1.0,
-                                      fontWeight: FontWeight.bold
-                                  ),
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
@@ -346,7 +336,7 @@ class _ParticularItemState extends State<ParticularItem> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
                                 MaterialButton(
-                                  onPressed: (){
+                                  onPressed: () {
                                     setProductQuantity('inc');
                                   },
                                   color: Colors.white,
@@ -354,19 +344,21 @@ class _ParticularItemState extends State<ParticularItem> {
                                     Icons.add,
                                     size: SizeConfig.safeBlockHorizontal * 7,
                                   ),
-                                  padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 3),
+                                  padding: EdgeInsets.all(
+                                    SizeConfig.safeBlockHorizontal * 3,
+                                  ),
                                   shape: CircleBorder(),
                                   elevation: 18.0,
                                 ),
                                 Text(
                                   '$productQuantity',
                                   style: TextStyle(
-                                      fontSize: SizeConfig.safeBlockHorizontal * 7,
-                                      fontWeight: FontWeight.bold
+                                    fontSize: SizeConfig.safeBlockHorizontal * 7,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 MaterialButton(
-                                  onPressed: (){
+                                  onPressed: () {
                                     setProductQuantity('dec');
                                   },
                                   textColor: Colors.white,
@@ -375,7 +367,9 @@ class _ParticularItemState extends State<ParticularItem> {
                                     Icons.remove,
                                     size: SizeConfig.safeBlockHorizontal * 7,
                                   ),
-                                  padding: EdgeInsets.all(SizeConfig.safeBlockHorizontal * 3),
+                                  padding: EdgeInsets.all(
+                                    SizeConfig.safeBlockHorizontal * 3,
+                                  ),
                                   shape: CircleBorder(),
                                   elevation: 18.0,
                                 ),
@@ -383,9 +377,9 @@ class _ParticularItemState extends State<ParticularItem> {
                             ),
                             SizedBox(height: 10.0),
                             ProductButtons(addToShoppingBag, checkoutProduct),
-                          ]
-                        )
-                      )
+                          ],
+                        ),
+                      ),
                     )
                   ],
                 ),
@@ -395,5 +389,5 @@ class _ParticularItemState extends State<ParticularItem> {
         ),
       ),
     );
-   }
+  }
 }

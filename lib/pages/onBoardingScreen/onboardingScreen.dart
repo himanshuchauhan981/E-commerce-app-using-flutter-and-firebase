@@ -9,23 +9,21 @@ class OnBoardingScreen extends StatefulWidget {
 }
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
-  List<SliderModel> slides = new List<SliderModel>();
+  List<SliderModel> slides = <SliderModel>[];
   int slideIndex = 0;
-  PageController controller;
+  PageController controller = PageController();
 
-  Widget _buildPageIndicator(bool isCurrentPage){
+  Widget _buildPageIndicator(bool isCurrentPage) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 2.0),
       height: isCurrentPage ? 12.0 : 9.0,
       width: isCurrentPage ? 12.0 : 9.0,
-      decoration: BoxDecoration(
-        color: isCurrentPage ? Colors.grey: Colors.grey[300],
-        borderRadius: BorderRadius.circular(12)
-      ),
+      decoration:
+          BoxDecoration(color: isCurrentPage ? Colors.grey : Colors.grey[300], borderRadius: BorderRadius.circular(12)),
     );
   }
 
-  buildSlides(){
+  buildSlides() {
     slides = getSlides();
     controller = new PageController();
   }
@@ -39,7 +37,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         elevation: 0,
         leading: Container(),
         title: GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.of(context).pushReplacementNamed('/');
           },
           child: Align(
@@ -50,7 +48,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 fontSize: 20.0,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 1.0,
-                color: Colors.black
+                color: Colors.black,
               ),
             ),
           ),
@@ -63,11 +61,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           Icons.keyboard_arrow_right,
           size: 35.0,
         ),
-        onPressed: (){
-          if(slideIndex != 5){
-            controller.animateToPage(slideIndex + 1, duration: Duration(milliseconds: 500), curve: Curves.linear);
-          }
-          else{
+        onPressed: () {
+          if (slideIndex != 5) {
+            controller.animateToPage(
+              slideIndex + 1,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.linear,
+            );
+          } else {
             Navigator.of(context).pushReplacementNamed('/');
           }
         },
@@ -76,7 +77,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         height: MediaQuery.of(context).size.height - 100,
         child: PageView(
           controller: this.controller,
-          onPageChanged: (index){
+          onPageChanged: (index) {
             setState(() {
               slideIndex = index;
             });
@@ -123,13 +124,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             Container(
               child: Row(
                 children: [
-                  for (int i = 0; i < 6 ; i++) i == slideIndex ? _buildPageIndicator(true): _buildPageIndicator(false),
-                ]
+                  for (int i = 0; i < 6; i++) i == slideIndex ? _buildPageIndicator(true) : _buildPageIndicator(false),
+                ],
               ),
             ),
           ],
         ),
-      )
+      ),
     );
   }
 }

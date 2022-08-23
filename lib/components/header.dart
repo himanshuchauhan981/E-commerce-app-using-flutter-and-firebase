@@ -1,23 +1,21 @@
+import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/shoppingBagService.dart';
 import 'package:app_frontend/services/userService.dart';
+import 'package:app_frontend/sizeConfig.dart';
 import 'package:flutter/material.dart';
 
-import 'package:app_frontend/components/loader.dart';
-import 'package:app_frontend/services/shoppingBagService.dart';
-import 'package:app_frontend/sizeConfig.dart';
-
-
-capitalizeHeading(String text){
-  if(text == null){
+capitalizeHeading(String text) {
+  if (text == null) {
     return text = "";
-  }
-  else{
+  } else {
     text = "${text[0].toUpperCase()}${text.substring(1)}";
     return text;
   }
 }
 
-Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showIcon, BuildContext context){
+PreferredSizeWidget header(
+    String headerText, GlobalKey<ScaffoldState> scaffoldKey, bool showIcon, BuildContext context) {
   final GlobalKey<State> keyLoader = new GlobalKey<State>();
   SizeConfig().init(context);
   ShoppingBagService _shoppingBagService = new ShoppingBagService();
@@ -31,7 +29,6 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
         color: Colors.black,
         fontWeight: FontWeight.bold,
         fontSize: SizeConfig.safeBlockHorizontal * 5,
-        fontFamily: 'NovaSquare'
       ),
     ),
     backgroundColor: Colors.white,
@@ -41,14 +38,13 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
       icon: Icon(
         Icons.menu,
         size: SizeConfig.safeBlockHorizontal * 7,
-        color: Colors.black
+        color: Colors.black,
       ),
-      onPressed: (){
-        if(scaffoldKey.currentState.isDrawerOpen == false){
-          scaffoldKey.currentState.openDrawer();
-        }
-        else{
-          scaffoldKey.currentState.openEndDrawer();
+      onPressed: () {
+        if (scaffoldKey.currentState?.isDrawerOpen == false) {
+          scaffoldKey.currentState?.openDrawer();
+        } else {
+          scaffoldKey.currentState?.openEndDrawer();
         }
       },
     ),
@@ -61,17 +57,16 @@ Widget header(String headerText,GlobalKey<ScaffoldState> scaffoldKey,bool  showI
             size: SizeConfig.safeBlockHorizontal * 7,
             color: Colors.black,
           ),
-          onPressed: () async{
+          onPressed: () async {
             bool connectionStatus = await _userService.checkInternetConnectivity();
-            if(connectionStatus){
-              Map<String,dynamic> args = new Map();
+            if (connectionStatus) {
+              Map<String, dynamic> args = new Map();
               Loader.showLoadingScreen(context, keyLoader);
               List bagItems = await _shoppingBagService.list();
               args['bagItems'] = bagItems;
-              Navigator.of(keyLoader.currentContext, rootNavigator: true).pop();
+              Navigator.of(context, rootNavigator: true).pop();
               Navigator.pushNamed(context, '/bag', arguments: args);
-            }
-            else{
+            } else {
               internetConnectionDialog(context);
             }
           },

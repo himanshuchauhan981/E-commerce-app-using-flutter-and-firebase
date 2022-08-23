@@ -1,49 +1,41 @@
-import 'package:flutter/material.dart';
-
 import 'package:app_frontend/components/header.dart';
-import 'package:app_frontend/components/sidebar.dart';
-import 'package:app_frontend/services/productService.dart';
 import 'package:app_frontend/components/loader.dart';
 import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/components/sidebar.dart';
+import 'package:app_frontend/services/productService.dart';
 import 'package:app_frontend/services/userService.dart';
+import 'package:flutter/material.dart';
 
 class Shop extends StatefulWidget {
   @override
   _ShopState createState() => _ShopState();
 }
 
-
 class _ShopState extends State<Shop> {
   ProductService _productService = new ProductService();
   UserService _userService = new UserService();
-  List<Map<String,String>> categoryList  = new List();
+  List<Map<String, String>> categoryList = [];
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
-  void listCategories(){
-    Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+  void listCategories() {
+    Map args = ModalRoute.of(context)?.settings.arguments as Map;
     setState(() {
       categoryList = args['category'];
     });
   }
 
-  void listSubCategories(String categoryId, String categoryName) async{
+  void listSubCategories(String categoryId, String categoryName) async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
+    if (connectionStatus) {
       Loader.showLoadingScreen(context, _keyLoader);
       List subCategory = await _productService.listSubCategories(categoryId);
-      Map args = {
-        'subCategory': subCategory,
-        'categoryId': categoryId,
-        'categoryName':categoryName
-      };
-      Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+      Map args = {'subCategory': subCategory, 'categoryId': categoryId, 'categoryName': categoryName};
+      Navigator.of(context, rootNavigator: true).pop();
       Navigator.pushNamed(context, '/subCategory', arguments: args);
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
-
   }
 
   @override
@@ -53,8 +45,8 @@ class _ShopState extends State<Shop> {
 
     listCategories();
     return WillPopScope(
-      onWillPop: () async{
-        Navigator.pushReplacementNamed(context,'/home');
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, '/home');
         return true;
       },
       child: Scaffold(
@@ -68,38 +60,35 @@ class _ShopState extends State<Shop> {
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               itemCount: categoryList.length,
-              separatorBuilder: (BuildContext context, int index){
+              separatorBuilder: (BuildContext context, int index) {
                 return SizedBox(height: 20.0);
               },
-              itemBuilder: (context,index){
+              itemBuilder: (context, index) {
                 var item = categoryList[index];
                 return GestureDetector(
-                  onTap: (){
-                    listSubCategories(item['id'],item['name']);
+                  onTap: () {
+                    listSubCategories(item['id']!, item['name']!);
                   },
                   child: Container(
-                    constraints: new BoxConstraints.expand(
-                        height: 130.0
-                    ),
+                    constraints: new BoxConstraints.expand(height: 130.0),
                     alignment: Alignment.bottomLeft,
                     padding: EdgeInsets.only(left: 16.0, bottom: 8.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       image: DecorationImage(
-                        image: AssetImage(item['image']),
+                        image: AssetImage(item['image']!),
                         fit: BoxFit.cover,
-                        colorFilter: ColorFilter.mode(Color.fromRGBO(90,90,90, 0.8), BlendMode.modulate)
-                      )
+                        colorFilter: ColorFilter.mode(Color.fromRGBO(90, 90, 90, 0.8), BlendMode.modulate),
+                      ),
                     ),
                     child: Center(
                       child: Text(
                         item['name'].toString().toUpperCase(),
                         style: TextStyle(
-                          fontFamily: 'NovaSquare',
                           fontWeight: FontWeight.w600,
                           fontSize: 35.0,
                           color: Colors.white,
-                          letterSpacing: 1.0
+                          letterSpacing: 1.0,
                         ),
                       ),
                     ),
@@ -108,7 +97,7 @@ class _ShopState extends State<Shop> {
               },
             ),
           ),
-        )
+        ),
       ),
     );
   }

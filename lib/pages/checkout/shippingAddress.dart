@@ -1,11 +1,11 @@
 import 'dart:collection';
-import 'package:app_frontend/services/userService.dart';
-import 'package:flutter/material.dart';
 
 import 'package:app_frontend/components/checkout/checkoutAppBar.dart';
 import 'package:app_frontend/components/checkout/shippingAddressInput.dart';
-import 'package:app_frontend/services/checkoutService.dart';
 import 'package:app_frontend/components/modals/internetConnection.dart';
+import 'package:app_frontend/services/checkoutService.dart';
+import 'package:app_frontend/services/userService.dart';
+import 'package:flutter/material.dart';
 
 class ShippingAddress extends StatefulWidget {
   @override
@@ -16,49 +16,51 @@ class _ShippingAddressState extends State<ShippingAddress> {
   final _formKey = GlobalKey<FormState>();
   bool autoValidate = false;
   bool visibleInput = false;
-  int selectedAddress;
+  int selectedAddress = 0;
   CheckoutService _checkoutService = new CheckoutService();
   UserService _userService = new UserService();
   HashMap addressValues = new HashMap();
-  List shippingAddress = new List();
+  List shippingAddress = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  checkoutAddress(){
-
-    if(selectedAddress == null){
+  checkoutAddress() {
+    if (selectedAddress == null) {
       String msg = 'Select any address';
       showInSnackBar(msg, Colors.red);
-    }
-    else{
-      Map<String,dynamic> args = ModalRoute.of(context).settings.arguments;
+    } else {
+      Map args = ModalRoute.of(context)?.settings.arguments as Map;
 
       args['shippingAddress'] = shippingAddress[selectedAddress];
-      Navigator.of(context).pushNamed('/checkout/shippingMethod', arguments: args);
+      Navigator.of(context).pushNamed(
+        '/checkout/shippingMethod',
+        arguments: args,
+      );
     }
   }
 
   void showInSnackBar(String msg, Color color) {
-    _scaffoldKey.currentState.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: color,
-        content: new Text(msg),
+        content: Text(msg),
+        duration: Duration(seconds: 2),
         action: SnackBarAction(
-          label:'Close',
+          label: 'Close',
           textColor: Colors.white,
-          onPressed: (){
-            _scaffoldKey.currentState.removeCurrentSnackBar();
+          onPressed: () {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
           },
         ),
       ),
     );
   }
 
-  validateInput() async{
+  validateInput() async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
-      if(_formKey.currentState.validate()){
-        _formKey.currentState.save();
+    if (connectionStatus) {
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState?.save();
         await _checkoutService.newShippingAddress(addressValues);
         String msg = 'Address is saved';
         showInSnackBar(msg, Colors.black);
@@ -66,50 +68,49 @@ class _ShippingAddressState extends State<ShippingAddress> {
           visibleInput = !visibleInput;
           shippingAddress.add(addressValues);
         });
-      }
-      else{
+      } else {
         setState(() {
           autoValidate = true;
         });
       }
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
   }
 
-  listShippingAddress() async{
+  listShippingAddress() async {
     bool connectionStatus = await _userService.checkInternetConnectivity();
 
-    if(connectionStatus){
+    if (connectionStatus) {
       List data = await _checkoutService.listShippingAddress();
       setState(() {
         shippingAddress = data;
       });
-    }
-    else{
+    } else {
       internetConnectionDialog(context);
     }
   }
 
-  saveNewAddress(){
+  saveNewAddress() {
     return Container(
-        alignment: Alignment.center,
-        child: Padding(
-            padding: const EdgeInsets.only(top: 30.0),
-            child: Column(
-                children: <Widget>[
-                Text(
-                'No address saved',
-                style: TextStyle(
-                    fontSize: 20.0,
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 30.0,
+        ),
+        child: Column(
+          children: <Widget>[
+            Text(
+              'No address saved',
+              style: TextStyle(
+                fontSize: 20.0,
               ),
             ),
             SizedBox(height: 20.0),
             ButtonTheme(
-              minWidth: MediaQuery.of(context).size.width /3.2,
-              child: OutlineButton(
-                onPressed: (){
+              minWidth: MediaQuery.of(context).size.width / 3.2,
+              child: OutlinedButton(
+                onPressed: () {
                   setState(() {
                     visibleInput = true;
                   });
@@ -117,13 +118,20 @@ class _ShippingAddressState extends State<ShippingAddress> {
                 child: Text(
                   'Add new',
                   style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold
+                    color: Colors.black,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                borderSide: BorderSide(color: Colors.black,width: 1.8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  side: BorderSide(
+                    color: Colors.black,
+                    width: 1.8,
+                  ),
+                ),
               ),
             )
           ],
@@ -132,7 +140,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
     );
   }
 
-  showSavedAddress(){
+  showSavedAddress() {
     return Container(
       child: Column(
         children: <Widget>[
@@ -155,32 +163,24 @@ class _ShippingAddressState extends State<ShippingAddress> {
                           Text(
                             item['name'],
                             style: TextStyle(
-                                fontSize: 17.0,
-                                fontWeight: FontWeight.bold
+                              fontSize: 17.0,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           SizedBox(height: 5.0),
                           Text(
                             item['address'],
-                            style: TextStyle(
-                                fontSize: 15.0
-                            ),
+                            style: TextStyle(fontSize: 15.0),
                           ),
                           Text(
                             "${item['area']}, ${item['city']}",
-                            style: TextStyle(
-                                fontSize: 15.0
-                            ),
+                            style: TextStyle(fontSize: 15.0),
                           ),
                           Text(
                             "${item['state']} ${item['pinCode']}",
-                            style: TextStyle(
-                                fontSize: 15.0
-                            ),
+                            style: TextStyle(fontSize: 15.0),
                           ),
-                          Text(
-                              "Phone number : ${item['mobileNumber']}"
-                          )
+                          Text("Phone number : ${item['mobileNumber']}")
                         ],
                       ),
                       Radio(
@@ -200,9 +200,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
           ),
           SizedBox(height: 10.0),
           ButtonTheme(
-            minWidth: MediaQuery.of(context).size.width /3.2,
-            child: OutlineButton(
-              onPressed: (){
+            minWidth: MediaQuery.of(context).size.width / 3.2,
+            child: OutlinedButton(
+              onPressed: () {
                 setState(() {
                   visibleInput = true;
                 });
@@ -212,11 +212,18 @@ class _ShippingAddressState extends State<ShippingAddress> {
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 18.0,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              borderSide: BorderSide(color: Colors.black,width: 1.8),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                side: BorderSide(
+                  color: Colors.black,
+                  width: 1.8,
+                ),
+              ),
             ),
           )
         ],
@@ -224,13 +231,20 @@ class _ShippingAddressState extends State<ShippingAddress> {
     );
   }
 
-  animateContainers(){
+  animateContainers() {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 1000),
-      transitionBuilder: (Widget child, Animation<double> animation){
-        return ScaleTransition(child: child, scale: animation);
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return ScaleTransition(
+          child: child,
+          scale: animation,
+        );
       },
-      child: !visibleInput ? (shippingAddress.length == 0)? saveNewAddress():showSavedAddress() : ShippingAddressInput(addressValues, this.validateInput),
+      child: !visibleInput
+          ? (shippingAddress.length == 0)
+              ? saveNewAddress()
+              : showSavedAddress()
+          : ShippingAddressInput(addressValues, this.validateInput),
     );
   }
 
@@ -245,10 +259,13 @@ class _ShippingAddressState extends State<ShippingAddress> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: CheckoutAppBar('Back','Next',this.checkoutAddress),
+      appBar: CheckoutAppBar('Back', 'Next', this.checkoutAddress),
       body: Container(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
+          padding: EdgeInsets.symmetric(
+            vertical: 20.0,
+            horizontal: 10.0,
+          ),
           child: Form(
             key: _formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -259,10 +276,9 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   Text(
                     'Shipping',
                     style: TextStyle(
-                      fontFamily: 'NovaSquare',
                       fontSize: 35.0,
                       letterSpacing: 1.0,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 25.0),
@@ -275,9 +291,8 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   Text(
                     'Shipping Address',
                     style: TextStyle(
-                      fontFamily: 'NovaSquare',
                       fontSize: 28.0,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(height: 10.0),
